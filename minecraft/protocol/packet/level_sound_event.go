@@ -638,8 +638,8 @@ type LevelSoundEvent struct {
 	// different sessions of the same world, but most servers simply fill the runtime ID of the entity out for
 	// this field.
 	EntityUniqueID int64
-	// FireAtPosition is the position in the same world at which the event should fire. If this is not present,
-	// the position entity will be used instead.
+	// FireAtPosition is the position in the same world at which the event should fire. This field was added
+	// in v1.26.20.26. If this is not present, the position entity will be used instead.
 	FireAtPosition protocol.Optional[mgl32.Vec3]
 }
 
