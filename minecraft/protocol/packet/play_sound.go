@@ -21,7 +21,7 @@ type PlaySound struct {
 	// it to specify the pitch as the field is intended.
 	Pitch float32
 	// Handle is an optional sound handle ID. It is currently unknown what this is for, and is not required
-	// to be set by servers.
+	// to be set by servers. This field was added in v1.26.20.26.
 	Handle protocol.Optional[uint64]
 }
 
@@ -35,5 +35,7 @@ func (pk *PlaySound) Marshal(io protocol.IO) {
 	io.SoundPos(&pk.Position)
 	io.Float32(&pk.Volume)
 	io.Float32(&pk.Pitch)
-	protocol.OptionalFunc(io, &pk.Handle, io.Uint64)
+	if io.Protocol() >= protocol.Protocol1v26v20v26 {
+		protocol.OptionalFunc(io, &pk.Handle, io.Uint64)
+	}
 }
