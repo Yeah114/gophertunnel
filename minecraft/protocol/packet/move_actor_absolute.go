@@ -8,7 +8,7 @@ import (
 const (
 	MoveFlagOnGround = 1 << iota
 	MoveFlagTeleport
-	// MoveFlagForceCompletion forces the move to complete. This flag was added in v1.26.20.26.
+	MoveFlagForceMoveLocalActor
 	MoveFlagForceCompletion
 )
 
@@ -21,8 +21,6 @@ type MoveActorAbsolute struct {
 	// Flags is a combination of flags that specify details of the movement. It is a combination of the flags
 	// above.
 	Flags byte
-	// ForceCompletion forces the move to complete. This field was added in v1.26.20.26.
-	ForceCompletion bool
 	// Position is the position to spawn the entity on. If the entity is on a distance that the player cannot
 	// see it, the entity will still show up if the player moves closer.
 	Position mgl32.Vec3
@@ -38,13 +36,7 @@ func (*MoveActorAbsolute) ID() uint32 {
 
 func (pk *MoveActorAbsolute) Marshal(io protocol.IO) {
 	io.Varuint64(&pk.EntityRuntimeID)
-	flags := pk.Flags
-	if io.Protocol() >= protocol.Protocol1v26v20v26 && pk.ForceCompletion {
-		flags |= MoveFlagForceCompletion
-	}
-	io.Uint8(&flags)
-	pk.Flags = flags
-	pk.ForceCompletion = flags&MoveFlagForceCompletion != 0
+	io.Uint8(&pk.Flags)
 	io.Vec3(&pk.Position)
 	io.ByteFloat(&pk.Rotation[0])
 	io.ByteFloat(&pk.Rotation[1])
