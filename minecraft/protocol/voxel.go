@@ -1,6 +1,6 @@
 package protocol
 
-// VoxelCells represents a 3D grid of voxel cell data.
+// VoxelCells represents a 3D grid of voxel cell data. This type was added in v1.26.0.
 type VoxelCells struct {
 	// XSize is the size of the grid along the X axis.
 	XSize uint8
@@ -20,7 +20,7 @@ func (x *VoxelCells) Marshal(r IO) {
 	FuncSlice(r, &x.Storage, r.Uint8)
 }
 
-// VoxelShapeNameEntry represents a name-to-ID mapping entry for voxel shapes.
+// VoxelShapeNameEntry represents a name-to-ID mapping entry for voxel shapes. This type was added in v1.26.0.
 type VoxelShapeNameEntry struct {
 	// Name is the name of the voxel shape.
 	Name string
@@ -34,7 +34,7 @@ func (x *VoxelShapeNameEntry) Marshal(r IO) {
 	r.Uint16(&x.ID)
 }
 
-// VoxelShape represents a voxel shape with cells and coordinate axes.
+// VoxelShape represents a voxel shape with cells and coordinate axes. This type was added in v1.26.0.
 type VoxelShape struct {
 	// Cells is the grid of cells representing solid and empty regions.
 	Cells VoxelCells

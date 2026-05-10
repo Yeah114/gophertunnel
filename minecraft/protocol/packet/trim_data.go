@@ -4,8 +4,8 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 )
 
-// TrimData is sent by the server to the client when they first join the server. It contains a list of all the patterns
-// and materials that can be applied via armour trims.
+// TrimData is sent by the server to the client when they first join the server. This packet was added in v1.19.80.
+// It contains a list of all the patterns and materials that can be applied via armour trims.
 type TrimData struct {
 	// Patterns is a list of patterns that can be applied to armour. Each pattern has its own style and texture that is
 	// defined through resource packs.

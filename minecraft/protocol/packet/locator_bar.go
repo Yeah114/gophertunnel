@@ -5,6 +5,7 @@ import (
 )
 
 // LocatorBar is sent by the server to add, remove or update waypoints on the client's locator bar.
+// This packet was added in v1.26.10.
 type LocatorBar struct {
 	// Waypoints is a slice of waypoints to add, remove or update.
 	Waypoints []protocol.LocatorBarWaypoint

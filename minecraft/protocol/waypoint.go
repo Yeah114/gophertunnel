@@ -28,7 +28,7 @@ const (
 	WaypointTextureSmallStar
 )
 
-// LocatorBarWaypoint represents a waypoint entry in the locator bar packet.
+// LocatorBarWaypoint represents a waypoint entry in the locator bar packet. This type was added in v1.26.10.
 type LocatorBarWaypoint struct {
 	// GroupHandle is the UUID handle for the waypoint group.
 	GroupHandle uuid.UUID
@@ -45,7 +45,7 @@ func (x *LocatorBarWaypoint) Marshal(r IO) {
 	r.Uint8(&x.Action)
 }
 
-// WaypointWorldPosition holds a position and dimension for a waypoint.
+// WaypointWorldPosition holds a position and dimension for a waypoint. This type was added in v1.26.10.
 type WaypointWorldPosition struct {
 	// Position is the world position of the waypoint.
 	Position mgl32.Vec3
@@ -59,7 +59,7 @@ func (x *WaypointWorldPosition) Marshal(r IO) {
 	r.Varint32(&x.DimensionID)
 }
 
-// Waypoint holds optional data for a locator bar waypoint.
+// Waypoint holds optional data for a locator bar waypoint. This type was added in v1.26.10.
 type Waypoint struct {
 	// UpdateFlag is a bitmask indicating which optional fields are set.
 	UpdateFlag uint32

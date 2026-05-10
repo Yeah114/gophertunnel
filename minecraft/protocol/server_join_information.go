@@ -2,7 +2,8 @@ package protocol
 
 import "github.com/google/uuid"
 
-// GatheringJoinInfo contains information about the gathering (experience) the player is joining.
+// GatheringJoinInfo contains information about the gathering (experience) the player is joining. This type was added
+// in v1.26.0.
 type GatheringJoinInfo struct {
 	// ExperienceID is the UUID of the experience.
 	ExperienceID uuid.UUID
@@ -14,11 +15,11 @@ type GatheringJoinInfo struct {
 	ExperienceWorldName string
 	// CreatorID is the ID of the creator.
 	CreatorID string
-	// TargetID is the session ID of the experience.
+	// TargetID is the session ID of the experience. This field was added in v1.26.20.
 	TargetID uuid.UUID
-	// ScenarioID is the scenario ID of experience.
+	// ScenarioID is the scenario ID of experience. This field was added in v1.26.20.
 	ScenarioID string
-	// ServerID is the server identifier.
+	// ServerID is the server identifier. This field was added in v1.26.20.
 	ServerID string
 }
 
@@ -34,7 +35,7 @@ func (x *GatheringJoinInfo) Marshal(r IO) {
 	r.String(&x.ServerID)
 }
 
-// StoreEntryPointInfo contains information about the store entry point.
+// StoreEntryPointInfo contains information about the store entry point. This type was added in v1.26.10.
 type StoreEntryPointInfo struct {
 	// StoreID is the store identifier.
 	StoreID string
@@ -48,7 +49,7 @@ func (x *StoreEntryPointInfo) Marshal(r IO) {
 	r.String(&x.StoreName)
 }
 
-// PresenceInfo contains presence information about the experience.
+// PresenceInfo contains presence information about the experience. This type was added in v1.26.10.
 type PresenceInfo struct {
 	// ExperienceName is the name of the experience.
 	ExperienceName string
@@ -62,13 +63,14 @@ func (x *PresenceInfo) Marshal(r IO) {
 	r.String(&x.WorldName)
 }
 
-// ServerJoinInformation contains optional information about the server the player is joining.
+// ServerJoinInformation contains optional information about the server the player is joining. This type was added in
+// v1.26.0.
 type ServerJoinInformation struct {
 	// GatheringJoinInfo is optional information about the gathering being joined.
 	GatheringJoinInfo Optional[GatheringJoinInfo]
-	// StoreEntryPointInfo is optional information about the store entry point.
+	// StoreEntryPointInfo is optional information about the store entry point. This field was added in v1.26.10.
 	StoreEntryPointInfo Optional[StoreEntryPointInfo]
-	// PresenceInfo is optional presence information.
+	// PresenceInfo is optional presence information. This field was added in v1.26.10.
 	PresenceInfo Optional[PresenceInfo]
 }
 

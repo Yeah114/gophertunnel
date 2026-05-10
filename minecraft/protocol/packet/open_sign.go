@@ -4,8 +4,8 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 )
 
-// OpenSign is sent by the server to open a sign for editing. As of 1.19.80, the player can interact with a sign to edit
-// the text on both sides instead of just the front.
+// OpenSign is sent by the server to open a sign for editing. This packet was added in v1.19.80.
+// As of 1.19.80, the player can interact with a sign to edit the text on both sides instead of just the front.
 type OpenSign struct {
 	// Position is the position of the sign to edit. The client uses this position to get the data of the sign, including
 	// the existing text and formatting etc.

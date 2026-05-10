@@ -5,6 +5,7 @@ import (
 )
 
 // SyncWorldClocks is sent by the server to initialise and synchronise world clocks with the client.
+// This packet was added in v1.26.10.
 type SyncWorldClocks struct {
 	// PayloadType is the type of clock payload. It is one of the protocol.ClockPayloadType constants.
 	PayloadType uint32

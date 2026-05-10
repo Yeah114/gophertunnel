@@ -6,7 +6,7 @@ import (
 
 // ServerBoundDiagnostics is sent by the client to tell the server about the performance diagnostics
 // of the client. It is sent by the client roughly every 500ms or 10 in-game ticks when the
-// "Creator > Enable Client Diagnostics" setting is enabled.
+// "Creator > Enable Client Diagnostics" setting is enabled. This packet was added in v1.21.20.
 type ServerBoundDiagnostics struct {
 	// AverageFramesPerSecond is the average amount of frames per second that the client has been
 	// running at.
@@ -33,6 +33,7 @@ type ServerBoundDiagnostics struct {
 	// unaccounted tasks.
 	AverageUnaccountedTimePercent float32
 	// MemoryCategoryValues is a list of memory category counters sent by the client.
+	// This field was added in v1.26.0.
 	MemoryCategoryValues []protocol.MemoryCategoryCounter
 	// EntityDiagnostics is a list of entity timing entries sent by the client. This field was added in
 	// v1.26.20.26.

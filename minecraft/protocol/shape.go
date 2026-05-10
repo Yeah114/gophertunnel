@@ -83,7 +83,7 @@ func (shape *LineShape) Marshal(io IO) {
 	io.Vec3(&shape.LineEndLocation)
 }
 
-// TextShape represents a text debug shape.
+// TextShape represents a text debug shape. This type was added in v1.26.0.
 type TextShape struct {
 	// Text is the text of the debug text shape.
 	Text string
@@ -170,7 +170,7 @@ const (
 )
 
 // PrimitiveShape defines a single shape to be rendered on the client. Each shape has a unique NetworkID and a set of
-// optional parameters depending on its type.
+// optional parameters depending on its type. This type was added in v1.26.20.
 type PrimitiveShape struct {
 	// NetworkID is the network ID of the shape.
 	NetworkID uint64

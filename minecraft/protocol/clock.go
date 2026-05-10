@@ -7,7 +7,7 @@ const (
 	ClockPayloadTypeRemoveTimeMarker
 )
 
-// SyncWorldClockStateData represents the state data for synchronising a world clock.
+// SyncWorldClockStateData represents the state data for synchronising a world clock. This type was added in v1.26.10.
 type SyncWorldClockStateData struct {
 	// ClockID is the unique identifier for the clock.
 	ClockID uint64
@@ -24,7 +24,7 @@ func (x *SyncWorldClockStateData) Marshal(r IO) {
 	r.Bool(&x.Paused)
 }
 
-// TimeMarkerData represents a time marker within a world clock.
+// TimeMarkerData represents a time marker within a world clock. This type was added in v1.26.10.
 type TimeMarkerData struct {
 	// ID is the unique identifier for the time marker.
 	ID uint64
@@ -44,7 +44,7 @@ func (x *TimeMarkerData) Marshal(r IO) {
 	OptionalFunc(r, &x.Period, r.Int32)
 }
 
-// WorldClockData represents a complete world clock with its time markers.
+// WorldClockData represents a complete world clock with its time markers. This type was added in v1.26.10.
 type WorldClockData struct {
 	// ID is the unique identifier for the clock.
 	ID uint64

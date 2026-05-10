@@ -47,7 +47,7 @@ const (
 	AttributeLayerWeightTypeString
 )
 
-// AttributeData represents a polymorphic attribute value.
+// AttributeData represents a polymorphic attribute value. This type was added in v1.26.10.
 type AttributeData struct {
 	// Type is the attribute data type. It is one of the AttributeDataType constants.
 	Type uint32
@@ -89,7 +89,8 @@ func (x *AttributeData) Marshal(r IO) {
 	}
 }
 
-// EnvironmentAttributeData represents an environment attribute with optional transition data.
+// EnvironmentAttributeData represents an environment attribute with optional transition data. This type was added in
+// v1.26.10.
 type EnvironmentAttributeData struct {
 	// AttributeName is the name of the attribute.
 	AttributeName string
@@ -120,7 +121,7 @@ func (x *EnvironmentAttributeData) Marshal(r IO) {
 	easingTypeFromString(r, &x.EaseType, easingType)
 }
 
-// AttributeLayerSettings represents settings for an attribute layer.
+// AttributeLayerSettings represents settings for an attribute layer. This type was added in v1.26.10.
 type AttributeLayerSettings struct {
 	// Priority is the priority of the layer.
 	Priority int32
@@ -159,7 +160,7 @@ func (x *AttributeLayerSettings) Marshal(r IO) {
 	r.Bool(&x.TransitionsPaused)
 }
 
-// AttributeLayerData represents a complete attribute layer.
+// AttributeLayerData represents a complete attribute layer. This type was added in v1.26.10.
 type AttributeLayerData struct {
 	// Name is the name of the attribute layer.
 	Name string

@@ -95,7 +95,7 @@ const (
 	MemoryCategoryGamefaceScriptEngine
 )
 
-// MemoryCategoryCounter represents a memory usage counter for a specific category.
+// MemoryCategoryCounter represents a memory usage counter for a specific category. This type was added in v1.26.0.
 type MemoryCategoryCounter struct {
 	// Category is the memory category. It is one of the MemoryCategory constants above.
 	Category uint8
@@ -109,7 +109,7 @@ func (x *MemoryCategoryCounter) Marshal(r IO) {
 	r.Uint64(&x.Bytes)
 }
 
-// EntityDiagnosticTimingInfo represents diagnostics for a specific entity type.
+// EntityDiagnosticTimingInfo represents diagnostics for a specific entity type. This type was added in v1.26.20.26.
 type EntityDiagnosticTimingInfo struct {
 	// DisplayName is the name to display for this timing entry.
 	DisplayName string
@@ -129,7 +129,7 @@ func (x *EntityDiagnosticTimingInfo) Marshal(r IO) {
 	r.Uint8(&x.PercentOfTotal)
 }
 
-// SystemDiagnosticTimingInfo represents diagnostics for a specific system index.
+// SystemDiagnosticTimingInfo represents diagnostics for a specific system index. This type was added in v1.26.20.26.
 type SystemDiagnosticTimingInfo struct {
 	// DisplayName is the name to display for this timing entry.
 	DisplayName string

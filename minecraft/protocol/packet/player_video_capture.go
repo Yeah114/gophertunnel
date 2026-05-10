@@ -10,8 +10,8 @@ const (
 )
 
 // PlayerVideoCapture packet is sent by the server to start or stop video recording for a player. This packet
-// only works on development builds and has no effect on retail builds. When recording, the client will save
-// individual frames to '/LocalCache/minecraftpe' in the format specified below.
+// was added in v1.21.70. It only works on development builds and has no effect on retail builds. When recording,
+// the client will save individual frames to '/LocalCache/minecraftpe' in the format specified below.
 type PlayerVideoCapture struct {
 	// Action is the action to perform with the video capture. It is one of the constants above.
 	Action byte

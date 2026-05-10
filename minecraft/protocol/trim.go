@@ -1,6 +1,7 @@
 package protocol
 
 // TrimPattern represents a pattern that can be applied to an armour piece in combination with a TrimMaterial.
+// This type was added in v1.19.80.
 type TrimPattern struct {
 	// ItemName is the identifier of the item that represents the pattern, for example
 	// 'minecraft:wayfinder_armor_trim_smithing_template'.
@@ -15,7 +16,7 @@ func (x *TrimPattern) Marshal(r IO) {
 	r.String(&x.PatternID)
 }
 
-// TrimMaterial represents a material that can be used when applying an armour trim.
+// TrimMaterial represents a material that can be used when applying an armour trim. This type was added in v1.19.80.
 type TrimMaterial struct {
 	// MaterialID is the identifier of the material, for example 'netherite'.
 	MaterialID string

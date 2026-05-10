@@ -20,7 +20,7 @@ const (
 	DataStorePropertyTypeMap    = 6
 )
 
-// DataStoreChangeEntry represents a single entry in the data store changes array.
+// DataStoreChangeEntry represents a single entry in the data store changes array. This type was added in v1.26.10.
 type DataStoreChangeEntry struct {
 	// ChangeType is the type of change. It is one of the DataStoreChangeType constants.
 	ChangeType uint32
@@ -50,7 +50,7 @@ func (x *DataStoreChangeEntry) Marshal(r IO) {
 	}
 }
 
-// DataStoreUpdate represents an update to a data store property.
+// DataStoreUpdate represents an update to a data store property. This type was added in v1.26.10.
 type DataStoreUpdate struct {
 	// DataStoreName is the name of the data store.
 	DataStoreName string
@@ -92,7 +92,7 @@ func (x *DataStoreUpdate) Marshal(r IO) {
 	r.Uint32(&x.PathUpdateCount)
 }
 
-// DataStorePropertyValue represents a typed property value in a data store.
+// DataStorePropertyValue represents a typed property value in a data store. This type was added in v1.26.10.
 type DataStorePropertyValue struct {
 	// Type is the property value type. It is one of the DataStorePropertyType constants.
 	Type int32
@@ -106,7 +106,7 @@ type DataStorePropertyValue struct {
 	MapValue []DataStoreMapEntry
 }
 
-// DataStoreMapEntry represents a key-value pair in a data store map property.
+// DataStoreMapEntry represents a key-value pair in a data store map property. This type was added in v1.26.10.
 type DataStoreMapEntry struct {
 	// Key is the map key.
 	Key string
@@ -136,7 +136,7 @@ func MarshalDataStorePropertyValue(r IO, x *DataStorePropertyValue) {
 	}
 }
 
-// DataStoreChange represents a change to a data store property value.
+// DataStoreChange represents a change to a data store property value. This type was added in v1.26.10.
 type DataStoreChange struct {
 	// DataStoreName is the name of the data store.
 	DataStoreName string
@@ -148,7 +148,7 @@ type DataStoreChange struct {
 	NewValue DataStorePropertyValue
 }
 
-// DataStoreRemoval represents a removal from a data store.
+// DataStoreRemoval represents a removal from a data store. This type was added in v1.26.10.
 type DataStoreRemoval struct {
 	// DataStoreName is the name of the data store being removed.
 	DataStoreName string

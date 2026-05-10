@@ -5,6 +5,7 @@ import (
 )
 
 // ClientBoundAttributeLayerSync is sent by the server to synchronise attribute layers with the client.
+// This packet was added in v1.26.10.
 type ClientBoundAttributeLayerSync struct {
 	// PayloadType is the type of attribute layer payload. It is one of the protocol.AttributeLayerPayloadType constants.
 	PayloadType uint32

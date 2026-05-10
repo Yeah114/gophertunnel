@@ -434,7 +434,8 @@ func (x *CameraPresetAimAssist) Marshal(r IO) {
 	OptionalFunc(r, &x.Distance, r.Float32)
 }
 
-// CameraAimAssistCategory is an aim assist category that defines priorities for specific blocks and entities.
+// CameraAimAssistCategory is an aim assist category that defines priorities for specific blocks and entities. This
+// type was added in v1.21.50.
 type CameraAimAssistCategory struct {
 	// Name is the name of the category which can be used by a CameraAimAssistPreset.
 	Name string
@@ -450,15 +451,17 @@ func (x *CameraAimAssistCategory) Marshal(r IO) {
 }
 
 // CameraAimAssistPriorities represents the block and entity specific priorities for targetting. The aim
-// assist will select the block or entity with the highest priority within the specified thresholds.
+// assist will select the block or entity with the highest priority within the specified thresholds. This type was
+// added in v1.21.50.
 type CameraAimAssistPriorities struct {
 	// Entities is a list of priorities for specific entity identifiers.
 	Entities []CameraAimAssistPriority
 	// Blocks is a list of priorities for specific block identifiers.
 	Blocks []CameraAimAssistPriority
-	// BlockTags is a list of priorities for specific block tags.
+	// BlockTags is a list of priorities for specific block tags. This field was added in v1.21.30.
 	BlockTags []CameraAimAssistPriority
-	// EntityTypeFamilies is a list of priorities for specific entity type families.
+	// EntityTypeFamilies is a list of priorities for specific entity type families. This field was added in
+	// v1.21.120.
 	EntityTypeFamilies []CameraAimAssistPriority
 	// EntityDefault is the default priority for entities.
 	EntityDefault Optional[int32]
@@ -476,7 +479,7 @@ func (x *CameraAimAssistPriorities) Marshal(r IO) {
 	OptionalFunc(r, &x.BlockDefault, r.Int32)
 }
 
-// CameraAimAssistPriority represents a non-default priority for a specific target.
+// CameraAimAssistPriority represents a non-default priority for a specific target. This type was added in v1.21.50.
 type CameraAimAssistPriority struct {
 	// Identifier is the identifier of a target to define the priority for.
 	Identifier string
@@ -490,7 +493,8 @@ func (x *CameraAimAssistPriority) Marshal(r IO) {
 	r.Int32(&x.Priority)
 }
 
-// CameraAimAssistPreset defines a base preset that can be extended upon when sending an aim assist.
+// CameraAimAssistPreset defines a base preset that can be extended upon when sending an aim assist. This type was
+// added in v1.21.50.
 type CameraAimAssistPreset struct {
 	// Identifier represents the identifier of this preset.
 	Identifier string
@@ -528,7 +532,8 @@ func (x *CameraAimAssistPreset) Marshal(r IO) {
 	OptionalFunc(r, &x.HandSettings, r.String)
 }
 
-// CameraAimAssistItemSettings defines settings for how specific items should behave when using aim assist.
+// CameraAimAssistItemSettings defines settings for how specific items should behave when using aim assist. This type
+// was added in v1.21.50.
 type CameraAimAssistItemSettings struct {
 	// Item is the identifier of the item to apply the settings to.
 	Item string
@@ -544,7 +549,8 @@ func (x *CameraAimAssistItemSettings) Marshal(r IO) {
 	r.String(&x.Category)
 }
 
-// CameraRotationOption represents a rotation option for camera spline instructions.
+// CameraRotationOption represents a rotation option for camera spline instructions. This type was added in
+// v1.21.120.
 type CameraRotationOption struct {
 	// Value is the rotation value.
 	Value mgl32.Vec3
@@ -563,7 +569,8 @@ func (x *CameraRotationOption) Marshal(r IO) {
 	easingTypeFromString(r, &x.EaseType, easingType)
 }
 
-// CameraProgressOption represents a progress keyframe option for camera spline instructions.
+// CameraProgressOption represents a progress keyframe option for camera spline instructions. This type was added in
+// v1.26.0.
 type CameraProgressOption struct {
 	// Value is the progress value.
 	Value float32
@@ -582,7 +589,8 @@ func (x *CameraProgressOption) Marshal(r IO) {
 	easingTypeFromString(r, &x.EaseType, easingType)
 }
 
-// CameraSplineInstruction represents a camera instruction that creates a spline path for the camera to follow.
+// CameraSplineInstruction represents a camera instruction that creates a spline path for the camera to follow. This
+// type was added in v1.21.120.
 type CameraSplineInstruction struct {
 	// TotalTime is the total time for the spline animation.
 	TotalTime float32
@@ -611,7 +619,7 @@ func (x *CameraSplineInstruction) Marshal(r IO) {
 	OptionalFunc(r, &x.LoadFromJson, r.Bool)
 }
 
-// CameraSplineDefinition represents a named camera spline definition.
+// CameraSplineDefinition represents a named camera spline definition. This type was added in v1.26.0.
 type CameraSplineDefinition struct {
 	// Name is the name of the spline definition.
 	Name string
@@ -637,7 +645,8 @@ func (x *CameraSplineDefinition) Marshal(r IO) {
 	Slice(r, &x.RotationKeyFrames)
 }
 
-// CameraAimAssistActorPriorityData represents priority data for aim assist actor targeting.
+// CameraAimAssistActorPriorityData represents priority data for aim assist actor targeting. This type was added in
+// v1.26.0.
 type CameraAimAssistActorPriorityData struct {
 	// PresetIndex is the index of the aim assist preset.
 	PresetIndex int32

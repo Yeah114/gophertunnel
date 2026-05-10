@@ -12,6 +12,7 @@ const (
 )
 
 // PlayerUpdateEntityOverrides is sent by the server to modify an entity's properties individually.
+// This packet was added in v1.21.70.
 type PlayerUpdateEntityOverrides struct {
 	// EntityUniqueID is the unique ID of the entity. The unique ID is a value that remains consistent across
 	// different sessions of the same world, but most servers simply fill the runtime ID of the entity out for
