@@ -15,10 +15,11 @@ type InventorySlot struct {
 	// index.
 	Slot uint32
 	// Container is the protocol.FullContainerName that describes the container that the content is for.
+	// This field is only used before v1.26.20.26.
 	Container protocol.Optional[protocol.FullContainerName]
 	// StorageItem is the item that is acting as the storage container for the inventory. If the inventory is
 	// not a dynamic container then this field should be left empty. When set, only the item type is used by
-	// the client and none of the other stack info.
+	// the client and none of the other stack info. This field is only used before v1.26.20.26.
 	StorageItem protocol.Optional[protocol.ItemInstance]
 	// NewItem is the item to be put in the slot at Slot. It will overwrite any item that may currently
 	// be present in that slot.
@@ -33,7 +34,29 @@ func (*InventorySlot) ID() uint32 {
 func (pk *InventorySlot) Marshal(io protocol.IO) {
 	io.Varuint32(&pk.WindowID)
 	io.Varuint32(&pk.Slot)
-	protocol.OptionalMarshaler(io, &pk.Container)
-	protocol.OptionalFunc(io, &pk.StorageItem, io.ItemInstanceNew)
+	if io.Protocol() >= protocol.Protocol1v26v20v26 {
+		var hasContainer bool
+		io.Bool(&hasContainer)
+		if hasContainer {
+			var container protocol.FullContainerName
+			protocol.Single(io, &container)
+			pk.Container = protocol.Option(container)
+		} else {
+			pk.Container = protocol.Optional[protocol.FullContainerName]{}
+		}
+
+		var hasStorageItem bool
+		io.Bool(&hasStorageItem)
+		if hasStorageItem {
+			var storageItem protocol.ItemInstance
+			io.ItemInstanceNew(&storageItem)
+			pk.StorageItem = protocol.Option(storageItem)
+		} else {
+			pk.StorageItem = protocol.Optional[protocol.ItemInstance]{}
+		}
+	} else {
+		protocol.OptionalMarshaler(io, &pk.Container)
+		protocol.OptionalFunc(io, &pk.StorageItem, io.ItemInstanceNew)
+	}
 	io.ItemInstanceNew(&pk.NewItem)
 }
