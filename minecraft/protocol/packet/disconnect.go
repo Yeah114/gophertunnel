@@ -171,7 +171,16 @@ func (*Disconnect) ID() uint32 {
 
 func (pk *Disconnect) Marshal(io protocol.IO) {
 	io.Varint32(&pk.Reason)
-	io.Bool(&pk.HideDisconnectionScreen)
+	if io.Protocol() >= protocol.Protocol1v26v20v26 {
+		hideDisconnectionScreen := uint32(0)
+		if pk.HideDisconnectionScreen {
+			hideDisconnectionScreen = 1
+		}
+		io.Varuint32(&hideDisconnectionScreen)
+		pk.HideDisconnectionScreen = hideDisconnectionScreen != 0
+	} else {
+		io.Bool(&pk.HideDisconnectionScreen)
+	}
 	if !pk.HideDisconnectionScreen {
 		io.String(&pk.Message)
 		io.String(&pk.FilteredMessage)
