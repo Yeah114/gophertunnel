@@ -202,7 +202,9 @@ func (w *Writer) PlayerInventoryAction(x *UseItemTransactionData) {
 	w.Vec3(&x.ClickedPosition)
 	w.Varuint32(&x.BlockRuntimeID)
 	w.Varuint32(&x.ClientPrediction)
-	w.Uint8(&x.ClientCooldownState)
+	if w.Protocol() >= Protocol1v26v10 {
+		w.Uint8(&x.ClientCooldownState)
+	}
 }
 
 // GameRule writes a GameRule x to the Writer.

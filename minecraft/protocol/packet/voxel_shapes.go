@@ -22,5 +22,7 @@ func (*VoxelShapes) ID() uint32 {
 func (pk *VoxelShapes) Marshal(io protocol.IO) {
 	protocol.Slice(io, &pk.Shapes)
 	protocol.Slice(io, &pk.NameMap)
-	io.Uint16(&pk.CustomShapeCount)
+	if io.Protocol() >= protocol.Protocol1v26v10 {
+		io.Uint16(&pk.CustomShapeCount)
+	}
 }

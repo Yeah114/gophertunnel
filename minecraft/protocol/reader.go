@@ -300,7 +300,9 @@ func (r *Reader) PlayerInventoryAction(x *UseItemTransactionData) {
 	r.Vec3(&x.ClickedPosition)
 	r.Varuint32(&x.BlockRuntimeID)
 	r.Varuint32(&x.ClientPrediction)
-	r.Uint8(&x.ClientCooldownState)
+	if r.Protocol() >= Protocol1v26v10 {
+		r.Uint8(&x.ClientCooldownState)
+	}
 }
 
 // GameRule reads a GameRule x from the Reader.

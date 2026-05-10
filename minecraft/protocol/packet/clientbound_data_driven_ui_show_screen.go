@@ -23,6 +23,8 @@ func (*ClientBoundDataDrivenUIShowScreen) ID() uint32 {
 
 func (pk *ClientBoundDataDrivenUIShowScreen) Marshal(io protocol.IO) {
 	io.String(&pk.ScreenID)
-	io.Uint32(&pk.FormID)
-	protocol.OptionalFunc(io, &pk.DataInstanceID, io.Uint32)
+	if io.Protocol() >= protocol.Protocol1v26v10 {
+		io.Uint32(&pk.FormID)
+		protocol.OptionalFunc(io, &pk.DataInstanceID, io.Uint32)
+	}
 }

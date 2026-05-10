@@ -189,7 +189,7 @@ type UseItemTransactionData struct {
 	// prediction found in the constants above.
 	ClientPrediction uint32
 	// ClientCooldownState is the client's cooldown state for the item used. It is one of the
-	// ClientCooldownState constants above.
+	// ClientCooldownState constants above. This field was added in v1.26.10.
 	ClientCooldownState byte
 }
 
@@ -256,7 +256,9 @@ func (data *UseItemTransactionData) Marshal(r IO) {
 	r.Vec3(&data.ClickedPosition)
 	r.Varuint32(&data.BlockRuntimeID)
 	r.Varuint32(&data.ClientPrediction)
-	r.Uint8(&data.ClientCooldownState)
+	if r.Protocol() >= Protocol1v26v10 {
+		r.Uint8(&data.ClientCooldownState)
+	}
 }
 
 // Marshal ...

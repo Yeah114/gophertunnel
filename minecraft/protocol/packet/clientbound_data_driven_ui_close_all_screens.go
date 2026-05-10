@@ -19,5 +19,7 @@ func (*ClientBoundDataDrivenUICloseScreen) ID() uint32 {
 }
 
 func (pk *ClientBoundDataDrivenUICloseScreen) Marshal(io protocol.IO) {
-	protocol.OptionalFunc(io, &pk.FormID, io.Uint32)
+	if io.Protocol() >= protocol.Protocol1v26v10 {
+		protocol.OptionalFunc(io, &pk.FormID, io.Uint32)
+	}
 }
