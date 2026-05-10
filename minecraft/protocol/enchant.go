@@ -3,7 +3,7 @@ package protocol
 // EnchantmentOption represents a single option in the enchantment table for a single item.
 type EnchantmentOption struct {
 	// Cost is the cost of the option. This is the amount of XP levels required to select this enchantment
-	// option.
+	// option. This field is encoded as a byte in v1.26.20.26 and later.
 	Cost uint8
 	// Enchantments holds the enchantments that will be applied to the item when this option is clicked.
 	Enchantments ItemEnchantments
@@ -24,7 +24,13 @@ type EnchantmentOption struct {
 
 // Marshal encodes/decodes an EnchantmentOption.
 func (x *EnchantmentOption) Marshal(r IO) {
-	r.Uint8(&x.Cost)
+	if r.Protocol() >= Protocol1v26v20v26 {
+		r.Uint8(&x.Cost)
+	} else {
+		cost := uint32(x.Cost)
+		r.Varuint32(&cost)
+		x.Cost = uint8(cost)
+	}
 	Single(r, &x.Enchantments)
 	r.String(&x.Name)
 	r.Varuint32(&x.RecipeNetworkID)
@@ -60,12 +66,20 @@ func (x *ItemEnchantments) Marshal(r IO) {
 // EnchantmentInstance represents a single enchantment instance with the type of the enchantment and its
 // level.
 type EnchantmentInstance struct {
+	// Type is the type of the enchantment. This field is encoded as an unsigned varint in v1.26.20.26 and
+	// later.
 	Type  byte
 	Level byte
 }
 
 // Marshal encodes/decodes an EnchantmentInstance.
 func (x *EnchantmentInstance) Marshal(r IO) {
-	r.Uint8(&x.Type)
+	if r.Protocol() >= Protocol1v26v20v26 {
+		typeID := uint32(x.Type)
+		r.Varuint32(&typeID)
+		x.Type = byte(typeID)
+	} else {
+		r.Uint8(&x.Type)
+	}
 	r.Uint8(&x.Level)
 }
