@@ -26,6 +26,7 @@ type Reader struct {
 	}
 	shieldID      int32
 	limitsEnabled bool
+	protocol      int32
 }
 
 // NewReader creates a new Reader using the io.ByteReader passed as underlying source to read bytes from.
@@ -33,7 +34,28 @@ func NewReader(r interface {
 	io.Reader
 	io.ByteReader
 }, shieldID int32, enableLimits bool) *Reader {
-	return &Reader{r: r, shieldID: shieldID, limitsEnabled: enableLimits}
+	return &Reader{r: r, shieldID: shieldID, limitsEnabled: enableLimits, protocol: CurrentProtocol}
+}
+
+// NewReaderWithProtocol creates a new Reader using a specific protocol version.
+func NewReaderWithProtocol(r interface {
+	io.Reader
+	io.ByteReader
+}, shieldID int32, enableLimits bool, protocol int32) *Reader {
+	return &Reader{r: r, shieldID: shieldID, limitsEnabled: enableLimits, protocol: protocol}
+}
+
+// New creates a new Reader inheriting the protocol context of the parent Reader.
+func (r *Reader) New(reader interface {
+	io.Reader
+	io.ByteReader
+}) *Reader {
+	return &Reader{r: reader, shieldID: r.shieldID, limitsEnabled: r.limitsEnabled, protocol: r.protocol}
+}
+
+// Protocol returns the protocol version associated with the Reader.
+func (r *Reader) Protocol() int32 {
+	return r.protocol
 }
 
 // Uint8 reads a uint8 from the underlying buffer.
@@ -441,7 +463,7 @@ func (r *Reader) ItemInstance(i *ItemInstance) {
 	r.ByteSlice(&extraData)
 
 	buf := bytes.NewBuffer(extraData)
-	bufReader := NewReader(buf, r.shieldID, r.limitsEnabled)
+	bufReader := r.New(buf)
 
 	var length int16
 	bufReader.Int16(&length)
@@ -506,7 +528,7 @@ func (r *Reader) ItemInstanceNew(i *ItemInstance) {
 	}
 
 	buf := bytes.NewBuffer(extraData)
-	bufReader := NewReader(buf, r.shieldID, r.limitsEnabled)
+	bufReader := r.New(buf)
 
 	var length int16
 	bufReader.Int16(&length)
@@ -558,7 +580,7 @@ func (r *Reader) Item(x *ItemStack) {
 	r.ByteSlice(&extraData)
 
 	buf := bytes.NewBuffer(extraData)
-	bufReader := NewReader(buf, r.shieldID, r.limitsEnabled)
+	bufReader := r.New(buf)
 
 	var length int16
 	bufReader.Int16(&length)

@@ -12,6 +12,7 @@ import (
 // data from the input stream into the pointers passed, whereas Writer writes the values the pointers point to
 // to the output stream.
 type IO interface {
+	Protocol() int32
 	Uint16(x *uint16)
 	Int16(x *int16)
 	Uint32(x *uint32)

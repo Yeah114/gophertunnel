@@ -25,7 +25,7 @@ type Writer struct {
 		io.Writer
 		io.ByteWriter
 	}
-	shieldID int32
+	shieldID, protocol int32
 }
 
 // NewWriter creates a new initialised Writer with an underlying io.ByteWriter to write to.
@@ -33,7 +33,28 @@ func NewWriter(w interface {
 	io.Writer
 	io.ByteWriter
 }, shieldID int32) *Writer {
-	return &Writer{w: w, shieldID: shieldID}
+	return &Writer{w: w, shieldID: shieldID, protocol: CurrentProtocol}
+}
+
+// NewWriterWithProtocol creates a new initialised Writer using a specific protocol version.
+func NewWriterWithProtocol(w interface {
+	io.Writer
+	io.ByteWriter
+}, shieldID, protocol int32) *Writer {
+	return &Writer{w: w, shieldID: shieldID, protocol: protocol}
+}
+
+// New creates a new Writer inheriting the protocol context of the parent Writer.
+func (w *Writer) New(writer interface {
+	io.Writer
+	io.ByteWriter
+}) *Writer {
+	return &Writer{w: writer, shieldID: w.shieldID, protocol: w.protocol}
+}
+
+// Protocol returns the protocol version associated with the Writer.
+func (w *Writer) Protocol() int32 {
+	return w.protocol
 }
 
 // Uint8 writes a uint8 to the underlying buffer.
@@ -344,7 +365,7 @@ func (w *Writer) ItemInstance(i *ItemInstance) {
 		internal.BufferPool.Put(buf)
 	}()
 
-	bufWriter := NewWriter(buf, w.shieldID)
+	bufWriter := w.New(buf)
 
 	var length int16
 	if len(x.NBTData) != 0 {
@@ -403,7 +424,7 @@ func (w *Writer) ItemInstanceNew(i *ItemInstance) {
 		internal.BufferPool.Put(buf)
 	}()
 
-	bufWriter := NewWriter(buf, w.shieldID)
+	bufWriter := w.New(buf)
 
 	var length int16
 	if len(x.NBTData) != 0 {
@@ -447,7 +468,7 @@ func (w *Writer) Item(x *ItemStack) {
 		internal.BufferPool.Put(buf)
 	}()
 
-	bufWriter := NewWriter(buf, w.shieldID)
+	bufWriter := w.New(buf)
 
 	var length int16
 	if len(x.NBTData) != 0 {
