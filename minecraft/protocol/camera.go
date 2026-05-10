@@ -686,16 +686,24 @@ func (x *CameraSplineInstruction) Marshal(r IO) {
 type CameraSplineDefinition struct {
 	// Name is the name of the spline definition.
 	Name string
+	// Instruction is the spline instruction for this definition in v1.26.0.
+	// This field was removed in v1.26.10.
+	Instruction CameraSplineInstruction
 	// TotalTime is the total time for the spline animation.
+	// This field was added in v1.26.10.
 	TotalTime float32
 	// SplineType is the optional spline interpolation type. This field uses numeric spline types in
 	// v1.26.0 and spline type names in v1.26.10.
+	// This field was added in v1.26.10.
 	SplineType Optional[string]
 	// ControlPoints is a list of points that define the spline curve.
+	// This field was added in v1.26.10.
 	ControlPoints []mgl32.Vec3
 	// ProgressKeyFrames is a list of progress key frames for the spline.
+	// This field was added in v1.26.10.
 	ProgressKeyFrames []CameraProgressOption
 	// RotationKeyFrames is a list of rotation key frames for the spline.
+	// This field was added in v1.26.10.
 	RotationKeyFrames []CameraRotationOption
 }
 
@@ -703,22 +711,42 @@ type CameraSplineDefinition struct {
 func (x *CameraSplineDefinition) Marshal(r IO) {
 	r.String(&x.Name)
 	if r.Protocol() >= Protocol1v26v10 {
+		if x.Instruction.TotalTime != 0 || x.Instruction.SplineType.set || len(x.Instruction.Curve) != 0 ||
+			len(x.Instruction.ProgressKeyFrames) != 0 || len(x.Instruction.RotationOptions) != 0 {
+			x.TotalTime = x.Instruction.TotalTime
+			x.SplineType = x.Instruction.SplineType
+			x.ControlPoints = x.Instruction.Curve
+			x.ProgressKeyFrames = x.Instruction.ProgressKeyFrames
+			x.RotationKeyFrames = x.Instruction.RotationOptions
+		}
 		r.Float32(&x.TotalTime)
 		OptionalFunc(r, &x.SplineType, r.String)
 		FuncSlice(r, &x.ControlPoints, r.Vec3)
 		Slice(r, &x.ProgressKeyFrames)
 		Slice(r, &x.RotationKeyFrames)
+		x.Instruction = CameraSplineInstruction{
+			TotalTime:         x.TotalTime,
+			SplineType:        x.SplineType,
+			Curve:             x.ControlPoints,
+			ProgressKeyFrames: x.ProgressKeyFrames,
+			RotationOptions:   x.RotationKeyFrames,
+		}
 		return
 	}
 
-	instruction := CameraSplineInstruction{
-		TotalTime:         x.TotalTime,
-		SplineType:        x.SplineType,
-		Curve:             x.ControlPoints,
-		ProgressKeyFrames: x.ProgressKeyFrames,
-		RotationOptions:   x.RotationKeyFrames,
+	instruction := x.Instruction
+	if instruction.TotalTime == 0 && !instruction.SplineType.set && len(instruction.Curve) == 0 &&
+		len(instruction.ProgressKeyFrames) == 0 && len(instruction.RotationOptions) == 0 {
+		instruction = CameraSplineInstruction{
+			TotalTime:         x.TotalTime,
+			SplineType:        x.SplineType,
+			Curve:             x.ControlPoints,
+			ProgressKeyFrames: x.ProgressKeyFrames,
+			RotationOptions:   x.RotationKeyFrames,
+		}
 	}
 	Single(r, &instruction)
+	x.Instruction = instruction
 	x.TotalTime = instruction.TotalTime
 	x.SplineType = instruction.SplineType
 	x.ControlPoints = instruction.Curve
