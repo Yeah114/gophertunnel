@@ -67,9 +67,12 @@ type Waypoint struct {
 	Visible Optional[bool]
 	// WorldPosition is the position and dimension of the waypoint.
 	WorldPosition Optional[WaypointWorldPosition]
-	// TexturePath is the resource path for the waypoint icon texture.
+	// TextureID is the icon texture of the waypoint. It is one of the WaypointTexture constants.
+	// This field was removed in v1.26.20.26.
+	TextureID Optional[uint32]
+	// TexturePath is the resource path for the waypoint icon texture. This field was added in v1.26.20.26.
 	TexturePath Optional[string]
-	// IconSize is the size of the waypoint icon.
+	// IconSize is the size of the waypoint icon. This field was added in v1.26.20.26.
 	IconSize Optional[mgl32.Vec2]
 	// Colour is the RGB colour used to tint the waypoint icon.
 	Colour Optional[int32]
@@ -84,8 +87,12 @@ func (x *Waypoint) Marshal(r IO) {
 	r.Uint32(&x.UpdateFlag)
 	OptionalFunc(r, &x.Visible, r.Bool)
 	OptionalMarshaler(r, &x.WorldPosition)
-	OptionalFunc(r, &x.TexturePath, r.String)
-	OptionalFunc(r, &x.IconSize, r.Vec2)
+	if r.Protocol() >= Protocol1v26v20v26 {
+		OptionalFunc(r, &x.TexturePath, r.String)
+		OptionalFunc(r, &x.IconSize, r.Vec2)
+	} else {
+		OptionalFunc(r, &x.TextureID, r.Uint32)
+	}
 	OptionalFunc(r, &x.Colour, r.Int32)
 	OptionalFunc(r, &x.ClientPositionAuthority, r.Bool)
 	OptionalFunc(r, &x.ActorUniqueID, r.Varint64)
