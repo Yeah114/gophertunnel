@@ -88,28 +88,34 @@ type TextShape struct {
 	// Text is the text of the debug text shape.
 	Text string
 	// UseRotation is if the text should use the provided rotation, meaning it will be static and does not follow the
-	// camera. Use false for default behaviour.
+	// camera. Use false for default behaviour. This field was added in v1.26.20.26.
 	UseRotation bool
 	// BackgroundColour is the RGBA colour to use for the text background. This is a translucent black colour by default.
+	// This field was added in v1.26.20.26.
 	BackgroundColour Optional[color.RGBA]
-	// DepthTest is whether the text should show through walls. Use true for default behaviour.
+	// DepthTest is whether the text should show through walls. Use true for default behaviour. This field was added in
+	// v1.26.20.26.
 	DepthTest bool
 	// ShowBackface is if the background should render on the back side of the shape. This only has a visible effect when
 	// UseRotation is true since you cannot see the back side of the text otherwise. Use true for default behaviour.
+	// This field was added in v1.26.20.26.
 	ShowBackface bool
 	// ShowBackfaceText is if the text should render on the back side of the shape. This only has a visible effect when
 	// UseRotation is true since you cannot see the back side of the text otherwise. Use true for default behaviour.
+	// This field was added in v1.26.20.26.
 	ShowBackfaceText bool
 }
 
 // Marshal ...
 func (shape *TextShape) Marshal(io IO) {
 	io.String(&shape.Text)
-	io.Bool(&shape.UseRotation)
-	OptionalFunc(io, &shape.BackgroundColour, io.BEARGB)
-	io.Bool(&shape.DepthTest)
-	io.Bool(&shape.ShowBackface)
-	io.Bool(&shape.ShowBackfaceText)
+	if io.Protocol() >= Protocol1v26v20v26 {
+		io.Bool(&shape.UseRotation)
+		OptionalFunc(io, &shape.BackgroundColour, io.BEARGB)
+		io.Bool(&shape.DepthTest)
+		io.Bool(&shape.ShowBackface)
+		io.Bool(&shape.ShowBackfaceText)
+	}
 }
 
 // BoxShape represents a box debug shape.
@@ -183,7 +189,8 @@ type PrimitiveShape struct {
 	Rotation Optional[mgl32.Vec3]
 	// TotalTimeLeft is the total time left of the shape.
 	TotalTimeLeft Optional[float32]
-	// MaxRenderDistance is the maximum distance the shape should render from the camera.
+	// MaxRenderDistance is the maximum distance the shape should render from the camera. This field was added in
+	// v1.26.20.26.
 	MaxRenderDistance Optional[float32]
 	// Colour is the ARGB colour of the shape.
 	Colour Optional[color.RGBA]
@@ -199,7 +206,9 @@ func (x *PrimitiveShape) Marshal(io IO) {
 	OptionalFunc(io, &x.Scale, io.Float32)
 	OptionalFunc(io, &x.Rotation, io.Vec3)
 	OptionalFunc(io, &x.TotalTimeLeft, io.Float32)
-	OptionalFunc(io, &x.MaxRenderDistance, io.Float32)
+	if io.Protocol() >= Protocol1v26v20v26 {
+		OptionalFunc(io, &x.MaxRenderDistance, io.Float32)
+	}
 	OptionalFunc(io, &x.Colour, io.BEARGB)
 	OptionalFunc(io, &x.DimensionID, io.Varint32)
 	OptionalFunc(io, &x.AttachedToEntityID, io.Varint64)
