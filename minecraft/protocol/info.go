@@ -40,6 +40,17 @@ const (
 	Version1v26v20 = "1.26.20"
 )
 
+// Minecraft 1.26.20.26
+// Info1v26v20v26 is the protocol info for Minecraft 1.26.20.26.
+var Info1v26v20v26 = NewInfo(Protocol1v26v20v26, Version1v26v20v26)
+
+const (
+	// Protocol1v26v20v26 is the protocol version for Minecraft 1.26.20.26.
+	Protocol1v26v20v26 int32 = 974
+	// Version1v26v20v26 is the Minecraft version string for protocol 974.
+	Version1v26v20v26 = "1.26.20.26"
+)
+
 // Minecraft 1.26.10
 // Info1v26v10 is the protocol info for Minecraft 1.26.10.
 var Info1v26v10 = NewInfo(Protocol1v26v10, Version1v26v10)
