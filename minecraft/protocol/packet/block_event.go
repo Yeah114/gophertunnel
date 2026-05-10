@@ -27,7 +27,7 @@ func (*BlockEvent) ID() uint32 {
 }
 
 func (pk *BlockEvent) Marshal(io protocol.IO) {
-	io.BlockPos(&pk.Position)
+	io.UBlockPos(&pk.Position)
 	io.Varint32(&pk.EventType)
 	io.Varint32(&pk.EventData)
 }

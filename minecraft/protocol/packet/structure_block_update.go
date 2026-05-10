@@ -64,7 +64,7 @@ func (*StructureBlockUpdate) ID() uint32 {
 }
 
 func (pk *StructureBlockUpdate) Marshal(io protocol.IO) {
-	io.BlockPos(&pk.Position)
+	io.UBlockPos(&pk.Position)
 	io.String(&pk.StructureName)
 	io.String(&pk.FilteredStructureName)
 	io.String(&pk.DataField)

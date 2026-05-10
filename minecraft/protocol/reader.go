@@ -151,6 +151,20 @@ func (r *Reader) BlockPos(x *BlockPos) {
 	r.Varint32(&x[2])
 }
 
+// UBlockPos reads a BlockPos from the underlying buffer. Before v1.26.10, the Y value is encoded as an
+// unsigned varint. From v1.26.10 and later, all three values are encoded as varint32s.
+func (r *Reader) UBlockPos(x *BlockPos) {
+	r.Varint32(&x[0])
+	if r.Protocol() >= Protocol1v26v10 {
+		r.Varint32(&x[1])
+	} else {
+		var y uint32
+		r.Varuint32(&y)
+		x[1] = int32(y)
+	}
+	r.Varint32(&x[2])
+}
+
 // ChunkPos writes a ChunkPos as 2 varint32s to the underlying buffer.
 func (r *Reader) ChunkPos(x *ChunkPos) {
 	r.Varint32(&x[0])
@@ -167,7 +181,7 @@ func (r *Reader) SubChunkPos(x *SubChunkPos) {
 // SoundPos reads an mgl32.Vec3 that serves as a position for a sound.
 func (r *Reader) SoundPos(x *mgl32.Vec3) {
 	var b BlockPos
-	r.BlockPos(&b)
+	r.UBlockPos(&b)
 	*x = mgl32.Vec3{float32(b[0]) / 8, float32(b[1]) / 8, float32(b[2]) / 8}
 }
 
@@ -292,7 +306,7 @@ func (r *Reader) PlayerInventoryAction(x *UseItemTransactionData) {
 	Slice(r, &x.Actions)
 	r.Varuint32(&x.ActionType)
 	r.Varuint32(&x.TriggerType)
-	r.BlockPos(&x.BlockPosition)
+	r.UBlockPos(&x.BlockPosition)
 	r.Varint32(&x.BlockFace)
 	r.Varint32(&x.HotBarSlot)
 	r.ItemInstance(&x.HeldItem)

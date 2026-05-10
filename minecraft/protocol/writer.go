@@ -123,6 +123,19 @@ func (w *Writer) BlockPos(x *BlockPos) {
 	w.Varint32(&x[2])
 }
 
+// UBlockPos writes a BlockPos to the underlying buffer. Before v1.26.10, the Y value is encoded as an
+// unsigned varint. From v1.26.10 and later, all three values are encoded as varint32s.
+func (w *Writer) UBlockPos(x *BlockPos) {
+	w.Varint32(&x[0])
+	if w.Protocol() >= Protocol1v26v10 {
+		w.Varint32(&x[1])
+	} else {
+		y := uint32(x[1])
+		w.Varuint32(&y)
+	}
+	w.Varint32(&x[2])
+}
+
 // ChunkPos writes a ChunkPos as 2 varint32s to the underlying buffer.
 func (w *Writer) ChunkPos(x *ChunkPos) {
 	w.Varint32(&x[0])
@@ -139,7 +152,7 @@ func (w *Writer) SubChunkPos(x *SubChunkPos) {
 // SoundPos writes an mgl32.Vec3 that serves as a position for a sound.
 func (w *Writer) SoundPos(x *mgl32.Vec3) {
 	b := BlockPos{int32((*x)[0] * 8), int32((*x)[1] * 8), int32((*x)[2] * 8)}
-	w.BlockPos(&b)
+	w.UBlockPos(&b)
 }
 
 // RGB writes a color.RGBA x as 3 float32s to the underlying buffer.
@@ -194,7 +207,7 @@ func (w *Writer) PlayerInventoryAction(x *UseItemTransactionData) {
 	Slice(w, &x.Actions)
 	w.Varuint32(&x.ActionType)
 	w.Varuint32(&x.TriggerType)
-	w.BlockPos(&x.BlockPosition)
+	w.UBlockPos(&x.BlockPosition)
 	w.Varint32(&x.BlockFace)
 	w.Varint32(&x.HotBarSlot)
 	w.ItemInstance(&x.HeldItem)

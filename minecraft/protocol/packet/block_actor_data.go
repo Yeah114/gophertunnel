@@ -23,6 +23,6 @@ func (*BlockActorData) ID() uint32 {
 }
 
 func (pk *BlockActorData) Marshal(io protocol.IO) {
-	io.BlockPos(&pk.Position)
+	io.UBlockPos(&pk.Position)
 	io.NBT(&pk.NBTData, nbt.NetworkLittleEndian)
 }

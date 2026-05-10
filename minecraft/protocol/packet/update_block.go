@@ -33,7 +33,7 @@ func (*UpdateBlock) ID() uint32 {
 }
 
 func (pk *UpdateBlock) Marshal(io protocol.IO) {
-	io.BlockPos(&pk.Position)
+	io.UBlockPos(&pk.Position)
 	io.Varuint32(&pk.NewBlockRuntimeID)
 	io.Varuint32(&pk.Flags)
 	io.Varuint32(&pk.Layer)

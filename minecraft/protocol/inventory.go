@@ -248,7 +248,7 @@ type ReleaseItemTransactionData struct {
 func (data *UseItemTransactionData) Marshal(r IO) {
 	r.Varuint32(&data.ActionType)
 	r.Varuint32(&data.TriggerType)
-	r.BlockPos(&data.BlockPosition)
+	r.UBlockPos(&data.BlockPosition)
 	r.Varint32(&data.BlockFace)
 	r.Varint32(&data.HotBarSlot)
 	r.ItemInstance(&data.HeldItem)

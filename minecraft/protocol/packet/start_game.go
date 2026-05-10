@@ -288,7 +288,7 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Varint32(&pk.WorldGameMode)
 	io.Bool(&pk.Hardcore)
 	io.Varint32(&pk.Difficulty)
-	io.BlockPos(&pk.WorldSpawn)
+	io.UBlockPos(&pk.WorldSpawn)
 	io.Bool(&pk.AchievementsDisabled)
 	io.Varint32(&pk.EditorWorldType)
 	io.Bool(&pk.CreatedInEditor)
