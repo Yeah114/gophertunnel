@@ -656,5 +656,7 @@ func (pk *LevelSoundEvent) Marshal(io protocol.IO) {
 	io.Bool(&pk.BabyMob)
 	io.Bool(&pk.DisableRelativeVolume)
 	io.Int64(&pk.EntityUniqueID)
-	protocol.OptionalFunc(io, &pk.FireAtPosition, io.Vec3)
+	if io.Protocol() >= protocol.Protocol1v26v20v26 {
+		protocol.OptionalFunc(io, &pk.FireAtPosition, io.Vec3)
+	}
 }
