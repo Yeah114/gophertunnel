@@ -58,7 +58,11 @@ func (pk *ServerBoundDiagnostics) Marshal(io protocol.IO) {
 	io.Float32(&pk.AverageEndFrameTime)
 	io.Float32(&pk.AverageRemainderTimePercent)
 	io.Float32(&pk.AverageUnaccountedTimePercent)
-	protocol.Slice(io, &pk.MemoryCategoryValues)
+	if io.Protocol() >= protocol.Protocol1v26v10 {
+		protocol.Slice(io, &pk.MemoryCategoryValues)
+	} else {
+		protocol.SliceUint32Length(io, &pk.MemoryCategoryValues)
+	}
 	if io.Protocol() >= protocol.Protocol1v26v20v26 {
 		protocol.Slice(io, &pk.EntityDiagnostics)
 		protocol.Slice(io, &pk.SystemDiagnostics)
