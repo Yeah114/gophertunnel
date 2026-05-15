@@ -27,8 +27,8 @@ type UpdateClientInputLocks struct {
 	// move, rotate the camera, jump, sneak or mount/dismount entities. It is a combination of the
 	// ClientInputLock constants above.
 	Locks uint32
-	// Position is the server's position of the client at the time the packet was sent. This field was
-	// removed in v1.26.10.
+	// Position is the server's position of the client at the time the packet was sent.
+	// Removed: v1.26.10
 	Position mgl32.Vec3
 }
 

@@ -7,15 +7,23 @@ import (
 // PotionContainerChangeRecipe represents a recipe to turn a potion from one type to another. This means from
 // a drinkable potion + gunpowder -> splash potion, and from a splash potion + dragon breath -> lingering
 // potion.
+//
+// Added: v1.13.0
 type PotionContainerChangeRecipe struct {
 	// InputItemID is the item ID of the item to be put in. This is typically either the ID of a normal potion
 	// or a splash potion.
+	//
+	// Added: v1.13.0
 	InputItemID int32
 	// ReagentItemID is the item ID of the item that needs to be added to the container in order to create the
 	// output item.
+	//
+	// Added: v1.13.0
 	ReagentItemID int32
 	// OutputItemID is the item that is created using a combination of the InputItem and ReagentItem, which is
 	// typically either the ID of a splash potion or a lingering potion.
+	//
+	// Added: v1.13.0
 	OutputItemID int32
 }
 
@@ -27,22 +35,36 @@ func (x *PotionContainerChangeRecipe) Marshal(r IO) {
 }
 
 // PotionRecipe represents a potion mixing recipe which may be used in a brewing stand.
+//
+// Added: v1.13.0
 type PotionRecipe struct {
 	// InputPotionID is the item ID of the potion to be put in.
+	//
+	// Added: v1.13.0
 	InputPotionID int32
 	// InputPotionMetadata is the type of the potion to be put in. This is typically the meta of the
 	// awkward potion (or water bottle to create an awkward potion).
+	//
+	// Added: v1.13.0
 	InputPotionMetadata int32
 	// ReagentItemID is the item ID of the item that needs to be added to the brewing stand in order to brew
 	// the output potion.
+	//
+	// Added: v1.13.0
 	ReagentItemID int32
 	// ReagentItemMetadata is the metadata value of the item that needs to be added to the brewing stand in
 	// order to brew the output potion.
+	//
+	// Added: v1.13.0
 	ReagentItemMetadata int32
 	// OutputPotionID is the item ID of the potion obtained as a result of the brewing recipe.
+	//
+	// Added: v1.13.0
 	OutputPotionID int32
 	// OutputPotionMetadata is the type of the potion that is obtained as a result of brewing the input
 	// potion with the reagent item.
+	//
+	// Added: v1.13.0
 	OutputPotionMetadata int32
 }
 
@@ -65,10 +87,16 @@ const (
 
 // RecipeUnlockRequirement represents a requirement that must be met in order to unlock a recipe. This is used
 // for both shaped and shapeless recipes.
+//
+// Added: v1.21.0
 type RecipeUnlockRequirement struct {
 	// Context is the context in which the recipe is unlocked. This is one of the constants above.
+	//
+	// Added: v1.21.0
 	Context byte
 	// Ingredients are the ingredients required to unlock the recipe and only used if Context is set to none.
+	//
+	// Added: v1.21.0
 	Ingredients []ItemDescriptorCount
 }
 
@@ -164,16 +192,26 @@ func lookupRecipeType(x Recipe, recipeType *int32) bool {
 
 // ShapelessRecipe is a recipe that has no particular shape. Its functionality is shared with the
 // RecipeShulkerBox and RecipeShapelessChemistry types.
+//
+// Added: v1.11.1
 type ShapelessRecipe struct {
 	// RecipeID is a unique ID of the recipe. This ID must be unique amongst all other types of recipes too,
 	// but its functionality is not exactly known.
+	//
+	// Added: v1.19.60
 	RecipeID string
 	// Input is a list of items that serve as the input of the shapeless recipe. These items are the items
 	// required to craft the output.
+	//
+	// Added: v1.11.1
 	Input []ItemDescriptorCount
 	// Output is a list of items that are created as a result of crafting the recipe.
+	//
+	// Added: v1.11.1
 	Output []ItemStack
 	// UUID is a UUID identifying the recipe. Since the CraftingEvent packet no longer exists, this can always be empty.
+	//
+	// Added: v1.11.1
 	UUID uuid.UUID
 	// Block is the block name that is required to craft the output of the recipe. The block is not prefixed
 	// with 'minecraft:', so it will look like 'crafting_table' as an example.
@@ -185,25 +223,37 @@ type ShapelessRecipe struct {
 	// - blast_furnace
 	// - smoker
 	// - campfire
+	//
+	// Added: v1.11.1
 	Block string
-	// Priority ...
+	// Priority is the recipe priority used by the client when multiple recipes match the same input.
+	//
+	// Added: v1.11.1
 	Priority int32
 	// UnlockRequirement is a requirement that must be met in order to unlock the recipe.
+	//
+	// Added: v1.21.0
 	UnlockRequirement RecipeUnlockRequirement
 	// RecipeNetworkID is a unique ID used to identify the recipe over network. Each recipe must have a unique
 	// network ID. Recommended is to just increment a variable for each unique recipe registered.
 	// This field must never be 0.
+	//
+	// Added: v1.16.220
 	RecipeNetworkID uint32
 }
 
 // ShulkerBoxRecipe is a shapeless recipe made specifically for shulker box crafting, so that they don't lose
 // their user data when dyeing a shulker box.
+//
+// Added: v1.19.21
 type ShulkerBoxRecipe struct {
 	ShapelessRecipe
 }
 
 // ShapelessChemistryRecipe is a recipe specifically made for chemistry related features, which exist only in
 // the Education Edition. They function the same as shapeless recipes do.
+//
+// Added: v1.19.21
 type ShapelessChemistryRecipe struct {
 	ShapelessRecipe
 }
@@ -211,45 +261,72 @@ type ShapelessChemistryRecipe struct {
 // ShapedRecipe is a recipe that has a specific shape that must be used to craft the output of the recipe.
 // Trying to craft the item in any other shape will not work. The ShapedRecipe is of the same structure as the
 // ShapedChemistryRecipe.
+//
+// Added: v1.11.1
 type ShapedRecipe struct {
 	// RecipeID is a unique ID of the recipe. This ID must be unique amongst all other types of recipes too,
 	// but its functionality is not exactly known.
+	//
+	// Added: v1.19.60
 	RecipeID string
 	// Width is the width of the recipe's shape.
+	//
+	// Added: v1.11.1
 	Width int32
 	// Height is the height of the recipe's shape.
+	//
+	// Added: v1.11.1
 	Height int32
 	// Input is a list of items that serve as the input of the shapeless recipe. These items are the items
 	// required to craft the output. The amount of input items must be exactly equal to Width * Height.
+	//
+	// Added: v1.11.1
 	Input []ItemDescriptorCount
 	// Output is a list of items that are created as a result of crafting the recipe.
+	//
+	// Added: v1.11.1
 	Output []ItemStack
 	// UUID is a UUID identifying the recipe. Since the CraftingEvent packet no longer exists, this can always be empty.
+	//
+	// Added: v1.11.1
 	UUID uuid.UUID
 	// Block is the block name that is required to craft the output of the recipe. The block is not prefixed
 	// with 'minecraft:', so it will look like 'crafting_table' as an example.
+	//
+	// Added: v1.11.1
 	Block string
-	// Priority ...
+	// Priority is the recipe priority used by the client when multiple recipes match the same input.
+	//
+	// Added: v1.11.1
 	Priority int32
 	// AssumeSymmetry specifies if the recipe is symmetrical. If this is set to true, the recipe will be
 	// mirrored along the diagonal axis. This means that the recipe will be the same if rotated 180 degrees.
+	//
+	// Added: v1.20.80
 	AssumeSymmetry bool
 	// UnlockRequirement is a requirement that must be met in order to unlock the recipe.
+	//
+	// Added: v1.21.0
 	UnlockRequirement RecipeUnlockRequirement
 	// RecipeNetworkID is a unique ID used to identify the recipe over network. Each recipe must have a unique
 	// network ID. Recommended is to just increment a variable for each unique recipe registered.
 	// This field must never be 0.
+	//
+	// Added: v1.16.220
 	RecipeNetworkID uint32
 }
 
 // ShapedChemistryRecipe is a recipe specifically made for chemistry related features, which exist only in the
 // Education Edition. It functions the same as a normal ShapedRecipe.
+//
+// Added: v1.19.21
 type ShapedChemistryRecipe struct {
 	ShapedRecipe
 }
 
 // FurnaceRecipe is a recipe that is specifically used for all kinds of furnaces. These recipes don't just
-// apply to furnaces, but also blast furnaces and smokers. This type was removed in v1.26.20.26.
+// apply to furnaces, but also blast furnaces and smokers.
+// Removed: v1.26.20.26
 type FurnaceRecipe struct {
 	// InputType is the item type of the input item. The metadata value of the item is not used in the
 	// FurnaceRecipe. Use FurnaceDataRecipe to allow an item with only one metadata value.
@@ -263,61 +340,97 @@ type FurnaceRecipe struct {
 
 // FurnaceDataRecipe is a recipe specifically used for furnace-type crafting stations. It is equal to
 // FurnaceRecipe, except it has an input item with a specific metadata value, instead of any metadata value.
-// This type was removed in v1.26.20.26.
+// Removed: v1.26.20.26
 type FurnaceDataRecipe struct {
 	FurnaceRecipe
 }
 
 // MultiRecipe serves as an 'enable' switch for multi-shape recipes.
+//
+// Added: v1.11.1
 type MultiRecipe struct {
 	// UUID is a UUID identifying the recipe. Since the CraftingEvent packet no longer exists, this can always be empty.
+	//
+	// Added: v1.11.1
 	UUID uuid.UUID
 	// RecipeNetworkID is a unique ID used to identify the recipe over network. Each recipe must have a unique
 	// network ID. Recommended is to just increment a variable for each unique recipe registered.
 	// This field must never be 0.
+	//
+	// Added: v1.16.220
 	RecipeNetworkID uint32
 }
 
 // SmithingTransformRecipe is a recipe specifically used for smithing tables. It has three input items and adds them
 // together, resulting in a new item.
+//
+// Added: v1.19.60
 type SmithingTransformRecipe struct {
 	// RecipeNetworkID is a unique ID used to identify the recipe over network. Each recipe must have a unique
 	// network ID. Recommended is to just increment a variable for each unique recipe registered.
 	// This field must never be 0.
+	//
+	// Added: v1.19.60
 	RecipeNetworkID uint32
 	// RecipeID is a unique ID of the recipe. This ID must be unique amongst all other types of recipes too,
 	// but its functionality is not exactly known.
+	//
+	// Added: v1.19.60
 	RecipeID string
 	// Template is the item that is used to shape the Base item based on the Addition being applied.
+	//
+	// Added: v1.19.60
 	Template ItemDescriptorCount
 	// Base is the item that the Addition is being applied to in the smithing table.
+	//
+	// Added: v1.19.60
 	Base ItemDescriptorCount
 	// Addition is the item that is being added to the Base item to result in a modified item.
+	//
+	// Added: v1.19.60
 	Addition ItemDescriptorCount
 	// Result is the resulting item from the two items being added together.
+	//
+	// Added: v1.19.60
 	Result ItemStack
 	// Block is the block name that is required to create the output of the recipe. The block is not prefixed with
 	// 'minecraft:', so it will look like 'smithing_table' as an example.
+	//
+	// Added: v1.19.60
 	Block string
 }
 
 // SmithingTrimRecipe is a recipe specifically used for applying armour trims to an armour piece inside a smithing table.
+//
+// Added: v1.19.80
 type SmithingTrimRecipe struct {
 	// RecipeNetworkID is a unique ID used to identify the recipe over network. Each recipe must have a unique
 	// network ID. Recommended is to just increment a variable for each unique recipe registered.
 	// This field must never be 0.
+	//
+	// Added: v1.19.80
 	RecipeNetworkID uint32
 	// RecipeID is a unique ID of the recipe. This ID must be unique amongst all other types of recipes too,
 	// but its functionality is not exactly known.
+	//
+	// Added: v1.19.80
 	RecipeID string
 	// Template is the item that is used to shape the Base item based on the Addition being applied.
+	//
+	// Added: v1.19.80
 	Template ItemDescriptorCount
 	// Base is the item that the Addition is being applied to in the smithing table.
+	//
+	// Added: v1.19.80
 	Base ItemDescriptorCount
 	// Addition is the item that is being added to the Base item to result in a modified item.
+	//
+	// Added: v1.19.80
 	Addition ItemDescriptorCount
 	// Block is the block name that is required to create the output of the recipe. The block is not prefixed with
 	// 'minecraft:', so it will look like 'smithing_table' as an example.
+	//
+	// Added: v1.19.80
 	Block string
 }
 

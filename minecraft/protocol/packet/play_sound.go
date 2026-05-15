@@ -21,7 +21,8 @@ type PlaySound struct {
 	// it to specify the pitch as the field is intended.
 	Pitch float32
 	// Handle is an optional sound handle ID. It is currently unknown what this is for, and is not required
-	// to be set by servers. This field was added in v1.26.20.26.
+	// to be set by servers.
+	// Added: v1.26.20.26
 	Handle protocol.Optional[uint64]
 }
 

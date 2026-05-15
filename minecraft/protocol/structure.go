@@ -26,45 +26,75 @@ const (
 
 // StructureSettings is a struct holding settings of a structure block. Its fields may be changed using the
 // in-game UI on the client-side.
+//
+// Added: v1.12
 type StructureSettings struct {
 	// PaletteName is the name of the palette used in the structure. Currently, it seems that this field is
 	// always 'default'.
+	//
+	// Added: v1.12
 	PaletteName string
 	// IgnoreEntities specifies if the structure should ignore entities or include them. If set to false,
 	// entities will also show up in the exported structure.
+	//
+	// Added: v1.12
 	IgnoreEntities bool
 	// IgnoreBlocks specifies if the structure should ignore blocks or include them. If set to false, blocks
 	// will show up in the exported structure.
+	//
+	// Added: v1.12
 	IgnoreBlocks bool
 	// AllowNonTickingChunks specifies if the structure should allow non-ticking chunks. If set to false, the structure
 	// will export non-ticking chunks.
+	//
+	// Added: v1.12
 	AllowNonTickingChunks bool
 	// Size is the size of the area that is about to be exported. The area exported will start at the
 	// Position + Offset, and will extend as far as Size specifies.
+	//
+	// Added: v1.12
 	Size BlockPos
 	// Offset is the offset position that was set in the structure block. The area exported is offset by this
 	// position.
+	//
+	// Added: v1.12
 	Offset BlockPos
 	// LastEditingPlayerUniqueID is the unique ID of the player that last edited the structure block that
 	// these settings concern.
+	//
+	// Added: v1.12
 	LastEditingPlayerUniqueID int64
 	// Rotation is the rotation that the structure block should obtain. See the constants above for available
 	// options.
+	//
+	// Added: v1.12
 	Rotation byte
 	// Mirror specifies the way the structure should be mirrored. It is either no mirror at all, mirror on the
 	// x/z axis or both.
+	//
+	// Added: v1.12
 	Mirror byte
-	// AnimationMode ...
+	// AnimationMode controls how the structure placement animation is played.
+	//
+	// Added: v1.12
 	AnimationMode byte
-	// AnimationDuration ...
+	// AnimationDuration is the duration of the structure placement animation in seconds.
+	//
+	// Added: v1.12
 	AnimationDuration float32
 	// Integrity is usually 1, but may be set to a number between 0 and 1 to omit blocks randomly, using
 	// the Seed that follows.
+	//
+	// Added: v1.12
 	Integrity float32
 	// Seed is the seed used to omit blocks if Integrity is not equal to one. If the Seed is 0, a random
 	// seed is selected to omit blocks.
+	//
+	// Added: v1.12
 	Seed uint32
 	// Pivot is the pivot around which the structure may be rotated.
+	//
+	// Added: v1.12
 	Pivot mgl32.Vec3
 }
 

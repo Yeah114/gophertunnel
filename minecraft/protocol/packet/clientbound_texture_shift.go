@@ -13,7 +13,7 @@ const (
 )
 
 // ClientBoundTextureShift is sent by the server to control texture shift animations on the client.
-// This packet was added in v1.26.0.
+// Added: v1.26.0
 type ClientBoundTextureShift struct {
 	// ActionID is the texture shift action to perform. It is one of the constants above.
 	ActionID uint8

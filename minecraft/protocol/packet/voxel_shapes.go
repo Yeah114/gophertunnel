@@ -4,13 +4,15 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 )
 
-// VoxelShapes is sent by the server to send voxel shape data to the client. This packet was added in v1.26.0.
+// VoxelShapes is sent by the server to send voxel shape data to the client.
+// Added: v1.26.0
 type VoxelShapes struct {
 	// Shapes is a list of voxel shapes.
 	Shapes []protocol.VoxelShape
 	// NameMap is a map of shape names to IDs.
 	NameMap []protocol.VoxelShapeNameEntry
-	// CustomShapeCount is the number of custom shapes. This field was added in v1.26.10.
+	// CustomShapeCount is the number of custom shapes.
+	// Added: v1.26.10
 	CustomShapeCount uint16
 }
 

@@ -19,6 +19,8 @@ import (
 // Reader implements reading operations for reading types from Minecraft packets. Each Packet implementation
 // has one passed to it.
 // Reader's uses should always be encapsulated with a deferred recovery. Reader panics on invalid data.
+//
+// Added: v1.16
 type Reader struct {
 	r interface {
 		io.Reader

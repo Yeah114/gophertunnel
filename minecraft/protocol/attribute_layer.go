@@ -47,7 +47,8 @@ const (
 	AttributeLayerWeightTypeString
 )
 
-// AttributeData represents a polymorphic attribute value. This type was added in v1.26.10.
+// AttributeData represents a polymorphic attribute value.
+// Added: v1.26.10
 type AttributeData struct {
 	// Type is the attribute data type. It is one of the AttributeDataType constants.
 	Type uint32
@@ -89,8 +90,8 @@ func (x *AttributeData) Marshal(r IO) {
 	}
 }
 
-// EnvironmentAttributeData represents an environment attribute with optional transition data. This type was added in
-// v1.26.10.
+// EnvironmentAttributeData represents an environment attribute with optional transition data.
+// Added: v1.26.10
 type EnvironmentAttributeData struct {
 	// AttributeName is the name of the attribute.
 	AttributeName string
@@ -121,22 +122,28 @@ func (x *EnvironmentAttributeData) Marshal(r IO) {
 	easingTypeFromString(r, &x.EaseType, easingType)
 }
 
-// AttributeLayerSettings represents settings for an attribute layer. This type was added in v1.26.10.
+// AttributeLayerSettings represents settings for an attribute layer.
+// Added: v1.26.10
 type AttributeLayerSettings struct {
 	// Priority is the priority of the layer.
+	// Added: v1.26.10
 	Priority int32
 	// WeightType determines whether the weight is a float or string. It is one of the
-	// AttributeLayerWeightType constants. This field was removed in v1.26.20.26.
+	// AttributeLayerWeightType constants.
+	// Removed: v1.26.20.26
 	WeightType uint32
-	// FloatWeight is the weight if WeightType is AttributeLayerWeightTypeFloat. This is the only weight
-	// field used in v1.26.20.26 and later.
+	// FloatWeight is the numeric weight value for the layer.
+	// When WeightType is present, this field is used when WeightType is AttributeLayerWeightTypeFloat.
+	// Changed: v1.26.20.26
 	FloatWeight float32
-	// StringWeight is the weight if WeightType is AttributeLayerWeightTypeString. This field was removed in
-	// v1.26.20.26.
+	// StringWeight is the weight if WeightType is AttributeLayerWeightTypeString.
+	// Removed: v1.26.20.26
 	StringWeight string
 	// Enabled indicates if the layer is enabled.
+	// Added: v1.26.10
 	Enabled bool
 	// TransitionsPaused indicates if transitions are paused for this layer.
+	// Added: v1.26.10
 	TransitionsPaused bool
 }
 
@@ -160,15 +167,20 @@ func (x *AttributeLayerSettings) Marshal(r IO) {
 	r.Bool(&x.TransitionsPaused)
 }
 
-// AttributeLayerData represents a complete attribute layer. This type was added in v1.26.10.
+// AttributeLayerData represents a complete attribute layer.
+// Added: v1.26.10
 type AttributeLayerData struct {
 	// Name is the name of the attribute layer.
+	// Added: v1.26.10
 	Name string
 	// DimensionID is the dimension the layer applies to.
+	// Added: v1.26.10
 	DimensionID int32
 	// Settings is the layer's settings.
+	// Added: v1.26.10
 	Settings AttributeLayerSettings
 	// EnvironmentAttributes is the list of environment attributes in this layer.
+	// Added: v1.26.10
 	EnvironmentAttributes []EnvironmentAttributeData
 }
 

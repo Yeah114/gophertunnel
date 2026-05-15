@@ -28,13 +28,17 @@ const (
 	WaypointTextureSmallStar
 )
 
-// LocatorBarWaypoint represents a waypoint entry in the locator bar packet. This type was added in v1.26.10.
+// LocatorBarWaypoint represents a waypoint entry in the locator bar packet.
+// Added: v1.26.10
 type LocatorBarWaypoint struct {
 	// GroupHandle is the UUID handle for the waypoint group.
+	// Added: v1.26.10
 	GroupHandle uuid.UUID
 	// Waypoint contains the waypoint data.
+	// Added: v1.26.10
 	Waypoint Waypoint
 	// Action determines the action for this waypoint. It is one of the WaypointAction constants.
+	// Added: v1.26.10
 	Action uint8
 }
 
@@ -45,11 +49,14 @@ func (x *LocatorBarWaypoint) Marshal(r IO) {
 	r.Uint8(&x.Action)
 }
 
-// WaypointWorldPosition holds a position and dimension for a waypoint. This type was added in v1.26.10.
+// WaypointWorldPosition holds a position and dimension for a waypoint.
+// Added: v1.26.10
 type WaypointWorldPosition struct {
 	// Position is the world position of the waypoint.
+	// Added: v1.26.10
 	Position mgl32.Vec3
 	// DimensionID is the dimension the waypoint is in.
+	// Added: v1.26.10
 	DimensionID int32
 }
 
@@ -59,26 +66,35 @@ func (x *WaypointWorldPosition) Marshal(r IO) {
 	r.Varint32(&x.DimensionID)
 }
 
-// Waypoint holds optional data for a locator bar waypoint. This type was added in v1.26.10.
+// Waypoint holds optional data for a locator bar waypoint.
+// Added: v1.26.10
 type Waypoint struct {
 	// UpdateFlag is a bitmask indicating which optional fields are set.
+	// Added: v1.26.10
 	UpdateFlag uint32
 	// Visible determines whether the waypoint is shown.
+	// Added: v1.26.10
 	Visible Optional[bool]
 	// WorldPosition is the position and dimension of the waypoint.
+	// Added: v1.26.10
 	WorldPosition Optional[WaypointWorldPosition]
-	// TextureID is the icon texture of the waypoint. It is one of the WaypointTexture constants.
-	// This field was removed in v1.26.20.26.
+	// TextureID is the legacy icon texture identifier of the waypoint. It is one of the WaypointTexture constants.
+	// Removed: v1.26.20.26
 	TextureID Optional[uint32]
-	// TexturePath is the resource path for the waypoint icon texture. This field was added in v1.26.20.26.
+	// TexturePath is the resource path for the waypoint icon texture.
+	// Added: v1.26.20.26
 	TexturePath Optional[string]
-	// IconSize is the size of the waypoint icon. This field was added in v1.26.20.26.
+	// IconSize is the rendered size of the waypoint icon.
+	// Added: v1.26.20.26
 	IconSize Optional[mgl32.Vec2]
 	// Colour is the RGB colour used to tint the waypoint icon.
+	// Added: v1.26.10
 	Colour Optional[int32]
 	// ClientPositionAuthority determines whether the client has authority over the waypoint position.
+	// Added: v1.26.10
 	ClientPositionAuthority Optional[bool]
 	// ActorUniqueID is the unique ID of the entity the waypoint tracks.
+	// Added: v1.26.10
 	ActorUniqueID Optional[int64]
 }
 

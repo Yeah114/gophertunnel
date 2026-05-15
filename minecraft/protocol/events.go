@@ -241,8 +241,12 @@ type Event interface {
 }
 
 // AchievementAwardedEvent is the event data sent for achievements.
+//
+// Added: v1.17.10
 type AchievementAwardedEvent struct {
 	// AchievementID is the ID for the achievement.
+	//
+	// Added: v1.17.10
 	AchievementID uint8
 }
 
@@ -252,16 +256,28 @@ func (a *AchievementAwardedEvent) Marshal(r IO) {
 }
 
 // EntityInteractEvent is the event data sent for entity interactions.
+//
+// Added: v1.17.10
 type EntityInteractEvent struct {
-	// InteractedEntityID ...
+	// InteractedEntityID is the unique ID of the entity that was interacted with.
+	//
+	// Added: v1.17.10
 	InteractedEntityID int64
-	// InteractionType ...
+	// InteractionType is the type of interaction that occurred.
+	//
+	// Added: v1.17.10
 	InteractionType uint8
-	// InteractionEntityType ...
+	// InteractionEntityType is the entity type runtime ID of the interacted entity.
+	//
+	// Added: v1.17.10
 	InteractionEntityType int32
-	// EntityVariant ...
+	// EntityVariant is the variant value of the interacted entity.
+	//
+	// Added: v1.17.10
 	EntityVariant int32
-	// EntityColour ...
+	// EntityColour is the colour variant of the interacted entity, if applicable.
+	//
+	// Added: v1.17.10
 	EntityColour uint8
 }
 
@@ -275,8 +291,12 @@ func (e *EntityInteractEvent) Marshal(r IO) {
 }
 
 // PortalBuiltEvent is the event data sent when a portal is built.
+//
+// Added: v1.17.10
 type PortalBuiltEvent struct {
-	// DimensionID ...
+	// DimensionID is the numeric dimension ID where the portal was built.
+	//
+	// Added: v1.17.10
 	DimensionID int32
 }
 
@@ -286,10 +306,16 @@ func (p *PortalBuiltEvent) Marshal(r IO) {
 }
 
 // PortalUsedEvent is the event data sent when a portal is used.
+//
+// Added: v1.17.10
 type PortalUsedEvent struct {
-	// FromDimensionID ...
+	// FromDimensionID is the source dimension ID of the portal transfer.
+	//
+	// Added: v1.17.10
 	FromDimensionID int32
-	// ToDimensionID ...
+	// ToDimensionID is the destination dimension ID of the portal transfer.
+	//
+	// Added: v1.17.10
 	ToDimensionID int32
 }
 
@@ -300,18 +326,32 @@ func (p *PortalUsedEvent) Marshal(r IO) {
 }
 
 // MobKilledEvent is the event data sent when a mob is killed.
+//
+// Added: v1.17.10
 type MobKilledEvent struct {
-	// KillerEntityUniqueID ...
+	// KillerEntityUniqueID is the unique ID of the entity that dealt the killing blow.
+	//
+	// Added: v1.17.10
 	KillerEntityUniqueID int64
-	// VictimEntityUniqueID ...
+	// VictimEntityUniqueID is the unique ID of the entity that died.
+	//
+	// Added: v1.17.10
 	VictimEntityUniqueID int64
-	// KillerEntityType ...
+	// KillerEntityType is the entity type runtime ID of the killer.
+	//
+	// Added: v1.17.10
 	KillerEntityType int32
-	// EntityDamageCause ...
+	// EntityDamageCause is the damage cause that led to the kill.
+	//
+	// Added: v1.17.10
 	EntityDamageCause int32
-	// VillagerTradeTier -1 if not a trading actor.
+	// VillagerTradeTier is the villager trade tier, or -1 if the victim was not a trading actor.
+	//
+	// Added: v1.17.10
 	VillagerTradeTier int32
-	// VillagerDisplayName Empty if not a trading actor.
+	// VillagerDisplayName is the villager name, or empty if the victim was not a trading actor.
+	//
+	// Added: v1.17.10
 	VillagerDisplayName string
 }
 
@@ -326,12 +366,20 @@ func (m *MobKilledEvent) Marshal(r IO) {
 }
 
 // CauldronUsedEvent is the event data sent when a cauldron is used.
+//
+// Added: v1.17.10
 type CauldronUsedEvent struct {
-	// Colour ...
+	// Colour is the ARGB colour value associated with the cauldron contents.
+	//
+	// Added: v1.17.10
 	Colour uint32
-	// PotionID ...
+	// PotionID is the potion type ID associated with the cauldron contents.
+	//
+	// Added: v1.17.10
 	PotionID int16
-	// FillLevel ...
+	// FillLevel is the fill level of the cauldron after the action.
+	//
+	// Added: v1.17.10
 	FillLevel int16
 }
 
@@ -343,14 +391,24 @@ func (c *CauldronUsedEvent) Marshal(r IO) {
 }
 
 // PlayerDiedEvent is the event data sent when a player dies.
+//
+// Added: v1.17.10
 type PlayerDiedEvent struct {
-	// AttackerEntityID ...
+	// AttackerEntityID is the runtime ID of the attacking entity, if any.
+	//
+	// Added: v1.17.10
 	AttackerEntityID int32
-	// AttackerVariant ...
+	// AttackerVariant is the variant value of the attacker.
+	//
+	// Added: v1.17.10
 	AttackerVariant int32
-	// EntityDamageCause ...
+	// EntityDamageCause is the damage cause that killed the player.
+	//
+	// Added: v1.17.10
 	EntityDamageCause int32
-	// InRaid ...
+	// InRaid specifies if the death occurred while the player was participating in a raid.
+	//
+	// Added: v1.19.21
 	InRaid bool
 }
 
@@ -363,12 +421,20 @@ func (p *PlayerDiedEvent) Marshal(r IO) {
 }
 
 // BossKilledEvent is the event data sent when a boss dies.
+//
+// Added: v1.17.10
 type BossKilledEvent struct {
-	// BossEntityUniqueID ...
+	// BossEntityUniqueID is the unique ID of the boss that was killed.
+	//
+	// Added: v1.17.10
 	BossEntityUniqueID int64
-	// PlayerPartySize ...
+	// PlayerPartySize is the size of the player party credited for the kill.
+	//
+	// Added: v1.17.10
 	PlayerPartySize int32
-	// InteractionEntityType ...
+	// InteractionEntityType is the entity type runtime ID of the boss.
+	//
+	// Added: v1.17.10
 	InteractionEntityType int32
 }
 
@@ -380,16 +446,28 @@ func (b *BossKilledEvent) Marshal(r IO) {
 }
 
 // AgentCommandEvent is an event used in Education Edition.
+//
+// Added: v1.17.10
 type AgentCommandEvent struct {
-	// AgentResult ...
+	// AgentResult is the result code of the agent command execution.
+	//
+	// Added: v1.17.10
 	AgentResult int32
-	// DataValue ...
+	// DataValue is an auxiliary numeric value associated with the command.
+	//
+	// Added: v1.17.10
 	DataValue int32
-	// Command ...
+	// Command is the agent command name that was executed.
+	//
+	// Added: v1.17.10
 	Command string
-	// DataKey ...
+	// DataKey is the key associated with the command payload.
+	//
+	// Added: v1.17.10
 	DataKey string
-	// Output ...
+	// Output is the textual output returned by the agent command.
+	//
+	// Added: v1.17.10
 	Output string
 }
 
@@ -403,26 +481,40 @@ func (a *AgentCommandEvent) Marshal(r IO) {
 }
 
 // AgentCreatedEvent is the event data sent when an agent is created.
+//
+// Added: v1.21.111
 type AgentCreatedEvent struct{}
 
 // Marshal ...
 func (a *AgentCreatedEvent) Marshal(r IO) {}
 
 // PatternRemovedEvent is the event data sent when a pattern is removed.
+//
+// Added: v1.19.70
 type PatternRemovedEvent struct{}
 
 // Marshal ...
 func (p *PatternRemovedEvent) Marshal(r IO) {}
 
 // SlashCommandExecutedEvent is the event data sent when a slash command is executed.
+//
+// Added: v1.17.10
 type SlashCommandExecutedEvent struct {
-	// SuccessCount ...
+	// SuccessCount is the number of successful command executions.
+	//
+	// Added: v1.17.10
 	SuccessCount int32
 	// MessageCount indicates the amount of OutputMessages present.
+	//
+	// Added: v1.17.10
 	MessageCount int32
-	// CommandName ...
+	// CommandName is the slash command that was executed.
+	//
+	// Added: v1.17.10
 	CommandName string
-	// OutputMessages is a list of messages joint with ;.
+	// OutputMessages is a list of messages joined with `;`.
+	//
+	// Added: v1.17.10
 	OutputMessages string
 }
 
@@ -435,18 +527,28 @@ func (s *SlashCommandExecutedEvent) Marshal(r IO) {
 }
 
 // FishBucketedEvent is the event data sent when a fish is bucketed.
+//
+// Added: v1.19.70
 type FishBucketedEvent struct{}
 
 // Marshal ...
 func (f *FishBucketedEvent) Marshal(r IO) {}
 
 // MobBornEvent is the event data sent when a mob is born.
+//
+// Added: v1.19.70
 type MobBornEvent struct {
-	// EntityType ...
+	// EntityType is the entity type runtime ID of the newly spawned mob.
+	//
+	// Added: v1.19.70
 	EntityType int32
-	// Variant ...
+	// Variant is the mob variant value.
+	//
+	// Added: v1.19.70
 	Variant int32
-	// Colour ...
+	// Colour is the colour variant of the mob, if applicable.
+	//
+	// Added: v1.19.70
 	Colour uint8
 }
 
@@ -458,16 +560,24 @@ func (m *MobBornEvent) Marshal(r IO) {
 }
 
 // PetDiedEvent is the event data sent when a pet dies.
+//
+// Added: v1.19.70
 type PetDiedEvent struct{}
 
 // Marshal ...
 func (p *PetDiedEvent) Marshal(r IO) {}
 
 // CauldronInteractEvent is the event data sent when a cauldron is interacted with.
+//
+// Added: v1.19.70
 type CauldronInteractEvent struct {
-	// BlockInteractionType ...
+	// BlockInteractionType is the type of cauldron interaction that occurred.
+	//
+	// Added: v1.19.70
 	BlockInteractionType uint8
-	// ItemID ...
+	// ItemID is the numeric item ID involved in the interaction.
+	//
+	// Added: v1.19.70
 	ItemID int16
 }
 
@@ -478,10 +588,16 @@ func (c *CauldronInteractEvent) Marshal(r IO) {
 }
 
 // ComposterInteractEvent is the event data sent when a composter is interacted with.
+//
+// Added: v1.19.70
 type ComposterInteractEvent struct {
-	// BlockInteractionType ...
+	// BlockInteractionType is the type of composter interaction that occurred.
+	//
+	// Added: v1.19.70
 	BlockInteractionType uint8
-	// ItemID ...
+	// ItemID is the numeric item ID involved in the interaction.
+	//
+	// Added: v1.19.70
 	ItemID int16
 }
 
@@ -492,8 +608,12 @@ func (c *ComposterInteractEvent) Marshal(r IO) {
 }
 
 // BellUsedEvent is the event data sent when a bell is used.
+//
+// Added: v1.19.70
 type BellUsedEvent struct {
-	// ItemID ...
+	// ItemID is the numeric item ID involved in ringing the bell.
+	//
+	// Added: v1.19.70
 	ItemID int16
 }
 
@@ -503,8 +623,12 @@ func (b *BellUsedEvent) Marshal(r IO) {
 }
 
 // EntityDefinitionTriggerEvent is an event used for an unknown purpose.
+//
+// Added: v1.19.70
 type EntityDefinitionTriggerEvent struct {
-	// EventName ...
+	// EventName is the identifier of the triggered entity definition event.
+	//
+	// Added: v1.19.70
 	EventName string
 }
 
@@ -513,13 +637,21 @@ func (e *EntityDefinitionTriggerEvent) Marshal(r IO) {
 	r.String(&e.EventName)
 }
 
-// RaidUpdateEvent is an event used to update a raids progress client side.
+// RaidUpdateEvent is an event used to update raid progress client side.
+//
+// Added: v1.19.70
 type RaidUpdateEvent struct {
-	// CurrentRaidWave ...
+	// CurrentRaidWave is the current raid wave number.
+	//
+	// Added: v1.19.70
 	CurrentRaidWave int32
-	// TotalRaidWaves ...
+	// TotalRaidWaves is the total amount of raid waves.
+	//
+	// Added: v1.19.70
 	TotalRaidWaves int32
-	// WonRaid ...
+	// WonRaid specifies if the raid was won.
+	//
+	// Added: v1.19.70
 	WonRaid bool
 }
 
@@ -531,26 +663,36 @@ func (ra *RaidUpdateEvent) Marshal(r IO) {
 }
 
 // MovementAnomalyEvent is an event used to detect movement anomalies.
+//
+// Added: v1.19.70
 type MovementAnomalyEvent struct{}
 
 // Marshal ...
 func (m *MovementAnomalyEvent) Marshal(r IO) {}
 
 // MovementCorrectedEvent is an event used to correct movement anomalies.
+//
+// Added: v1.19.70
 type MovementCorrectedEvent struct{}
 
 // Marshal ...
 func (m *MovementCorrectedEvent) Marshal(r IO) {}
 
 // ExtractHoneyEvent is an event used to extract honey from a hive.
+//
+// Added: v1.19.70
 type ExtractHoneyEvent struct{}
 
 // Marshal ...
 func (e *ExtractHoneyEvent) Marshal(r IO) {}
 
-// TargetBlockHitEvent is an event used when a target block is hit by a arrow.
+// TargetBlockHitEvent is an event used when a target block is hit by an arrow.
+//
+// Added: v1.21.20
 type TargetBlockHitEvent struct {
-	// RedstoneLevel ...
+	// RedstoneLevel is the redstone strength produced by the hit target block.
+	//
+	// Added: v1.21.20
 	RedstoneLevel int32
 }
 
@@ -560,10 +702,16 @@ func (t *TargetBlockHitEvent) Marshal(r IO) {
 }
 
 // PiglinBarterEvent is called when a player drops gold ingots to a piglin to initiate a trade for an item.
+//
+// Added: v1.21.20
 type PiglinBarterEvent struct {
-	// ItemID ...
+	// ItemID is the numeric item ID that was bartered.
+	//
+	// Added: v1.21.20
 	ItemID int32
-	// WasTargetingBarteringPlayer ...
+	// WasTargetingBarteringPlayer specifies if the piglin was targeting the player who started the barter.
+	//
+	// Added: v1.21.20
 	WasTargetingBarteringPlayer bool
 }
 
@@ -585,7 +733,12 @@ const (
 )
 
 // WaxedOrUnwaxedCopperEvent is an event sent by the server when a copper block is waxed or unwaxed.
+//
+// Added: v1.19.70
 type WaxedOrUnwaxedCopperEvent struct {
+	// CopperBlockID is the block runtime ID of the waxed or unwaxed copper block.
+	//
+	// Added: v1.19.70
 	CopperBlockID int32
 }
 
@@ -595,8 +748,12 @@ func (w *WaxedOrUnwaxedCopperEvent) Marshal(r IO) {
 }
 
 // CodeBuilderRuntimeActionEvent is an event sent by the server when a code builder runtime action is performed.
+//
+// Added: v1.21.20
 type CodeBuilderRuntimeActionEvent struct {
-	// Action ...
+	// Action is the code builder runtime action that was performed.
+	//
+	// Added: v1.21.20
 	Action string
 }
 
@@ -606,10 +763,16 @@ func (c *CodeBuilderRuntimeActionEvent) Marshal(r IO) {
 }
 
 // CodeBuilderScoreboardEvent is an event sent by the server when a code builder scoreboard is updated.
+//
+// Added: v1.21.20
 type CodeBuilderScoreboardEvent struct {
-	// ObjectiveName ...
+	// ObjectiveName is the objective name of the updated code builder scoreboard.
+	//
+	// Added: v1.21.20
 	ObjectiveName string
-	// Score ...
+	// Score is the updated score value.
+	//
+	// Added: v1.21.20
 	Score int32
 }
 
@@ -620,29 +783,49 @@ func (c *CodeBuilderScoreboardEvent) Marshal(r IO) {
 }
 
 // StriderRiddenInLavaInOverworldEvent is an event sent by the server when a strider is ridden in lava in the overworld.
+//
+// Added: v1.21.20
 type StriderRiddenInLavaInOverworldEvent struct{}
 
 // Marshal ...
 func (s *StriderRiddenInLavaInOverworldEvent) Marshal(r IO) {}
 
 // SneakCloseToSculkSensorEvent is an event sent by the server when a player sneaks close to a sculk sensor.
+//
+// Added: v1.19.70
 type SneakCloseToSculkSensorEvent struct{}
 
 // Marshal ...
 func (s *SneakCloseToSculkSensorEvent) Marshal(r IO) {}
 
 // CarefulRestorationEvent is an event sent by the server when a player performs a careful restoration.
+//
+// Added: v1.21.20
 type CarefulRestorationEvent struct{}
 
 // Marshal ...
 func (c *CarefulRestorationEvent) Marshal(r IO) {}
 
-// ItemUsedEvent is when a player right clicks a item.
+// ItemUsedEvent is sent when a player right clicks an item.
+//
+// Added: v1.21.0
 type ItemUsedEvent struct {
-	ItemID    int16
-	ItemAux   int32
+	// ItemID is the numeric item ID of the used item.
+	//
+	// Added: v1.21.0
+	ItemID int16
+	// ItemAux is the auxiliary data value of the used item.
+	//
+	// Added: v1.21.0
+	ItemAux int32
+	// UseMethod identifies how the item was used.
+	//
+	// Added: v1.21.0
 	UseMethod int32
-	UseCount  int32
+	// UseCount is the amount of use operations that were performed.
+	//
+	// Added: v1.21.0
+	UseCount int32
 }
 
 // Marshal ...

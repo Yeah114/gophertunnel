@@ -3,7 +3,8 @@ package protocol
 // EnchantmentOption represents a single option in the enchantment table for a single item.
 type EnchantmentOption struct {
 	// Cost is the cost of the option. This is the amount of XP levels required to select this enchantment
-	// option. This field is encoded as a byte in v1.26.20.26 and later.
+	// option.
+	// Changed: v1.26.20.26
 	Cost uint8
 	// Enchantments holds the enchantments that will be applied to the item when this option is clicked.
 	Enchantments ItemEnchantments
@@ -66,9 +67,10 @@ func (x *ItemEnchantments) Marshal(r IO) {
 // EnchantmentInstance represents a single enchantment instance with the type of the enchantment and its
 // level.
 type EnchantmentInstance struct {
-	// Type is the type of the enchantment. This field is encoded as an unsigned varint in v1.26.20.26 and
-	// later.
-	Type  byte
+	// Type is the type of the enchantment.
+	// Changed: v1.26.20.26
+	Type byte
+	// Level is the level of the enchantment.
 	Level byte
 }
 

@@ -15,27 +15,43 @@ const (
 
 // Command holds the data that a command requires to be shown to a player client-side. The command is shown in
 // the /help command and auto-completed using this data.
+//
+// Added: v1.12
 type Command struct {
 	// Name is the name of the command. The command may be executed using this name, and will be shown in the
 	// /help list with it. It currently seems that the client crashes if the Name contains uppercase letters.
+	//
+	// Added: v1.12
 	Name string
 	// Description is the description of the command. It is shown in the /help list and when starting to write
 	// a command.
+	//
+	// Added: v1.12
 	Description string
 	// Flags is a combination of flags not currently known. Leaving the Flags field empty appears to work.
+	//
+	// Added: v1.12
 	Flags uint16
 	// PermissionLevel is the command permission level that the player required to execute this command. The
 	// field no longer seems to serve a purpose, as the client does not handle the execution of commands
 	// anymore: The permissions should be checked server-side.
+	//
+	// Added: v1.12
 	PermissionLevel byte
 	// AliasesOffset is the offset to a CommandEnum that holds the values that
 	// should be used as aliases for this command.
+	//
+	// Added: v1.12
 	AliasesOffset uint32
 	// ChainedSubcommandOffsets is a slice of offsets that all point to a different ChainedSubcommand from the
 	// ChainedSubcommands slice in the AvailableCommands packet.
+	//
+	// Added: v1.20.10
 	ChainedSubcommandOffsets []uint32
 	// Overloads is a list of command overloads that specify the ways in which a command may be executed. The
 	// overloads may be completely different.
+	//
+	// Added: v1.12
 	Overloads []CommandOverload
 }
 
@@ -54,11 +70,17 @@ func (c *Command) Marshal(r IO) {
 // CommandOverload represents an overload of a command. This overload can be compared to function overloading
 // in languages such as java. It represents a single usage of the command. A command may have multiple
 // different overloads, which are handled differently.
+//
+// Added: v1.12
 type CommandOverload struct {
 	// Chaining determines if the parameters use chained subcommands or not.
+	//
+	// Added: v1.12
 	Chaining bool
 	// Parameters is a list of command parameters that are part of the overload. These parameters specify the
 	// usage of the command when this overload is applied.
+	//
+	// Added: v1.12
 	Parameters []CommandParameter
 }
 
@@ -108,22 +130,32 @@ const (
 
 // CommandParameter represents a single parameter of a command overload, which accepts a certain type of input
 // values. It has a name and a type which show up client-side when a player is entering the command.
+//
+// Added: v1.12
 type CommandParameter struct {
 	// Name is the name of the command parameter. It shows up in the usage like <$Name: $Type>, with the
 	// exception of enum types, which show up simply as a list of options if the list is short enough and
 	// Options is set to false.
+	//
+	// Added: v1.12
 	Name string
 	// Type is a rather odd combination of type(flag)s that result in a certain parameter type to show up
 	// client-side. It is a combination of the flags above. The basic types must be combined with the
 	// ArgumentTypeFlagBasic flag (and integers with a suffix ArgumentTypeFlagSuffixed), whereas enums are
 	// combined with the ArgumentTypeFlagEnum flag.
+	//
+	// Added: v1.12
 	Type uint32
 	// Optional specifies if the command parameter is optional to enter. Note that no non-optional parameter
 	// should ever be present in a command overload after an optional parameter. When optional, the parameter
 	// shows up like so: [$Name: $Type], whereas when mandatory, it shows up like so: <$Name: $Type>.
+	//
+	// Added: v1.12
 	Optional bool
 	// Options holds a combinations of options that additionally apply to the command parameter. The list of
 	// options can be found above.
+	//
+	// Added: v1.12
 	Options byte
 }
 
@@ -136,18 +168,29 @@ func (c *CommandParameter) Marshal(r IO) {
 
 // CommandEnum represents an enum in a command usage. The enum typically has a type and a set of options that
 // are valid. A value that is not one of the options results in a failure during execution.
+//
+// Added: v1.12
 type CommandEnum struct {
 	// Type is the type of the command enum. The type will show up in the command usage as the type of the
 	// argument if it has a certain amount of arguments, or when Options is set to true in the
 	// command holding the enum.
+	//
+	// Added: v1.12
 	Type string
 	// ValueIndices holds a list of indices that point to the EnumValues slice in the
 	// AvailableCommandsPacket. These represent the options of the enum.
+	//
+	// Added: v1.12
 	ValueIndices []uint32
 }
 
 // CommandEnumContext holds context required for encoding command enums.
+//
+// Added: v1.19.80
 type CommandEnumContext struct {
+	// EnumValues is the shared string table that command enum value indices refer to during encoding.
+	//
+	// Added: v1.19.80
 	EnumValues []string
 }
 
@@ -159,10 +202,16 @@ func (ctx CommandEnumContext) Marshal(r IO, x *CommandEnum) {
 
 // ChainedSubcommand represents a subcommand that can have chained commands, such as /execute which allows you to run
 // another command as another entity or at a different position etc.
+//
+// Added: v1.20.10
 type ChainedSubcommand struct {
 	// Name is the name of the chained subcommand and shows up in the list as a regular subcommand enum.
+	//
+	// Added: v1.20.10
 	Name string
 	// Values contains the index and parameter type of the chained subcommand.
+	//
+	// Added: v1.20.10
 	Values []ChainedSubcommandValue
 }
 
@@ -172,12 +221,18 @@ func (x *ChainedSubcommand) Marshal(r IO) {
 }
 
 // ChainedSubcommandValue represents the value for a chained subcommand argument.
+//
+// Added: v1.20.10
 type ChainedSubcommandValue struct {
 	// Index is the index of the argument in the ChainedSubcommandValues slice from the AvailableCommands packet. This is
 	// then used to set the type specified by the Value field below.
+	//
+	// Added: v1.20.10
 	Index uint32
 	// Value is a combination of the flags above and specified the type of argument. Unlike regular parameter types,
 	// this should NOT contain any of the special flags (valid, enum, suffixed or soft enum) but only the basic types.
+	//
+	// Added: v1.20.10
 	Value uint32
 }
 
@@ -188,12 +243,18 @@ func (x *ChainedSubcommandValue) Marshal(r IO) {
 
 // DynamicEnum is an enum variant that can have its options changed during runtime,
 // without sending a new AvailableCommands packet.
+//
+// Added: v1.19.80
 type DynamicEnum struct {
 	// Type is the type of the command enum. The type will show up in the command usage as the type of the
 	// argument if it has a certain amount of arguments, or when Options is set to true in the
 	// command holding the enum.
+	//
+	// Added: v1.19.80
 	Type string
 	// Values is a slice of possible options for the enum.
+	//
+	// Added: v1.19.80
 	Values []string
 }
 
@@ -212,14 +273,22 @@ const (
 
 // CommandEnumConstraint is sent in the AvailableCommands packet to limit what values of an enum may be used
 // taking in account things such as whether cheats are enabled.
+//
+// Added: v1.16.220
 type CommandEnumConstraint struct {
 	// EnumValueIndex points to an enum value in the AvailableCommands packet that this
 	// constraint should apply to.
+	//
+	// Added: v1.16.220
 	EnumValueIndex uint32
 	// EnumIndex points to an enum in the AvailableCommands packet to which this
 	// constraint should apply to.
+	//
+	// Added: v1.16.220
 	EnumIndex uint32
 	// Constraints holds a slice of constraints as present in the constants above.
+	//
+	// Added: v1.16.220
 	Constraints []byte
 }
 
@@ -252,21 +321,31 @@ const (
 // CommandOrigin holds data that identifies the origin of the requesting of a command. It holds several
 // fields that may be used to get specific information.
 // When sent in a CommandRequest packet, the same CommandOrigin should be sent in a CommandOutput packet.
+//
+// Added: v1.12
 type CommandOrigin struct {
 	// Origin is one of the values above that specifies the origin of the command. The origin may change,
 	// depending on what part of the client actually called the command. The command may be issued by a
 	// websocket server, for example.
+	//
+	// Added: v1.12
 	Origin uint32
 	// UUID is a unique identifier for every instantiation of a command.
+	//
+	// Added: v1.12
 	UUID uuid.UUID
 	// RequestID is an ID that identifies the request of the client. The server should send a CommandOrigin
 	// with the same request ID to ensure it can be matched with the request by the caller of the command.
 	// This is especially important for websocket servers and it seems that this field is only non-empty for
 	// these websocket servers.
+	//
+	// Added: v1.12
 	RequestID string
 	// PlayerUniqueID is an ID that identifies the player, the same as the one found in the AdventureSettings
 	// packet. Filling it out with 0 seems to work.
 	// PlayerUniqueID is only written if Origin is CommandOriginDevConsole or CommandOriginTest.
+	//
+	// Added: v1.12
 	PlayerUniqueID int64
 }
 
@@ -282,18 +361,26 @@ func CommandOriginData(r IO, x *CommandOrigin) {
 
 // CommandOutputMessage represents a message sent by a command that holds the output of one of the commands
 // executed.
+//
+// Added: v1.12
 type CommandOutputMessage struct {
 	// Success indicates if the output message was one of a successful command execution. If set to true, the
 	// output message is by default coloured white, whereas if set to false, the message is by default
 	// coloured red.
+	//
+	// Added: v1.12
 	Success bool
 	// Message is the message that is sent to the client in the chat window. It may either be simply a
 	// message or a translated built-in string like 'commands.tp.success.coordinates', combined with specific
 	// parameters below.
+	//
+	// Added: v1.12
 	Message string
 	// Parameters is a list of parameters that serve to supply the message sent with additional information,
 	// such as the position that a player was teleported to or the effect that was applied to an entity.
 	// These parameters only apply for the Minecraft built-in command output.
+	//
+	// Added: v1.12
 	Parameters []string
 }
 

@@ -4,6 +4,8 @@ import "math/big"
 
 // Bitset is a representation of std::bitset<size> being sent over the network, allowing for more than 64 bits
 // to be stored in a single integer. A Bitset has a fixed size, which is set at creation time.
+//
+// Added: v1.21.50
 type Bitset struct {
 	size int
 	int  *big.Int

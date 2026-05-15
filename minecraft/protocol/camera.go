@@ -259,10 +259,12 @@ type CameraInstructionSet struct {
 	// certain direction.
 	ViewOffset Optional[mgl32.Vec2]
 	// EntityOffset is an offset from the entity that the camera should be rendered at.
+	// Added: v1.21.30
 	EntityOffset Optional[mgl32.Vec3]
 	// Default determines whether the camera is a default camera or not.
 	Default Optional[bool]
 	// IgnoreStartingValuesComponent behavior is currently unknown.
+	// Added: v1.21.90
 	IgnoreStartingValuesComponent bool
 }
 
@@ -326,12 +328,14 @@ func (x *CameraInstructionTarget) Marshal(r IO) {
 }
 
 // CameraInstructionFieldOfView represents a camera instruction that updates the field of view.
+// Added: v1.21.100
 type CameraInstructionFieldOfView struct {
 	// FieldOfView is the field of view of the camera.
 	FieldOfView float32
 	// EaseTime is the time in seconds that the easing function should take.
 	EaseTime float32
 	// EaseType is the type of easing function used. This is one of the constants above.
+	// Changed: v1.26.10
 	EaseType int32
 	// Clear can be set to true to clear the current instruction.
 	Clear bool
@@ -374,12 +378,16 @@ type CameraPreset struct {
 	// SnapToTarget determines whether the camera should snap to the target entity or not.
 	SnapToTarget Optional[bool]
 	// HorizontalRotationLimit is the horizontal rotation limit of the camera.
+	// Added: v1.21.40
 	HorizontalRotationLimit Optional[mgl32.Vec2]
 	// VerticalRotationLimit is the vertical rotation limit of the camera.
+	// Added: v1.21.40
 	VerticalRotationLimit Optional[mgl32.Vec2]
 	// ContinueTargeting determines whether the camera should continue targeting when using aim assist.
+	// Added: v1.21.40
 	ContinueTargeting Optional[bool]
 	// TrackingRadius is the radius around the camera that the aim assist should track targets.
+	// Added: v1.21.40
 	TrackingRadius Optional[float32]
 	// ViewOffset is only used in a follow_orbit camera and controls an offset based on a pivot point to the
 	// player, causing it to be shifted in a certain direction.
@@ -390,8 +398,10 @@ type CameraPreset struct {
 	// be rendered.
 	Radius Optional[float32]
 	// MinYawLimit is the minimum yaw limit of the camera.
+	// Added: v1.21.60
 	MinYawLimit Optional[float32]
 	// MaxYawLimit is the maximum yaw limit of the camera.
+	// Added: v1.21.60
 	MaxYawLimit Optional[float32]
 	// AudioListener defines where the audio should be played from when using this preset. This is one of the
 	// constants above.
@@ -399,6 +409,7 @@ type CameraPreset struct {
 	// PlayerEffects is currently unknown.
 	PlayerEffects Optional[bool]
 	// AimAssist defines the aim assist to use when using this preset.
+	// Added: v1.21.50
 	AimAssist Optional[CameraPresetAimAssist]
 	// ControlScheme is the control scheme that the client should use in this camera. It is one of the following:
 	//  - ControlSchemeLockedPlayerRelativeStrafe is the default behaviour, this cannot be set when the client
@@ -411,6 +422,7 @@ type CameraPreset struct {
 	//    left/right will make the player turn in a circle.
 	//  - ControlSchemePlayerRelativeStrafe makes movement the same as the default behaviour, but can be
 	//    used in a custom camera.
+	// Added: v1.21.80
 	ControlScheme Optional[byte]
 }
 
@@ -443,15 +455,19 @@ func (x *CameraPreset) Marshal(r IO) {
 // CameraPresetAimAssist represents a preset for aim assist settings.
 type CameraPresetAimAssist struct {
 	// Preset is the ID of the preset that has previously been defined in the CameraAimAssistPresets packet.
+	// Added: v1.21.50
 	Preset Optional[string]
 	// TargetMode is the mode that the camera should use for detecting targets. This is one of the constants
 	// above.
+	// Added: v1.21.50
 	TargetMode Optional[int32]
 	// Angle is the maximum angle around the playes's cursor that the aim assist should check for a target,
 	// if TargetMode is set to protocol.AimAssistTargetModeAngle.
+	// Added: v1.21.50
 	Angle Optional[mgl32.Vec2]
 	// Distance is the maximum distance from the player's cursor should check for a target, if TargetMode is
 	// set to protocol.AimAssistTargetModeDistance.
+	// Added: v1.21.50
 	Distance Optional[float32]
 }
 
@@ -463,13 +479,15 @@ func (x *CameraPresetAimAssist) Marshal(r IO) {
 	OptionalFunc(r, &x.Distance, r.Float32)
 }
 
-// CameraAimAssistCategory is an aim assist category that defines priorities for specific blocks and entities. This
-// type was added in v1.21.50.
+// CameraAimAssistCategory is an aim assist category that defines priorities for specific blocks and entities.
+// Added: v1.21.50
 type CameraAimAssistCategory struct {
 	// Name is the name of the category which can be used by a CameraAimAssistPreset.
+	// Added: v1.21.50
 	Name string
 	// Priorities represents the block and entity specific priorities as well as the default priorities for
 	// this category.
+	// Added: v1.21.50
 	Priorities CameraAimAssistPriorities
 }
 
@@ -480,21 +498,26 @@ func (x *CameraAimAssistCategory) Marshal(r IO) {
 }
 
 // CameraAimAssistPriorities represents the block and entity specific priorities for targetting. The aim
-// assist will select the block or entity with the highest priority within the specified thresholds. This type was
-// added in v1.21.50.
+// assist will select the block or entity with the highest priority within the specified thresholds.
+// Added: v1.21.50
 type CameraAimAssistPriorities struct {
 	// Entities is a list of priorities for specific entity identifiers.
+	// Added: v1.21.50
 	Entities []CameraAimAssistPriority
 	// Blocks is a list of priorities for specific block identifiers.
+	// Added: v1.21.50
 	Blocks []CameraAimAssistPriority
-	// BlockTags is a list of priorities for specific block tags. This field was added in v1.21.30.
+	// BlockTags is a list of priorities for specific block tags.
+	// Added: v1.21.130
 	BlockTags []CameraAimAssistPriority
-	// EntityTypeFamilies is a list of priorities for specific entity type families. This field was added in
-	// v1.21.120.
+	// EntityTypeFamilies is a list of priorities for specific entity type families.
+	// Added: v1.26.0
 	EntityTypeFamilies []CameraAimAssistPriority
 	// EntityDefault is the default priority for entities.
+	// Added: v1.21.50
 	EntityDefault Optional[int32]
 	// BlockDefault is the default priority for blocks.
+	// Added: v1.21.50
 	BlockDefault Optional[int32]
 }
 
@@ -508,11 +531,14 @@ func (x *CameraAimAssistPriorities) Marshal(r IO) {
 	OptionalFunc(r, &x.BlockDefault, r.Int32)
 }
 
-// CameraAimAssistPriority represents a non-default priority for a specific target. This type was added in v1.21.50.
+// CameraAimAssistPriority represents a non-default priority for a specific target.
+// Added: v1.21.50
 type CameraAimAssistPriority struct {
 	// Identifier is the identifier of a target to define the priority for.
+	// Added: v1.21.50
 	Identifier string
 	// Priority is the priority for this specific target.
+	// Added: v1.21.50
 	Priority int32
 }
 
@@ -522,29 +548,38 @@ func (x *CameraAimAssistPriority) Marshal(r IO) {
 	r.Int32(&x.Priority)
 }
 
-// CameraAimAssistPreset defines a base preset that can be extended upon when sending an aim assist. This type was
-// added in v1.21.50.
+// CameraAimAssistPreset defines a base preset that can be extended upon when sending an aim assist.
+// Added: v1.21.50
 type CameraAimAssistPreset struct {
 	// Identifier represents the identifier of this preset.
+	// Added: v1.21.50
 	Identifier string
 	// BlockExclusions is a list of block identifiers that should be ignored by the aim assist.
+	// Added: v1.21.50
 	BlockExclusions []string
 	// EntityExclusions is a list of entity identifiers that should be ignored by the aim assist.
+	// Added: v1.21.130
 	EntityExclusions []string
 	// BlockTagExclusions is a list of block tags that should be ignored by the aim assist.
+	// Added: v1.21.130
 	BlockTagExclusions []string
 	// EntityTypeFamilyExclusions is a list of entity type families that should be ignored by the aim assist.
+	// Added: v1.26.0
 	EntityTypeFamilyExclusions []string
 	// LiquidTargets is a list of entity identifiers that should be targetted when inside of a liquid.
+	// Added: v1.21.50
 	LiquidTargets []string
 	// ItemSettings is a list of settings for specific item identifiers. If an item is not listed here, it
 	// will fallback to DefaultItemSettings or HandSettings if no item is held.
+	// Added: v1.21.50
 	ItemSettings []CameraAimAssistItemSettings
 	// DefaultItemSettings is the identifier of a category to use when the player is not holding an item
 	// listed in ItemSettings. This must be the identifier of a category within the Categories slice.
+	// Added: v1.21.50
 	DefaultItemSettings Optional[string]
 	// HandSettings is the identifier of a category to use when the player is not holding an item. This must
 	// be the identifier of a category within Categories slice.
+	// Added: v1.21.50
 	HandSettings Optional[string]
 }
 
@@ -561,14 +596,16 @@ func (x *CameraAimAssistPreset) Marshal(r IO) {
 	OptionalFunc(r, &x.HandSettings, r.String)
 }
 
-// CameraAimAssistItemSettings defines settings for how specific items should behave when using aim assist. This type
-// was added in v1.21.50.
+// CameraAimAssistItemSettings defines settings for how specific items should behave when using aim assist.
+// Added: v1.21.50
 type CameraAimAssistItemSettings struct {
 	// Item is the identifier of the item to apply the settings to.
+	// Added: v1.21.50
 	Item string
 	// Category is the identifier of a category to use which has been defined by a CameraAimAssistCategory.
 	// Only categories defined in the Categories slice used by the CameraAimAssistPreset can be
 	// used here.
+	// Added: v1.21.50
 	Category string
 }
 
@@ -578,15 +615,17 @@ func (x *CameraAimAssistItemSettings) Marshal(r IO) {
 	r.String(&x.Category)
 }
 
-// CameraRotationOption represents a rotation option for camera spline instructions. This type was added in
-// v1.21.120.
+// CameraRotationOption represents a rotation option for camera spline instructions.
+// Added: v1.21.120
 type CameraRotationOption struct {
 	// Value is the rotation value.
+	// Added: v1.21.120
 	Value mgl32.Vec3
 	// Time is the time for this rotation option.
+	// Added: v1.21.120
 	Time float32
-	// EaseType is the easing function used to interpolate towards this rotation key frame. This field uses
-	// numeric easing types in v1.26.0 and easing function names in v1.26.10.
+	// EaseType is the easing function used to interpolate towards this rotation key frame.
+	// Changed: v1.26.10
 	EaseType int32
 }
 
@@ -605,15 +644,17 @@ func (x *CameraRotationOption) Marshal(r IO) {
 	}
 }
 
-// CameraProgressOption represents a progress keyframe option for camera spline instructions. This type was added in
-// v1.26.0.
+// CameraProgressOption represents a progress keyframe option for camera spline instructions.
+// Added: v1.26.0
 type CameraProgressOption struct {
 	// Value is the progress value.
+	// Added: v1.26.0
 	Value float32
 	// Time is the time for this progress option.
+	// Added: v1.26.0
 	Time float32
-	// EaseType is the easing function used to interpolate towards this progress key frame. This field uses
-	// numeric easing types in v1.26.0 and easing function names in v1.26.10.
+	// EaseType is the easing function used to interpolate towards this progress key frame.
+	// Changed: v1.26.10
 	EaseType int32
 }
 
@@ -632,25 +673,29 @@ func (x *CameraProgressOption) Marshal(r IO) {
 	}
 }
 
-// CameraSplineInstruction represents a camera instruction that creates a spline path for the camera to follow. This
-// type was added in v1.21.120.
+// CameraSplineInstruction represents a camera instruction that creates a spline path for the camera to follow.
+// Added: v1.21.120
 type CameraSplineInstruction struct {
 	// TotalTime is the total time for the spline animation.
+	// Added: v1.21.120
 	TotalTime float32
-	// SplineType is the optional spline interpolation type. This field uses numeric spline types in
-	// v1.26.0 and spline type names in v1.26.10.
+	// SplineType is the optional spline interpolation type used for the spline curve.
+	// Changed: v1.26.10
 	SplineType Optional[string]
 	// Curve is a list of points that define the spline curve.
+	// Added: v1.21.120
 	Curve []mgl32.Vec3
 	// ProgressKeyFrames is a list of progress key frames for the spline.
+	// Added: v1.21.120
 	ProgressKeyFrames []CameraProgressOption
 	// RotationOptions is a list of rotation options for the spline.
+	// Added: v1.21.120
 	RotationOptions []CameraRotationOption
-	// SplineIdentifier is an optional identifier for referencing the spline by name. This field was added in
-	// v1.26.10.
+	// SplineIdentifier is an optional identifier for referencing the spline by name.
+	// Added: v1.26.10
 	SplineIdentifier Optional[string]
-	// LoadFromJson optionally determines whether the spline should be loaded from a JSON definition. This field
-	// was added in v1.26.10.
+	// LoadFromJson optionally determines whether the spline should be loaded from a JSON definition.
+	// Added: v1.26.10
 	LoadFromJson Optional[bool]
 }
 
@@ -682,28 +727,29 @@ func (x *CameraSplineInstruction) Marshal(r IO) {
 	}
 }
 
-// CameraSplineDefinition represents a named camera spline definition. This type was added in v1.26.0.
+// CameraSplineDefinition represents a named camera spline definition.
+// Added: v1.26.0
 type CameraSplineDefinition struct {
 	// Name is the name of the spline definition.
+	// Added: v1.26.0
 	Name string
-	// Instruction is the spline instruction for this definition in v1.26.0.
-	// This field was removed in v1.26.10.
+	// Instruction is the nested spline instruction payload used by the v1.26.0 layout.
+	// Removed: v1.26.10
 	Instruction CameraSplineInstruction
-	// TotalTime is the total time for the spline animation.
-	// This field was added in v1.26.10.
+	// TotalTime is the total time for the spline animation in the flattened v1.26.10+ layout.
+	// Added: v1.26.10
 	TotalTime float32
-	// SplineType is the optional spline interpolation type. This field uses numeric spline types in
-	// v1.26.0 and spline type names in v1.26.10.
-	// This field was added in v1.26.10.
+	// SplineType is the optional spline interpolation type in the flattened v1.26.10+ layout.
+	// Added: v1.26.10
 	SplineType Optional[string]
-	// ControlPoints is a list of points that define the spline curve.
-	// This field was added in v1.26.10.
+	// ControlPoints is a list of points that define the spline curve in the flattened v1.26.10+ layout.
+	// Added: v1.26.10
 	ControlPoints []mgl32.Vec3
-	// ProgressKeyFrames is a list of progress key frames for the spline.
-	// This field was added in v1.26.10.
+	// ProgressKeyFrames is a list of progress key frames for the spline in the flattened v1.26.10+ layout.
+	// Added: v1.26.10
 	ProgressKeyFrames []CameraProgressOption
-	// RotationKeyFrames is a list of rotation key frames for the spline.
-	// This field was added in v1.26.10.
+	// RotationKeyFrames is a list of rotation key frames for the spline in the flattened v1.26.10+ layout.
+	// Added: v1.26.10
 	RotationKeyFrames []CameraRotationOption
 }
 
@@ -754,16 +800,20 @@ func (x *CameraSplineDefinition) Marshal(r IO) {
 	x.RotationKeyFrames = instruction.RotationOptions
 }
 
-// CameraAimAssistActorPriorityData represents priority data for aim assist actor targeting. This type was added in
-// v1.26.0.
+// CameraAimAssistActorPriorityData represents priority data for aim assist actor targeting.
+// Added: v1.26.0
 type CameraAimAssistActorPriorityData struct {
 	// PresetIndex is the index of the aim assist preset.
+	// Added: v1.26.0
 	PresetIndex int32
 	// CategoryIndex is the index of the aim assist category.
+	// Added: v1.26.0
 	CategoryIndex int32
 	// ActorIndex is the index of the actor.
+	// Added: v1.26.0
 	ActorIndex int32
 	// Priority is the priority value for this actor.
+	// Added: v1.26.0
 	Priority int32
 }
 

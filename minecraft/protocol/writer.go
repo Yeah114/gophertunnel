@@ -20,6 +20,8 @@ import (
 // passed to it when writing.
 // Writer implements methods where values are passed using a pointer, so that Reader and Writer have a
 // synonymous interface and both implement the IO interface.
+//
+// Added: v1.16
 type Writer struct {
 	w interface {
 		io.Writer

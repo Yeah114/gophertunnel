@@ -60,10 +60,16 @@ const (
 )
 
 // ParameterKeyframeValue represents a keyframe value for graphics parameters.
+//
+// Added: v1.21.120
 type ParameterKeyframeValue struct {
 	// Time is the time for this keyframe.
+	//
+	// Added: v1.21.120
 	Time float32
 	// Value is the value at this keyframe.
+	//
+	// Added: v1.21.120
 	Value mgl32.Vec3
 }
 

@@ -2,10 +2,16 @@ package protocol
 
 // EntityProperties holds lists of entity properties that define specific attributes of an entity. As of v1.19.40, the
 // vanilla server does not use these properties, however they are still supported by the protocol.
+//
+// Added: v1.19.40
 type EntityProperties struct {
 	// IntegerProperties is a list of entity properties that contain integer values.
+	//
+	// Added: v1.19.40
 	IntegerProperties []IntegerEntityProperty
 	// FloatProperties is a list of entity properties that contain float values.
+	//
+	// Added: v1.19.40
 	FloatProperties []FloatEntityProperty
 }
 
@@ -16,10 +22,16 @@ func (e *EntityProperties) Marshal(r IO) {
 }
 
 // IntegerEntityProperty is an entity property that contains an integer value.
+//
+// Added: v1.19.40
 type IntegerEntityProperty struct {
 	// Index represents the index of the property. It is unclear what the exact purpose of this is.
+	//
+	// Added: v1.19.40
 	Index uint32
 	// Value is the value of the property.
+	//
+	// Added: v1.19.40
 	Value int32
 }
 
@@ -30,10 +42,16 @@ func (i *IntegerEntityProperty) Marshal(r IO) {
 }
 
 // FloatEntityProperty is an entity property that contains a float value.
+//
+// Added: v1.19.40
 type FloatEntityProperty struct {
 	// Index represents the index of the property. It is unclear what the exact purpose of this is.
+	//
+	// Added: v1.19.40
 	Index uint32
 	// Value is the value of the property.
+	//
+	// Added: v1.19.40
 	Value float32
 }
 

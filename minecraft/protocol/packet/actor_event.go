@@ -87,8 +87,9 @@ type ActorEvent struct {
 	// EventData is optional data associated with a particular event. The data has a different function for
 	// different events, however most events don't use this field at all.
 	EventData int32
-	// FireAtPosition is the position in the same world at which the event should fire. This field was added
-	// in v1.26.20.26. If this is not present, the position entity will be used instead.
+	// FireAtPosition is the position in the same world at which the event should fire. If this is not
+	// present, the position entity will be used instead.
+	// Added: v1.26.20.26
 	FireAtPosition protocol.Optional[mgl32.Vec3]
 }
 

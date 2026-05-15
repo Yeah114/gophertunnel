@@ -5,7 +5,8 @@ import (
 )
 
 // ResourcePacksReadyForValidation is sent by the client to inform the server that the client has finished
-// loading resource packs and is ready for validation. This packet was added in v1.26.10.
+// loading resource packs and is ready for validation.
+// Added: v1.26.10
 type ResourcePacksReadyForValidation struct{}
 
 // ID ...

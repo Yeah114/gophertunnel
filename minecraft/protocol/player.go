@@ -48,37 +48,61 @@ const (
 
 // PlayerListEntry is an entry found in the PlayerList packet. It represents a single player using the UUID
 // found in the entry, and contains several properties such as the skin.
+//
+// Added: v1.16
 type PlayerListEntry struct {
 	// UUID is the UUID of the player as sent in the Login packet when the client joined the server. It must
 	// match this UUID exactly for the correct XBOX Live icon to show up in the list.
+	//
+	// Added: v1.16
 	UUID uuid.UUID
 	// EntityUniqueID is the unique entity ID of the player. This ID typically stays consistent during the
 	// lifetime of a world, but servers often send the runtime ID for this.
+	//
+	// Added: v1.16
 	EntityUniqueID int64
 	// Username is the username that is shown in the player list of the player that obtains a PlayerList
 	// packet with this entry. It does not have to be the same as the actual username of the player.
+	//
+	// Added: v1.16
 	Username string
 	// XUID is the XBOX Live user ID of the player, which will remain consistent as long as the player is
 	// logged in with the XBOX Live account.
+	//
+	// Added: v1.16
 	XUID string
 	// PlatformChatID is an identifier only set for particular platforms when chatting (presumably only for
 	// Nintendo Switch). It is otherwise an empty string, and is used to decide which players are able to
 	// chat with each other.
+	//
+	// Added: v1.16
 	PlatformChatID string
 	// BuildPlatform is the platform of the player as sent by that player in the Login packet.
+	//
+	// Added: v1.16
 	BuildPlatform int32
 	// Skin is the skin of the player that should be added to the player list. Once sent here, it will not
 	// have to be sent again.
+	//
+	// Added: v1.16
 	Skin Skin
 	// Teacher is a Minecraft: Education Edition field. It specifies if the player to be added to the player
 	// list is a teacher.
+	//
+	// Added: v1.16
 	Teacher bool
 	// Host specifies if the player that is added to the player list is the host of the game.
+	//
+	// Added: v1.16
 	Host bool
 	// SubClient specifies if the player that is added to the player list is a sub-client of another player.
+	//
+	// Added: v1.16
 	SubClient bool
 	// PlayerColour is the colour of the player that is shown in UI elements, currently only used for the
 	// player locator bar.
+	//
+	// Added: v1.21.80
 	PlayerColour color.RGBA
 }
 
@@ -104,11 +128,17 @@ func PlayerListRemoveEntry(r IO, x *PlayerListEntry) {
 
 // PlayerMovementSettings represents the different server authoritative movement settings. These control how
 // the client will provide input to the server.
+//
+// Added: v1.16
 type PlayerMovementSettings struct {
 	// RewindHistorySize is the amount of history to keep at maximum.
+	//
+	// Added: v1.16
 	RewindHistorySize int32
 	// ServerAuthoritativeBlockBreaking specifies if block breaking should be sent through
 	// packet.PlayerAuthInput or not.
+	//
+	// Added: v1.16.210
 	ServerAuthoritativeBlockBreaking bool
 }
 
@@ -118,13 +148,21 @@ func PlayerMoveSettings(r IO, x *PlayerMovementSettings) {
 	r.Bool(&x.ServerAuthoritativeBlockBreaking)
 }
 
-// PlayerBlockAction ...
+// PlayerBlockAction represents a block-related action initiated by the player.
+//
+// Added: v1.16
 type PlayerBlockAction struct {
 	// Action is the action to be performed, and is one of the constants listed above.
+	//
+	// Added: v1.16
 	Action int32
 	// BlockPos is the position of the block that was interacted with.
+	//
+	// Added: v1.16
 	BlockPos BlockPos
 	// Face is the face of the block that was interacted with.
+	//
+	// Added: v1.16
 	Face int32
 }
 
@@ -139,10 +177,16 @@ func (x *PlayerBlockAction) Marshal(r IO) {
 }
 
 // PlayerArmourDamageEntry represents an entry for a single piece of armour that should be damaged.
+//
+// Added: v1.16
 type PlayerArmourDamageEntry struct {
 	// ArmourSlot is the index of the armour slot to damage.
+	//
+	// Added: v1.16
 	ArmourSlot int32
 	// Damage is the amount of damage to apply to the armour in the specified slot.
+	//
+	// Added: v1.16
 	Damage int16
 }
 

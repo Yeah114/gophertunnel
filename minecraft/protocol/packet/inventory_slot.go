@@ -15,12 +15,12 @@ type InventorySlot struct {
 	// index.
 	Slot uint32
 	// Container is the protocol.FullContainerName that describes the container that the content is for.
-	// This field was changed to Optional from v1.26.20.26.
+	// Changed: v1.26.20.26
 	Container protocol.Optional[protocol.FullContainerName]
 	// StorageItem is the item that is acting as the storage container for the inventory. If the inventory is
 	// not a dynamic container then this field should be left empty. When set, only the item type is used by
 	// the client and none of the other stack info.
-	// This field was changed to Optional from v1.26.20.26.
+	// Changed: v1.26.20.26
 	StorageItem protocol.Optional[protocol.ItemInstance]
 	// NewItem is the item to be put in the slot at Slot. It will overwrite any item that may currently
 	// be present in that slot.

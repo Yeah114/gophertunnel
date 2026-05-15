@@ -13,7 +13,7 @@ const (
 )
 
 // ServerBoundDataDrivenScreenClosed is sent by the client when a data-driven UI screen is closed.
-// This packet was added in v1.26.10.
+// Added: v1.26.10
 type ServerBoundDataDrivenScreenClosed struct {
 	// FormID is the optional unique instance ID of the form that was closed.
 	FormID protocol.Optional[uint32]

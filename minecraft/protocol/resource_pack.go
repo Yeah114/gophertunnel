@@ -10,34 +10,56 @@ const (
 
 // TexturePackInfo represents a texture pack's info sent over network. It holds information about the
 // texture pack such as its name, description and version.
+//
+// Added: v1.16.200
 type TexturePackInfo struct {
 	// UUID is the UUID of the texture pack. Each texture pack downloaded must have a different UUID in
 	// order for the client to be able to handle them properly.
+	//
+	// Added: v1.16.200
 	UUID uuid.UUID
 	// Version is the version of the texture pack. The client will cache texture packs sent by the server as
 	// long as they carry the same version. Sending a texture pack with a different version than previously
 	// will force the client to re-download it.
+	//
+	// Added: v1.16.200
 	Version string
 	// Size is the total size in bytes that the texture pack occupies. This is the size of the compressed
 	// archive (zip) of the texture pack.
+	//
+	// Added: v1.16.200
 	Size uint64
 	// ContentKey is the key used to decrypt the behaviour pack if it is encrypted. This is generally the case
 	// for marketplace texture packs.
+	//
+	// Added: v1.16.200
 	ContentKey string
-	// SubPackName ...
+	// SubPackName is the selected sub-pack name inside the texture pack, if any.
+	//
+	// Added: v1.16.200
 	SubPackName string
 	// ContentIdentity is another UUID for the resource pack, and is generally set for marketplace texture
 	// packs. It is also required for client-side validations when the resource pack is encrypted.
+	//
+	// Added: v1.16.200
 	ContentIdentity string
 	// HasScripts specifies if the texture packs has any scripts in it. A client will only download the
 	// behaviour pack if it supports scripts, which, up to 1.11, only includes Windows 10.
+	//
+	// Added: v1.16.200
 	HasScripts bool
 	// AddonPack specifies if the texture pack is from an addon.
+	//
+	// Added: v1.16.200
 	AddonPack bool
 	// RTXEnabled specifies if the texture pack uses the raytracing technology introduced in 1.16.200.
+	//
+	// Added: v1.16.200
 	RTXEnabled bool
 	// DownloadURL is a URL that the client can use to download the pack instead of the server sending it in
 	// chunks, which it will continue to do if this field is left empty.
+	//
+	// Added: v1.16.200
 	DownloadURL string
 }
 
@@ -78,12 +100,18 @@ func (x *StackResourcePack) Marshal(r IO) {
 
 // PackURL represents a resource pack that is being served from a HTTP server rather than being sent over
 // the Minecraft protocol.
+//
+// Added: v1.20.30
 type PackURL struct {
 	// UUIDVersion is a combination of the UUID and version of the resource pack in the format UUID_Version.
 	// The client will only attempt to download the resource pack if it does not already have it cached.
+	//
+	// Added: v1.20.30
 	UUIDVersion string
 	// URL is the URL from which the resource pack is downloaded. This URL must serve a zip file containing
 	// a manifest.json file inside another folder. The manifest cannot be in the root of the zip file.
+	//
+	// Added: v1.20.30
 	URL string
 }
 
@@ -95,9 +123,15 @@ func (x *PackURL) Marshal(r IO) {
 
 // PackSetting represents a single setting from the pack settings UI. It holds information
 // about the setting that was changed, including its name and the new value.
+//
+// Added: v1.21.111
 type PackSetting struct {
 	// Name is the name of the pack setting.
+	//
+	// Added: v1.21.111
 	Name string
 	// Value is the new value of the setting. This is either a float32, bool or string.
+	//
+	// Added: v1.21.111
 	Value any
 }

@@ -26,22 +26,40 @@ const (
 
 // SubChunkEntry contains the data of a sub-chunk entry relative to a center sub chunk position, used for the sub-chunk
 // requesting system introduced in v1.18.10.
+//
+// Added: v1.18.10
 type SubChunkEntry struct {
 	// Offset contains the offset between the sub-chunk position and the center position.
+	//
+	// Added: v1.18.10
 	Offset SubChunkOffset
 	// Result is always one of the constants defined in the SubChunkResult constants.
+	//
+	// Added: v1.18.10
 	Result byte
 	// RawPayload contains the serialized sub-chunk data.
+	//
+	// Added: v1.18.10
 	RawPayload []byte
 	// HeightMapType is always one of the constants defined in the HeightMapData constants.
+	//
+	// Added: v1.18.10
 	HeightMapType byte
 	// HeightMapData is the data for the height map.
+	//
+	// Added: v1.18.10
 	HeightMapData []int8
 	// RenderHeightMapType is always one of the constants defined in the HeightMapData constants.
+	//
+	// Added: v1.18.10
 	RenderHeightMapType byte
 	// RenderHeightMapData is the data for the render height map.
+	//
+	// Added: v1.18.10
 	RenderHeightMapData []int8
 	// BlobHash is the hash of the blob.
+	//
+	// Added: v1.18.10
 	BlobHash uint64
 }
 
@@ -79,6 +97,8 @@ func SubChunkEntryNoCache(r IO, x *SubChunkEntry) {
 }
 
 // SubChunkOffset represents an offset from the base position of another sub chunk.
+//
+// Added: v1.18.10
 type SubChunkOffset [3]int8
 
 // Marshal encodes/decodes a SubChunkOffset.

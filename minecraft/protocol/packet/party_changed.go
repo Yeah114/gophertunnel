@@ -5,7 +5,7 @@ import (
 )
 
 // PartyChanged is sent by the client to the server to indicate that the player's party ID has changed.
-// This packet was added in v1.26.10.
+// Added: v1.26.10
 type PartyChanged struct {
 	PartyInfo protocol.Optional[PartyInfo]
 }
@@ -19,11 +19,13 @@ func (pk *PartyChanged) Marshal(io protocol.IO) {
 	protocol.OptionalMarshaler(io, &pk.PartyInfo)
 }
 
-// PartyInfo represents the information of the client's role in a party. This type was added in v1.26.10.
+// PartyInfo represents the information of the client's role in a party.
+// Added: v1.26.10
 type PartyInfo struct {
 	// PartyID is the party identifier.
 	PartyID string
-	// PartyLeader is if the client is the new party leader or not. This field was added in v1.26.20.26.
+	// PartyLeader is if the client is the new party leader or not.
+	// Added: v1.26.20.26
 	PartyLeader bool
 }
 

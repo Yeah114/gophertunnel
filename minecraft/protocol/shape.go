@@ -83,26 +83,29 @@ func (shape *LineShape) Marshal(io IO) {
 	io.Vec3(&shape.LineEndLocation)
 }
 
-// TextShape represents a text debug shape. This type was added in v1.26.0.
+// TextShape represents a text debug shape.
+// Added: v1.26.0
 type TextShape struct {
 	// Text is the text of the debug text shape.
+	// Added: v1.26.0
 	Text string
 	// UseRotation is if the text should use the provided rotation, meaning it will be static and does not follow the
-	// camera. Use false for default behaviour. This field was added in v1.26.20.26.
+	// camera.
+	// Added: v1.26.20.26
 	UseRotation bool
-	// BackgroundColour is the RGBA colour to use for the text background. This is a translucent black colour by default.
-	// This field was added in v1.26.20.26.
+	// BackgroundColour is the optional RGBA colour to use for the text background.
+	// Added: v1.26.20.26
 	BackgroundColour Optional[color.RGBA]
-	// DepthTest is whether the text should show through walls. Use true for default behaviour. This field was added in
-	// v1.26.20.26.
+	// DepthTest determines whether the text is depth-tested against world geometry.
+	// Added: v1.26.20.26
 	DepthTest bool
 	// ShowBackface is if the background should render on the back side of the shape. This only has a visible effect when
-	// UseRotation is true since you cannot see the back side of the text otherwise. Use true for default behaviour.
-	// This field was added in v1.26.20.26.
+	// UseRotation is true since you cannot see the back side of the text otherwise.
+	// Added: v1.26.20.26
 	ShowBackface bool
 	// ShowBackfaceText is if the text should render on the back side of the shape. This only has a visible effect when
-	// UseRotation is true since you cannot see the back side of the text otherwise. Use true for default behaviour.
-	// This field was added in v1.26.20.26.
+	// UseRotation is true since you cannot see the back side of the text otherwise.
+	// Added: v1.26.20.26
 	ShowBackfaceText bool
 }
 
@@ -170,31 +173,42 @@ const (
 )
 
 // PrimitiveShape defines a single shape to be rendered on the client. Each shape has a unique NetworkID and a set of
-// optional parameters depending on its type. This type was added in v1.26.20.
+// optional parameters depending on its type.
+// Added: v1.26.20
 type PrimitiveShape struct {
 	// NetworkID is the network ID of the shape.
+	// Added: v1.26.20
 	NetworkID uint64
 	// DimensionID is the optional dimension ID where the shape is rendered.
+	// Added: v1.26.20
 	DimensionID Optional[int32]
 	// AttachedToEntityID is the optional runtime ID of the entity the shape is attached to.
+	// Added: v1.26.20
 	AttachedToEntityID Optional[int64]
 	// Type is the type of the shape.
 	// If not set, the set shape will be cleared.
+	// Added: v1.26.20
 	Type Optional[uint8]
 	// Location is the location of the shape.
+	// Added: v1.26.20
 	Location Optional[mgl32.Vec3]
 	// Scale is the scale of the shape.
+	// Added: v1.26.20
 	Scale Optional[float32]
 	// Rotation is the rotation of the shape.
+	// Added: v1.26.20
 	Rotation Optional[mgl32.Vec3]
-	// TotalTimeLeft is the total time left of the shape.
+	// TotalTimeLeft is the remaining lifetime of the shape, in seconds.
+	// Added: v1.26.20
 	TotalTimeLeft Optional[float32]
-	// MaxRenderDistance is the maximum distance the shape should render from the camera. This field was added in
-	// v1.26.20.26.
+	// MaxRenderDistance is the maximum distance from the camera at which the shape should render.
+	// Added: v1.26.20.26
 	MaxRenderDistance Optional[float32]
 	// Colour is the ARGB colour of the shape.
+	// Added: v1.26.20
 	Colour Optional[color.RGBA]
-	// ExtraShapeData holding data specific to the type of shape (such as text string for the text shape).
+	// ExtraShapeData holds data specific to the shape type, such as the text payload for text shapes.
+	// Added: v1.26.20
 	ExtraShapeData ShapeData
 }
 

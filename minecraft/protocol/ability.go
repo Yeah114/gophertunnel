@@ -40,17 +40,27 @@ const (
 )
 
 // AbilityData represents various data about the abilities of a player, such as ability layers or permissions.
+//
+// Added: v1.19.30
 type AbilityData struct {
 	// EntityUniqueID is a unique identifier of the player. It appears it is not required to fill this field
 	// out with a correct value. Simply writing 0 seems to work.
+	//
+	// Added: v1.19.30
 	EntityUniqueID int64
 	// PlayerPermissions is the permission level of the player as it shows up in the player list built up using
 	// the PlayerList packet.
+	//
+	// Added: v1.19.30
 	PlayerPermissions byte
 	// CommandPermissions is a set of permissions that specify what commands a player is allowed to execute.
+	//
+	// Added: v1.19.30
 	CommandPermissions byte
 	// Layers contains all ability layers and their potential values. This should at least have one entry, being the
 	// base layer.
+	//
+	// Added: v1.19.30
 	Layers []AbilityLayer
 }
 
@@ -63,20 +73,34 @@ func (x *AbilityData) Marshal(r IO) {
 }
 
 // AbilityLayer represents the abilities of a specific layer, such as the base layer or the spectator layer.
+//
+// Added: v1.19.10
 type AbilityLayer struct {
 	// Type represents the type of the layer. This is one of the AbilityLayerType constants defined above.
+	//
+	// Added: v1.19.10
 	Type uint16
 	// Abilities is a set of abilities that are enabled for the layer. This is one of the Ability constants defined
 	// above.
+	//
+	// Added: v1.19.10
 	Abilities uint32
 	// Values is a set of values that are associated with the enabled abilities, representing the values of the
 	// abilities.
+	//
+	// Added: v1.19.10
 	Values uint32
 	// FlySpeed is the default horizontal fly speed of the layer.
+	//
+	// Added: v1.19.10
 	FlySpeed float32
 	// VerticalFlySpeed is the default vertical fly speed of the layer.
+	//
+	// Added: v1.21.60
 	VerticalFlySpeed float32
 	// WalkSpeed is the default walk speed of the layer.
+	//
+	// Added: v1.19.10
 	WalkSpeed float32
 }
 

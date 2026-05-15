@@ -135,16 +135,19 @@ const (
 
 // BiomeDefinition represents a biome definition in the game. This can be a vanilla biome or a completely
 // custom biome.
+// Added: v1.21.80
 type BiomeDefinition struct {
 	// NameIndex represents the index of the biome name in the string list.
 	NameIndex int16
 	// BiomeID is the biome ID.
+	// Changed: v1.21.120
 	BiomeID int16
 	// Temperature is the temperature of the biome, used for weather, biome behaviours and sky colour.
 	Temperature float32
 	// Downfall is the amount that precipitation affects colours and block changes.
 	Downfall float32
 	// FoliageSnow is the progression factor for foliage turning white due to snow.
+	// Added: v1.21.111
 	FoliageSnow float32
 	// Depth is the depth of the biome.
 	Depth float32
@@ -181,6 +184,7 @@ func (x *BiomeDefinition) Marshal(r IO) {
 
 // BiomeChunkGeneration represents the information required for the client to generate chunks itself
 // to create the illusion of a larger render distance.
+// Added: v1.21.80
 type BiomeChunkGeneration struct {
 	// Climate is optional information to specify the biome's climate.
 	Climate Optional[BiomeClimate]
@@ -193,6 +197,7 @@ type BiomeChunkGeneration struct {
 	// SurfaceMaterials is a set of materials to use for the surface layers of the biome.
 	SurfaceMaterials Optional[BiomeSurfaceMaterial]
 	// HasDefaultOverworldSurface is true if the biome has a default overworld surface.
+	// Added: v1.21.111
 	HasDefaultOverworldSurface bool
 	// HasSwampSurface is true if the biome has a swamp surface.
 	HasSwampSurface bool
@@ -212,8 +217,10 @@ type BiomeChunkGeneration struct {
 	// weighted biomes.
 	LegacyRules Optional[[]BiomeConditionalTransformation]
 	// ReplacementsData is a list of biome replacement data.
+	// Added: v1.26.0
 	ReplacementsData Optional[[]BiomeReplacementData]
 	// VillageType is the optional village type for the biome's chunk generation.
+	// Added: v1.26.0
 	VillageType Optional[uint8]
 }
 
@@ -245,6 +252,7 @@ func (x *BiomeChunkGeneration) Marshal(r IO) {
 }
 
 // BiomeClimate represents the climate of a biome, mainly for ambience but also defines certain behaviours.
+// Added: v1.21.80
 type BiomeClimate struct {
 	// Temperature is the temperature of the biome, used for weather, biome behaviours and sky colour.
 	Temperature float32
@@ -266,6 +274,7 @@ func (x *BiomeClimate) Marshal(r IO) {
 }
 
 // BiomeConsolidatedFeature represents a feature that is consolidated into a single feature for the biome.
+// Added: v1.21.80
 type BiomeConsolidatedFeature struct {
 	// Scatter defines how the feature is scattered in the biome.
 	Scatter BiomeScatterParameter
@@ -287,6 +296,8 @@ func (x *BiomeConsolidatedFeature) Marshal(r IO) {
 	r.Bool(&x.CanUseInternal)
 }
 
+// BiomeScatterParameter defines how a biome feature is scattered and how many times it may be attempted.
+// Added: v1.21.80
 type BiomeScatterParameter struct {
 	// Coordinates is a list of coordinate rules to scatter the feature within.
 	Coordinates []BiomeCoordinate
@@ -296,7 +307,7 @@ type BiomeScatterParameter struct {
 	// ChancePercentType is the type of expression operation to use for the chance percent, and is one of the
 	// BiomeExpressionOp constants above.
 	ChancePercentType int32
-	// ChangePercent is the index of the chance expression in the string list.
+	// ChancePercent is the index of the chance expression in the string list.
 	ChancePercent int16
 	// ChanceNumerator is the numerator of the chance expression.
 	ChanceNumerator int32
@@ -321,6 +332,7 @@ func (x *BiomeScatterParameter) Marshal(r IO) {
 }
 
 // BiomeCoordinate specifies coordinate rules for where features can be scattered in the biome.
+// Added: v1.21.80
 type BiomeCoordinate struct {
 	// MinValueType is the type of expression operation to use for the minimum value, and is one of the
 	// BiomeExpressionOp constants above.
@@ -351,6 +363,7 @@ func (x *BiomeCoordinate) Marshal(r IO) {
 }
 
 // BiomeMountainParameters specifies the parameters for a mountain biome.
+// Added: v1.21.80
 type BiomeMountainParameters struct {
 	// SteepBlock is the runtime ID of the block to use for steep slopes.
 	SteepBlock int32
@@ -376,6 +389,7 @@ func (x *BiomeMountainParameters) Marshal(r IO) {
 }
 
 // BiomeElementData are set rules to adjust the surface materials of the biome.
+// Added: v1.21.80
 type BiomeElementData struct {
 	// NoiseFrequencyScale is the frequency scale of the noise used to adjust the surface materials.
 	NoiseFrequencyScale float32
@@ -409,6 +423,7 @@ func (x *BiomeElementData) Marshal(r IO) {
 }
 
 // BiomeSurfaceMaterial specifies the materials to use for the surface layers of the biome.
+// Added: v1.21.80
 type BiomeSurfaceMaterial struct {
 	// TopBlock is the runtime ID of the block to use for the top layer.
 	TopBlock int32
@@ -434,6 +449,7 @@ func (x *BiomeSurfaceMaterial) Marshal(r IO) {
 }
 
 // BiomeMesaSurface specifies the materials to use for the mesa biome.
+// Added: v1.21.80
 type BiomeMesaSurface struct {
 	// ClayMaterial is the runtime ID of the block to use for clay layers.
 	ClayMaterial uint32
@@ -453,6 +469,7 @@ func (x *BiomeMesaSurface) Marshal(r IO) {
 }
 
 // BiomeCappedSurface specifies the materials to use for the capped surface of a biome, such as in the Nether.
+// Added: v1.21.80
 type BiomeCappedSurface struct {
 	// FloorBlocks is a list of runtime IDs to use for the floor blocks.
 	FloorBlocks []int32
@@ -475,6 +492,7 @@ func (x *BiomeCappedSurface) Marshal(r IO) {
 }
 
 // BiomeOverworldRules specifies a list of transformation rules to apply to different parts of the overworld.
+// Added: v1.21.80
 type BiomeOverworldRules struct {
 	// HillsTransformations is a list of weighted biome transformations to apply to hills.
 	HillsTransformations []BiomeWeight
@@ -504,6 +522,7 @@ func (x *BiomeOverworldRules) Marshal(r IO) {
 
 // BiomeMultiNoiseRules specifies the rules for multi-noise biomes, which are biomes that are defined by
 // multiple noise parameters instead of just temperature and humidity.
+// Added: v1.21.80
 type BiomeMultiNoiseRules struct {
 	// Temperature is the temperature level of the biome.
 	Temperature float32
@@ -526,6 +545,7 @@ func (x *BiomeMultiNoiseRules) Marshal(r IO) {
 }
 
 // BiomeConditionalTransformation is the legacy method of transforming biomes.
+// Added: v1.21.80
 type BiomeConditionalTransformation struct {
 	// WeightedBiomes is a list of biomes and their weights.
 	WeightedBiomes []BiomeWeight
@@ -543,6 +563,7 @@ func (x *BiomeConditionalTransformation) Marshal(r IO) {
 }
 
 // BiomeWeight defines the weight for a biome, used for weighted randomness.
+// Added: v1.21.80
 type BiomeWeight struct {
 	// Biome is the index of the biome name in the string list.
 	Biome int16
@@ -556,6 +577,7 @@ func (x *BiomeWeight) Marshal(r IO) {
 }
 
 // BiomeTemperatureWeight defines the weight for a temperature, used for weighted randomness.
+// Added: v1.21.80
 type BiomeTemperatureWeight struct {
 	// Temperature is the temperature that can be selected.
 	Temperature int32
@@ -569,6 +591,7 @@ func (x *BiomeTemperatureWeight) Marshal(r IO) {
 }
 
 // BiomeReplacementData represents data for biome replacements.
+// Added: v1.26.0
 type BiomeReplacementData struct {
 	// Biome is the biome ID to replace.
 	Biome int16

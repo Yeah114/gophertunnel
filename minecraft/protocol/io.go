@@ -11,6 +11,8 @@ import (
 // IO represents a packet IO direction. Implementations of this interface are Reader and Writer. Reader reads
 // data from the input stream into the pointers passed, whereas Writer writes the values the pointers point to
 // to the output stream.
+//
+// Added: v1.16
 type IO interface {
 	Protocol() int32
 	Uint16(x *uint16)

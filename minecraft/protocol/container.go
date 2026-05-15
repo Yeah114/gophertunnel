@@ -112,11 +112,17 @@ const (
 )
 
 // FullContainerName contains information required to identify a container in a StackRequestSlotInfo.
+//
+// Added: v1.21.20
 type FullContainerName struct {
 	// ContainerID is the ID of the container that the slot was in.
+	//
+	// Added: v1.21.20
 	ContainerID byte
 	// DynamicContainerID is the ID of the container if it is dynamic. If the container is not dynamic, this
 	// field should be left empty. A non-optional value of 0 is assumed to be non-empty.
+	//
+	// Added: v1.21.20
 	DynamicContainerID Optional[uint32]
 }
 
