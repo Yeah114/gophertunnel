@@ -86,6 +86,9 @@ func (*AdventureSettings) ID() uint32 {
 func (pk *AdventureSettings) Marshal(io protocol.IO) {
 	io.Varuint32(&pk.Flags)
 	io.Varuint32(&pk.CommandPermissionLevel)
+	if io.Protocol() < protocol.Protocol1v2v0 {
+		return
+	}
 	io.Varuint32(&pk.ActionPermissions)
 	io.Varuint32(&pk.PermissionLevel)
 	io.Varuint32(&pk.CustomStoredPermissions)

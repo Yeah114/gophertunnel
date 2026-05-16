@@ -99,6 +99,9 @@ func (*BossEvent) ID() uint32 {
 func (pk *BossEvent) Marshal(io protocol.IO) {
 	io.Varint64(&pk.BossEntityUniqueID)
 	io.Varuint32(&pk.EventType)
+	if io.Protocol() < protocol.Protocol1v2v0 {
+		return
+	}
 	switch pk.EventType {
 	case BossEventShow:
 		io.String(&pk.BossBarTitle)
