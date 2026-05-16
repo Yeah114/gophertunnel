@@ -21,6 +21,7 @@ type PlayerArmourDamage struct {
 	//
 	// Added: v1.16
 	// Changed: v1.21.20, may include body armour entries.
+	// Changed: v1.21.110, encoded as an array of armour slot and damage pairs instead of a bitset and damage list.
 	List []protocol.PlayerArmourDamageEntry
 }
 
@@ -30,5 +31,26 @@ func (pk *PlayerArmourDamage) ID() uint32 {
 }
 
 func (pk *PlayerArmourDamage) Marshal(io protocol.IO) {
-	protocol.Slice(io, &pk.List)
+	if io.Protocol() >= protocol.Protocol1v21v110 {
+		protocol.Slice(io, &pk.List)
+		return
+	}
+
+	var flags uint8
+	maxSlot := int32(PlayerArmourDamageFlagBody)
+	for _, entry := range pk.List {
+		if entry.ArmourSlot < 0 || entry.ArmourSlot > maxSlot {
+			continue
+		}
+		flags |= 1 << uint8(entry.ArmourSlot)
+	}
+	io.Uint8(&flags)
+	for _, entry := range pk.List {
+		if entry.ArmourSlot < 0 || entry.ArmourSlot > maxSlot || flags&(1<<uint8(entry.ArmourSlot)) == 0 {
+			continue
+		}
+		damage := int32(entry.Damage)
+		io.Varint32(&damage)
+		entry.Damage = int16(damage)
+	}
 }

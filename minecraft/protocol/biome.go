@@ -156,8 +156,24 @@ type BiomeDefinition struct {
 	Downfall float32
 	// FoliageSnow is the progression factor for foliage turning white due to snow.
 	//
-	// Added: v1.21.111
+	// Added: v1.21.110
 	FoliageSnow float32
+	// RedSporeDensity is the density of red spores in the biome.
+	//
+	// Added: v1.21.80, Removed: v1.21.110
+	RedSporeDensity float32
+	// BlueSporeDensity is the density of blue spores in the biome.
+	//
+	// Added: v1.21.80, Removed: v1.21.110
+	BlueSporeDensity float32
+	// AshDensity is the density of ash in the biome.
+	//
+	// Added: v1.21.80, Removed: v1.21.110
+	AshDensity float32
+	// WhiteAshDensity is the density of white ash in the biome.
+	//
+	// Added: v1.21.80, Removed: v1.21.110
+	WhiteAshDensity float32
 	// Depth is the depth of the biome.
 	//
 	// Added: v1.21.80
@@ -192,7 +208,14 @@ func (x *BiomeDefinition) Marshal(r IO) {
 	r.Int16(&x.BiomeID)
 	r.Float32(&x.Temperature)
 	r.Float32(&x.Downfall)
-	r.Float32(&x.FoliageSnow)
+	if r.Protocol() >= Protocol1v21v110 {
+		r.Float32(&x.FoliageSnow)
+	} else {
+		r.Float32(&x.RedSporeDensity)
+		r.Float32(&x.BlueSporeDensity)
+		r.Float32(&x.AshDensity)
+		r.Float32(&x.WhiteAshDensity)
+	}
 	r.Float32(&x.Depth)
 	r.Float32(&x.Scale)
 	r.Int32(&x.MapWaterColour)
@@ -230,7 +253,7 @@ type BiomeChunkGeneration struct {
 	SurfaceMaterials Optional[BiomeSurfaceMaterial]
 	// HasDefaultOverworldSurface is true if the biome has a default overworld surface.
 	//
-	// Added: v1.21.111
+	// Added: v1.21.110
 	HasDefaultOverworldSurface bool
 	// HasSwampSurface is true if the biome has a swamp surface.
 	//
@@ -285,7 +308,9 @@ func (x *BiomeChunkGeneration) Marshal(r IO) {
 		Slice(r, s)
 	})
 	OptionalMarshaler(r, &x.SurfaceMaterials)
-	r.Bool(&x.HasDefaultOverworldSurface)
+	if r.Protocol() >= Protocol1v21v110 {
+		r.Bool(&x.HasDefaultOverworldSurface)
+	}
 	r.Bool(&x.HasSwampSurface)
 	r.Bool(&x.HasFrozenOceanSurface)
 	r.Bool(&x.HasEndSurface)
@@ -324,11 +349,33 @@ type BiomeClimate struct {
 	//
 	// Added: v1.21.80
 	SnowAccumulationMax float32
+	// RedSporeDensity is the density of red spores in the biome.
+	//
+	// Added: v1.21.80, Removed: v1.21.110
+	RedSporeDensity float32
+	// BlueSporeDensity is the density of blue spores in the biome.
+	//
+	// Added: v1.21.80, Removed: v1.21.110
+	BlueSporeDensity float32
+	// AshDensity is the density of ash in the biome.
+	//
+	// Added: v1.21.80, Removed: v1.21.110
+	AshDensity float32
+	// WhiteAshDensity is the density of white ash in the biome.
+	//
+	// Added: v1.21.80, Removed: v1.21.110
+	WhiteAshDensity float32
 }
 
 func (x *BiomeClimate) Marshal(r IO) {
 	r.Float32(&x.Temperature)
 	r.Float32(&x.Downfall)
+	if r.Protocol() < Protocol1v21v110 {
+		r.Float32(&x.RedSporeDensity)
+		r.Float32(&x.BlueSporeDensity)
+		r.Float32(&x.AshDensity)
+		r.Float32(&x.WhiteAshDensity)
+	}
 	r.Float32(&x.SnowAccumulationMin)
 	r.Float32(&x.SnowAccumulationMax)
 }
