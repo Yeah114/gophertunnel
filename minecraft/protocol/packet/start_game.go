@@ -172,7 +172,7 @@ type StartGame struct {
 	LightningLevel float32
 	// ConfirmedPlatformLockedContent ...
 	//
-	// Added: v1.11.1
+	// Added: v1.9.0
 	ConfirmedPlatformLockedContent bool
 	// MultiPlayerGame specifies if the world is a multi-player game. This should always be set to true for
 	// servers.
@@ -232,16 +232,32 @@ type StartGame struct {
 	//
 	// Added: v1.11.1
 	StartWithMapEnabled bool
+	// TrustPlayers specifies if players should be trusted with operator-like abilities in legacy worlds.
+	//
+	// Added: v1.11.1, Removed: v1.9.0
+	TrustPlayers bool
 	// PlayerPermissions is the permission level of the player. It is a value from 0-3, with 0 being visitor,
 	// 1 being member, 2 being operator and 3 being custom.
 	//
 	// Added: v1.11.1
 	PlayerPermissions int32
+	// GamePublish is the legacy game publish setting used before broadcast modes were split.
+	//
+	// Added: v1.11.1, Removed: v1.9.0
+	GamePublish int32
 	// ServerChunkTickRadius is the radius around the player in which chunks are ticked. Most servers set this
 	// value to a fixed number, as it does not necessarily affect anything client-side.
 	//
 	// Added: v1.11.1
 	ServerChunkTickRadius int32
+	// PlatformBroadcast specifies if the world is broadcast to the platform in legacy protocols.
+	//
+	// Added: v1.11.1, Removed: v1.9.0
+	PlatformBroadcast bool
+	// XBLBroadcastIntent is the legacy Xbox Live broadcast intent used before broadcast modes were split.
+	//
+	// Added: v1.11.1, Removed: v1.9.0
+	XBLBroadcastIntent bool
 	// HasLockedBehaviourPack specifies if the behaviour pack of the world is locked, meaning it cannot be
 	// disabled from the world. This is typically set for worlds on the marketplace that have a dedicated
 	// behaviour pack.
@@ -480,11 +496,23 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	}
 	io.Float32(&pk.RainLevel)
 	io.Float32(&pk.LightningLevel)
-	io.Bool(&pk.ConfirmedPlatformLockedContent)
+	if io.Protocol() >= protocol.Protocol1v9v0 {
+		io.Bool(&pk.ConfirmedPlatformLockedContent)
+	}
 	io.Bool(&pk.MultiPlayerGame)
 	io.Bool(&pk.LANBroadcastEnabled)
-	io.Varint32(&pk.XBLBroadcastMode)
-	io.Varint32(&pk.PlatformBroadcastMode)
+	if io.Protocol() >= protocol.Protocol1v9v0 {
+		io.Varint32(&pk.XBLBroadcastMode)
+		io.Varint32(&pk.PlatformBroadcastMode)
+	} else {
+		broadcastToXboxLive := pk.XBLBroadcastMode != XBLBroadcastModeNoMultiPlay
+		io.Bool(&broadcastToXboxLive)
+		if broadcastToXboxLive {
+			pk.XBLBroadcastMode = XBLBroadcastModePublic
+		} else {
+			pk.XBLBroadcastMode = XBLBroadcastModeNoMultiPlay
+		}
+	}
 	io.Bool(&pk.CommandsEnabled)
 	io.Bool(&pk.TexturePackRequired)
 	protocol.FuncSlice(io, &pk.GameRules, io.GameRuleLegacy)
@@ -494,8 +522,19 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	}
 	io.Bool(&pk.BonusChestEnabled)
 	io.Bool(&pk.StartWithMapEnabled)
+	if io.Protocol() < protocol.Protocol1v9v0 {
+		io.Bool(&pk.TrustPlayers)
+	}
 	io.Varint32(&pk.PlayerPermissions)
+	if io.Protocol() < protocol.Protocol1v9v0 {
+		io.Varint32(&pk.GamePublish)
+	}
 	io.Int32(&pk.ServerChunkTickRadius)
+	if io.Protocol() < protocol.Protocol1v9v0 {
+		io.Bool(&pk.PlatformBroadcast)
+		io.Varint32(&pk.PlatformBroadcastMode)
+		io.Bool(&pk.XBLBroadcastIntent)
+	}
 	io.Bool(&pk.HasLockedBehaviourPack)
 	io.Bool(&pk.HasLockedTexturePack)
 	io.Bool(&pk.FromLockedWorldTemplate)

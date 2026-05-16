@@ -27,6 +27,10 @@ type ResourcePackStack struct {
 	//
 	// Added: v1.11.1
 	TexturePacks []protocol.StackResourcePack
+	// Experimental specifies if experimental gameplay should be enabled for the pack stack in legacy protocols.
+	//
+	// Added: v1.8.0, Removed: v1.13.0
+	Experimental bool
 	// BaseGameVersion is the vanilla version that the client should set its resource pack stack to.
 	//
 	// Added: v1.13.0
@@ -63,6 +67,8 @@ func (pk *ResourcePackStack) Marshal(io protocol.IO) {
 	protocol.Slice(io, &pk.TexturePacks)
 	if io.Protocol() >= protocol.Protocol1v13v0 {
 		io.String(&pk.BaseGameVersion)
+	} else if io.Protocol() >= protocol.Protocol1v8v0 {
+		io.Bool(&pk.Experimental)
 	}
 	if io.Protocol() >= protocol.Protocol1v16v100 {
 		protocol.SliceUint32Length(io, &pk.Experiments)
