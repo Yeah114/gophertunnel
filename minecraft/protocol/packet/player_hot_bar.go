@@ -33,5 +33,9 @@ func (*PlayerHotBar) ID() uint32 {
 func (pk *PlayerHotBar) Marshal(io protocol.IO) {
 	io.Varuint32(&pk.SelectedHotBarSlot)
 	io.Uint8(&pk.WindowID)
+	if io.Protocol() == protocol.Protocol1v2v10 {
+		legacyUnknown := uint32(0)
+		io.Varuint32(&legacyUnknown)
+	}
 	io.Bool(&pk.SelectHotBarSlot)
 }
