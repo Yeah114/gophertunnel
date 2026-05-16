@@ -118,17 +118,34 @@ func (x *PlayerListEntry) Marshal(r IO) {
 	r.UUID(&x.UUID)
 	r.Varint64(&x.EntityUniqueID)
 	r.String(&x.Username)
-	r.String(&x.XUID)
-	r.String(&x.PlatformChatID)
-	r.Int32(&x.BuildPlatform)
-	Single(r, &x.Skin)
-	r.Bool(&x.Teacher)
-	r.Bool(&x.Host)
-	if r.Protocol() >= Protocol1v20v60 {
-		r.Bool(&x.SubClient)
+	if r.Protocol() >= Protocol1v2v13 && r.Protocol() <= Protocol1v6v0 {
+		thirdPartyName := ""
+		thirdPartyID := int32(0)
+		r.String(&thirdPartyName)
+		r.Varint32(&thirdPartyID)
 	}
-	if r.Protocol() >= Protocol1v21v80 {
-		r.ARGB(&x.PlayerColour)
+	if r.Protocol() < Protocol1v13v0 {
+		Single(r, &x.Skin)
+		if r.Protocol() < Protocol1v2v13 {
+			legacySkinData := []byte(nil)
+			r.ByteSlice(&legacySkinData)
+		}
+	}
+	r.String(&x.XUID)
+	if r.Protocol() >= Protocol1v2v13 {
+		r.String(&x.PlatformChatID)
+		if r.Protocol() >= Protocol1v13v0 {
+			r.Int32(&x.BuildPlatform)
+			Single(r, &x.Skin)
+			r.Bool(&x.Teacher)
+			r.Bool(&x.Host)
+			if r.Protocol() >= Protocol1v20v60 {
+				r.Bool(&x.SubClient)
+			}
+			if r.Protocol() >= Protocol1v21v80 {
+				r.ARGB(&x.PlayerColour)
+			}
+		}
 	}
 }
 

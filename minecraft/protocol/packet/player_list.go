@@ -45,7 +45,7 @@ func (pk *PlayerList) Marshal(io protocol.IO) {
 	default:
 		io.UnknownEnumOption(pk.ActionType, "player list action type")
 	}
-	if pk.ActionType == PlayerListActionAdd {
+	if pk.ActionType == PlayerListActionAdd && io.Protocol() >= protocol.Protocol1v14v60 {
 		for i := 0; i < len(pk.Entries); i++ {
 			io.Bool(&pk.Entries[i].Skin.Trusted)
 		}
