@@ -52,10 +52,29 @@ type InventoryAction struct {
 	//
 	// Added: v1.16
 	NewItem ItemInstance
+	// StackNetworkID is the legacy stack network ID written outside of the item instance.
+	//
+	// Added: v1.16.100
+	// Removed: v1.16.220
+	StackNetworkID int32
 }
 
 // Marshal encodes/decodes an InventoryAction.
 func (x *InventoryAction) Marshal(r IO) {
+	InventoryActionContext{}.Marshal(r, x)
+}
+
+// InventoryActionContext holds context required for encoding inventory actions.
+type InventoryActionContext struct {
+	// StackNetworkIDs specifies if legacy stack network IDs are encoded after the old and new items.
+	//
+	// Added: v1.16.100
+	// Removed: v1.16.220
+	StackNetworkIDs bool
+}
+
+// Marshal encodes/decodes an InventoryAction.
+func (ctx InventoryActionContext) Marshal(r IO, x *InventoryAction) {
 	r.Varuint32(&x.SourceType)
 	switch x.SourceType {
 	case InventoryActionSourceContainer, InventoryActionSourceTODO:
@@ -66,6 +85,9 @@ func (x *InventoryAction) Marshal(r IO) {
 	r.Varuint32(&x.InventorySlot)
 	r.ItemInstance(&x.OldItem)
 	r.ItemInstance(&x.NewItem)
+	if ctx.StackNetworkIDs {
+		r.Varint32(&x.StackNetworkID)
+	}
 }
 
 const (

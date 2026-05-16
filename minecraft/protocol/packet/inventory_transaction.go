@@ -34,6 +34,11 @@ type InventoryTransaction struct {
 	//
 	// Added: v1.11.1
 	LegacySetItemSlots []protocol.LegacySetItemSlot
+	// HasNetworkIDs specifies if legacy stack network IDs are written after each inventory action.
+	//
+	// Added: v1.16.100
+	// Removed: v1.16.220
+	HasNetworkIDs bool
 	// Actions is a list of actions that took place, that form the inventory transaction together. Each of
 	// these actions hold one slot in which one item was changed to another. In general, the combination of
 	// all of these actions results in a balanced inventory transaction. This should be checked to ensure that
@@ -61,6 +66,11 @@ func (pk *InventoryTransaction) Marshal(io protocol.IO) {
 		protocol.Slice(io, &pk.LegacySetItemSlots)
 	}
 	io.TransactionDataType(&pk.TransactionData)
-	protocol.Slice(io, &pk.Actions)
+	if io.Protocol() >= protocol.Protocol1v16v100 && io.Protocol() < protocol.Protocol1v16v220 {
+		io.Bool(&pk.HasNetworkIDs)
+	}
+	protocol.FuncIOSlice(io, &pk.Actions, protocol.InventoryActionContext{
+		StackNetworkIDs: io.Protocol() >= protocol.Protocol1v16v100 && io.Protocol() < protocol.Protocol1v16v220 && pk.HasNetworkIDs,
+	}.Marshal)
 	pk.TransactionData.Marshal(io)
 }
