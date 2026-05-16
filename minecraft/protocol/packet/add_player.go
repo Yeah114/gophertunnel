@@ -118,7 +118,9 @@ func (pk *AddPlayer) Marshal(io protocol.IO) {
 	io.ItemInstance(&pk.HeldItem)
 	io.Varint32(&pk.GameType)
 	io.EntityMetadata(&pk.EntityMetadata)
-	protocol.Single(io, &pk.EntityProperties)
+	if io.Protocol() >= protocol.Protocol1v19v40 {
+		protocol.Single(io, &pk.EntityProperties)
+	}
 	protocol.Single(io, &pk.AbilityData)
 	protocol.Slice(io, &pk.EntityLinks)
 	io.String(&pk.DeviceID)

@@ -41,26 +41,26 @@ const (
 
 // AbilityData represents various data about the abilities of a player, such as ability layers or permissions.
 //
-// Added: v1.19.30
+// Added: v1.19.10
 type AbilityData struct {
 	// EntityUniqueID is a unique identifier of the player. It appears it is not required to fill this field
 	// out with a correct value. Simply writing 0 seems to work.
 	//
-	// Added: v1.19.30
+	// Added: v1.19.10
 	EntityUniqueID int64
 	// PlayerPermissions is the permission level of the player as it shows up in the player list built up using
 	// the PlayerList packet.
 	//
-	// Added: v1.19.30
+	// Added: v1.19.10
 	PlayerPermissions byte
 	// CommandPermissions is a set of permissions that specify what commands a player is allowed to execute.
 	//
-	// Added: v1.19.30
+	// Added: v1.19.10
 	CommandPermissions byte
 	// Layers contains all ability layers and their potential values. This should at least have one entry, being the
 	// base layer.
 	//
-	// Added: v1.19.30
+	// Added: v1.19.10
 	Layers []AbilityLayer
 }
 

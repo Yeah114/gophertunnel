@@ -97,6 +97,8 @@ func (pk *AddActor) Marshal(io protocol.IO) {
 	io.Float32(&pk.BodyYaw)
 	protocol.Slice(io, &pk.Attributes)
 	io.EntityMetadata(&pk.EntityMetadata)
-	protocol.Single(io, &pk.EntityProperties)
+	if io.Protocol() >= protocol.Protocol1v19v40 {
+		protocol.Single(io, &pk.EntityProperties)
+	}
 	protocol.Slice(io, &pk.EntityLinks)
 }

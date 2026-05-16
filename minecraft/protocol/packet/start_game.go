@@ -487,9 +487,13 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Bool(&pk.FromWorldTemplate)
 	io.Bool(&pk.WorldTemplateSettingsLocked)
 	io.Bool(&pk.OnlySpawnV1Villagers)
-	io.Bool(&pk.PersonaDisabled)
-	io.Bool(&pk.CustomSkinsDisabled)
-	io.Bool(&pk.EmoteChatMuted)
+	if io.Protocol() >= protocol.Protocol1v19v20 {
+		io.Bool(&pk.PersonaDisabled)
+		io.Bool(&pk.CustomSkinsDisabled)
+		if io.Protocol() >= protocol.Protocol1v19v60 {
+			io.Bool(&pk.EmoteChatMuted)
+		}
+	}
 	io.String(&pk.BaseGameVersion)
 	io.Int32(&pk.LimitedWorldWidth)
 	io.Int32(&pk.LimitedWorldDepth)
@@ -502,8 +506,10 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 		io.Bool(&forceExperimentalGameplay)
 		pk.ForceExperimentalGameplay = protocol.Option(forceExperimentalGameplay)
 	}
-	io.Uint8(&pk.ChatRestrictionLevel)
-	io.Bool(&pk.DisablePlayerInteractions)
+	if io.Protocol() >= protocol.Protocol1v19v20 {
+		io.Uint8(&pk.ChatRestrictionLevel)
+		io.Bool(&pk.DisablePlayerInteractions)
+	}
 	if io.Protocol() < protocol.Protocol1v26v0 {
 		io.String(&pk.ServerID)
 		io.String(&pk.WorldID)
@@ -526,7 +532,9 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.NBT(&pk.PropertyData, nbt.NetworkLittleEndian)
 	io.Uint64(&pk.ServerBlockStateChecksum)
 	io.UUID(&pk.WorldTemplateID)
-	io.Bool(&pk.ClientSideGeneration)
+	if io.Protocol() >= protocol.Protocol1v19v20 {
+		io.Bool(&pk.ClientSideGeneration)
+	}
 	if io.Protocol() >= protocol.Protocol1v19v80 {
 		io.Bool(&pk.UseBlockNetworkIDHashes)
 	}
