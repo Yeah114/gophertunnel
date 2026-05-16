@@ -37,5 +37,7 @@ func (pk *ContainerClose) Marshal(io protocol.IO) {
 	if io.Protocol() >= protocol.Protocol1v21v0 {
 		io.Uint8(&pk.ContainerType)
 	}
-	io.Bool(&pk.ServerSide)
+	if io.Protocol() >= protocol.Protocol1v16v100 {
+		io.Bool(&pk.ServerSide)
+	}
 }

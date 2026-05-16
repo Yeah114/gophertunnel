@@ -98,8 +98,10 @@ func (pk *MobEffect) Marshal(io protocol.IO) {
 	io.Varint32(&pk.Amplifier)
 	io.Bool(&pk.Particles)
 	io.Varint32(&pk.Duration)
-	if io.Protocol() >= protocol.Protocol1v20v70 {
+	if io.Protocol() >= protocol.Protocol1v21v40 {
 		io.Varuint64(&pk.Tick)
+	} else if io.Protocol() >= protocol.Protocol1v20v70 {
+		io.Uint64(&pk.Tick)
 	}
 	if io.Protocol() >= protocol.Protocol1v21v130v28 {
 		io.Bool(&pk.Ambient)
