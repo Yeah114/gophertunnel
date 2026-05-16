@@ -396,12 +396,20 @@ type CommandOrigin struct {
 
 // CommandOriginData reads/writes a CommandOrigin x using IO r.
 func CommandOriginData(r IO, x *CommandOrigin) {
-	originStr := commandOriginToString(x.Origin)
-	r.String(&originStr)
+	if r.Protocol() >= Protocol1v21v130v28 {
+		originStr := commandOriginToString(x.Origin)
+		r.String(&originStr)
+		commandOriginFromString(r, &x.Origin, originStr)
+	} else {
+		r.Varuint32(&x.Origin)
+	}
 	r.UUID(&x.UUID)
 	r.String(&x.RequestID)
-	r.Int64(&x.PlayerUniqueID)
-	commandOriginFromString(r, &x.Origin, originStr)
+	if r.Protocol() >= Protocol1v21v130v28 {
+		r.Int64(&x.PlayerUniqueID)
+	} else if x.Origin == CommandOriginDevConsole || x.Origin == CommandOriginTest {
+		r.Varint64(&x.PlayerUniqueID)
+	}
 }
 
 // CommandOutputMessage represents a message sent by a command that holds the output of one of the commands
@@ -431,8 +439,13 @@ type CommandOutputMessage struct {
 
 // Marshal encodes/decodes a CommandOutputMessage.
 func (x *CommandOutputMessage) Marshal(r IO) {
-	r.String(&x.Message)
-	r.Bool(&x.Success)
+	if r.Protocol() >= Protocol1v21v130v28 {
+		r.String(&x.Message)
+		r.Bool(&x.Success)
+	} else {
+		r.Bool(&x.Success)
+		r.String(&x.Message)
+	}
 	FuncSlice(r, &x.Parameters, r.String)
 }
 

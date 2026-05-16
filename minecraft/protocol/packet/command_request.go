@@ -41,5 +41,10 @@ func (pk *CommandRequest) Marshal(io protocol.IO) {
 	io.String(&pk.CommandLine)
 	protocol.CommandOriginData(io, &pk.CommandOrigin)
 	io.Bool(&pk.Internal)
-	io.String(&pk.Version)
+	if io.Protocol() >= protocol.Protocol1v21v130v28 {
+		io.String(&pk.Version)
+	} else if io.Protocol() >= protocol.Protocol1v19v60 {
+		version := int32(0)
+		io.Varint32(&version)
+	}
 }

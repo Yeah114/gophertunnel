@@ -59,12 +59,23 @@ func (*CommandOutput) ID() uint32 {
 
 func (pk *CommandOutput) Marshal(io protocol.IO) {
 	protocol.CommandOriginData(io, &pk.CommandOrigin)
-	outputTypeStr := commandOutputTypeToString(pk.OutputType)
-	io.String(&outputTypeStr)
-	commandOutputTypeFromString(io, &pk.OutputType, outputTypeStr)
-	io.Uint32(&pk.SuccessCount)
+	if io.Protocol() >= protocol.Protocol1v21v130v28 {
+		outputTypeStr := commandOutputTypeToString(pk.OutputType)
+		io.String(&outputTypeStr)
+		commandOutputTypeFromString(io, &pk.OutputType, outputTypeStr)
+		io.Uint32(&pk.SuccessCount)
+	} else {
+		io.Uint8(&pk.OutputType)
+		io.Varuint32(&pk.SuccessCount)
+	}
 	protocol.Slice(io, &pk.OutputMessages)
-	protocol.OptionalFunc(io, &pk.DataSet, io.String)
+	if io.Protocol() >= protocol.Protocol1v21v130v28 {
+		protocol.OptionalFunc(io, &pk.DataSet, io.String)
+	} else if pk.OutputType == CommandOutputTypeDataSet {
+		dataSet, _ := pk.DataSet.Value()
+		io.String(&dataSet)
+		pk.DataSet = protocol.Option(dataSet)
+	}
 }
 
 func commandOutputTypeToString(x byte) string {
