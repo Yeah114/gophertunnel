@@ -277,7 +277,7 @@ type StartGame struct {
 	// OnlySpawnV1Villagers is a hack that Mojang put in place to preserve backwards compatibility with old
 	// villagers. The bool is never actually read though, so it has no functionality.
 	//
-	// Added: v1.12
+	// Added: v1.12.0
 	OnlySpawnV1Villagers bool
 	// PersonaDisabled is true if persona skins are disabled for the current game session.
 	//
@@ -362,7 +362,7 @@ type StartGame struct {
 	// is a new system introduced in 1.16. Backwards compatibility with the inventory transactions has to
 	// some extent been preserved, but will eventually be removed.
 	//
-	// Added: v1.16.100
+	// Added: v1.16.0
 	ServerAuthoritativeInventory bool
 	// GameVersion is the version of the game the server is running. The exact function of this field isn't clear.
 	//
@@ -502,7 +502,9 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Bool(&pk.MSAGamerTagsOnly)
 	io.Bool(&pk.FromWorldTemplate)
 	io.Bool(&pk.WorldTemplateSettingsLocked)
-	io.Bool(&pk.OnlySpawnV1Villagers)
+	if io.Protocol() >= protocol.Protocol1v12v0 {
+		io.Bool(&pk.OnlySpawnV1Villagers)
+	}
 	if io.Protocol() >= protocol.Protocol1v19v20 {
 		io.Bool(&pk.PersonaDisabled)
 		io.Bool(&pk.CustomSkinsDisabled)
@@ -523,7 +525,7 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	}
 	if io.Protocol() >= protocol.Protocol1v21v130v28 {
 		protocol.OptionalFunc(io, &pk.ForceExperimentalGameplay, io.Bool)
-	} else {
+	} else if io.Protocol() >= protocol.Protocol1v16v0 {
 		forceExperimentalGameplay, _ := pk.ForceExperimentalGameplay.Value()
 		io.Bool(&forceExperimentalGameplay)
 		pk.ForceExperimentalGameplay = protocol.Option(forceExperimentalGameplay)
