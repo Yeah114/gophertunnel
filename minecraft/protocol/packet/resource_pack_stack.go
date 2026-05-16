@@ -29,7 +29,7 @@ type ResourcePackStack struct {
 	TexturePacks []protocol.StackResourcePack
 	// BaseGameVersion is the vanilla version that the client should set its resource pack stack to.
 	//
-	// Added: v1.11.1
+	// Added: v1.13.0
 	BaseGameVersion string
 	// Experiments holds a list of experiments that are either enabled or disabled in the world that the
 	// player spawns in.
@@ -61,9 +61,13 @@ func (pk *ResourcePackStack) Marshal(io protocol.IO) {
 		protocol.Slice(io, &pk.BehaviourPacks)
 	}
 	protocol.Slice(io, &pk.TexturePacks)
-	io.String(&pk.BaseGameVersion)
-	protocol.SliceUint32Length(io, &pk.Experiments)
-	io.Bool(&pk.ExperimentsPreviouslyToggled)
+	if io.Protocol() >= protocol.Protocol1v13v0 {
+		io.String(&pk.BaseGameVersion)
+	}
+	if io.Protocol() >= protocol.Protocol1v16v100 {
+		protocol.SliceUint32Length(io, &pk.Experiments)
+		io.Bool(&pk.ExperimentsPreviouslyToggled)
+	}
 	if io.Protocol() >= protocol.Protocol1v20v80 {
 		io.Bool(&pk.IncludeEditorPacks)
 	}

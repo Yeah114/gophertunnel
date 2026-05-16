@@ -294,7 +294,7 @@ type StartGame struct {
 	// BaseGameVersion is the version of the game from which Vanilla features will be used. The exact function
 	// of this field isn't clear.
 	//
-	// Added: v1.13
+	// Added: v1.13.0
 	BaseGameVersion string
 	// LimitedWorldWidth and LimitedWorldDepth are the dimensions of the world if the world is a limited
 	// world. For unlimited worlds, these may simply be left as 0.
@@ -510,7 +510,9 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 			io.Bool(&pk.EmoteChatMuted)
 		}
 	}
-	io.String(&pk.BaseGameVersion)
+	if io.Protocol() >= protocol.Protocol1v13v0 {
+		io.String(&pk.BaseGameVersion)
+	}
 	if io.Protocol() >= protocol.Protocol1v16v0 {
 		io.Int32(&pk.LimitedWorldWidth)
 		io.Int32(&pk.LimitedWorldDepth)
