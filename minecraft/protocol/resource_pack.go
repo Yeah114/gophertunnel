@@ -77,7 +77,9 @@ func (x *TexturePackInfo) Marshal(r IO) {
 	r.String(&x.Version)
 	r.Uint64(&x.Size)
 	r.String(&x.ContentKey)
-	r.String(&x.SubPackName)
+	if r.Protocol() >= Protocol1v2v0 {
+		r.String(&x.SubPackName)
+	}
 	if r.Protocol() > Protocol1v5v0 {
 		r.String(&x.ContentIdentity)
 	}

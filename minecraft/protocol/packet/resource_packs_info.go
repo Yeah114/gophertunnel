@@ -69,17 +69,21 @@ func (pk *ResourcePacksInfo) Marshal(io protocol.IO) {
 	if io.Protocol() >= protocol.Protocol1v20v70 {
 		io.Bool(&pk.HasAddons)
 	}
-	io.Bool(&pk.HasScripts)
-	if io.Protocol() >= protocol.Protocol1v17v10 {
-		io.Bool(&pk.ForcingServerPacks)
-	}
-	if io.Protocol() >= protocol.Protocol1v21v90 {
-		io.Bool(&pk.ForceDisableVibrantVisuals)
+	if io.Protocol() >= protocol.Protocol1v9v0 {
+		io.Bool(&pk.HasScripts)
+		if io.Protocol() >= protocol.Protocol1v17v10 && io.Protocol() < protocol.Protocol1v21v30 {
+			io.Bool(&pk.ForcingServerPacks)
+		}
+		if io.Protocol() >= protocol.Protocol1v21v90 {
+			io.Bool(&pk.ForceDisableVibrantVisuals)
+		}
 	}
 	if io.Protocol() >= protocol.Protocol1v21v50 {
 		io.UUID(&pk.WorldTemplateUUID)
 		io.String(&pk.WorldTemplateVersion)
 	}
+	if io.Protocol() < protocol.Protocol1v21v30 {
+		protocol.SliceUint16Length(io, &pk.BehaviourPacks)
+	}
 	protocol.SliceUint16Length(io, &pk.TexturePacks)
-	protocol.SliceUint16Length(io, &pk.BehaviourPacks)
 }
