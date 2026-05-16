@@ -481,7 +481,7 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Varint32(&pk.Difficulty)
 	io.UBlockPos(&pk.WorldSpawn)
 	io.Bool(&pk.AchievementsDisabled)
-	if io.Protocol() >= protocol.Protocol1v20v80 {
+	if io.Protocol() >= protocol.Protocol1v19v10 {
 		io.Varint32(&pk.EditorWorldType)
 	}
 	if io.Protocol() >= protocol.Protocol1v19v80 {
@@ -489,7 +489,11 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 		io.Bool(&pk.ExportedFromEditor)
 	}
 	io.Varint32(&pk.DayCycleLockTime)
-	io.Varint32(&pk.EducationEditionOffer)
+	if io.Protocol() >= protocol.Protocol1v13v0 {
+		io.Varint32(&pk.EducationEditionOffer)
+	} else {
+		io.Bool(&pk.EducationFeaturesEnabled)
+	}
 	if io.Protocol() > protocol.Protocol1v2v13v11 {
 		io.Bool(&pk.EducationFeaturesEnabled)
 	}
@@ -501,18 +505,20 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	if io.Protocol() >= protocol.Protocol1v9v0 {
 		io.Bool(&pk.ConfirmedPlatformLockedContent)
 	}
-	io.Bool(&pk.MultiPlayerGame)
-	io.Bool(&pk.LANBroadcastEnabled)
-	if io.Protocol() >= protocol.Protocol1v9v0 {
-		io.Varint32(&pk.XBLBroadcastMode)
-		io.Varint32(&pk.PlatformBroadcastMode)
-	} else {
-		broadcastToXboxLive := pk.XBLBroadcastMode != XBLBroadcastModeNoMultiPlay
-		io.Bool(&broadcastToXboxLive)
-		if broadcastToXboxLive {
-			pk.XBLBroadcastMode = XBLBroadcastModePublic
+	if io.Protocol() >= protocol.Protocol1v2v0 {
+		io.Bool(&pk.MultiPlayerGame)
+		io.Bool(&pk.LANBroadcastEnabled)
+		if io.Protocol() >= protocol.Protocol1v9v0 {
+			io.Varint32(&pk.XBLBroadcastMode)
+			io.Varint32(&pk.PlatformBroadcastMode)
 		} else {
-			pk.XBLBroadcastMode = XBLBroadcastModeNoMultiPlay
+			broadcastToXboxLive := pk.XBLBroadcastMode != XBLBroadcastModeNoMultiPlay
+			io.Bool(&broadcastToXboxLive)
+			if broadcastToXboxLive {
+				pk.XBLBroadcastMode = XBLBroadcastModePublic
+			} else {
+				pk.XBLBroadcastMode = XBLBroadcastModeNoMultiPlay
+			}
 		}
 	}
 	io.Bool(&pk.CommandsEnabled)
@@ -522,16 +528,18 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 		protocol.SliceUint32Length(io, &pk.Experiments)
 		io.Bool(&pk.ExperimentsPreviouslyToggled)
 	}
-	io.Bool(&pk.BonusChestEnabled)
-	if io.Protocol() > protocol.Protocol1v2v10 {
-		io.Bool(&pk.StartWithMapEnabled)
-	}
-	if io.Protocol() < protocol.Protocol1v9v0 {
-		io.Bool(&pk.TrustPlayers)
-	}
-	io.Varint32(&pk.PlayerPermissions)
-	if io.Protocol() < protocol.Protocol1v9v0 {
-		io.Varint32(&pk.GamePublish)
+	if io.Protocol() >= protocol.Protocol1v2v0 {
+		io.Bool(&pk.BonusChestEnabled)
+		if io.Protocol() > protocol.Protocol1v2v10 {
+			io.Bool(&pk.StartWithMapEnabled)
+		}
+		if io.Protocol() < protocol.Protocol1v9v0 {
+			io.Bool(&pk.TrustPlayers)
+		}
+		io.Varint32(&pk.PlayerPermissions)
+		if io.Protocol() < protocol.Protocol1v9v0 {
+			io.Varint32(&pk.GamePublish)
+		}
 	}
 	if io.Protocol() >= protocol.Protocol1v2v10 {
 		io.Int32(&pk.ServerChunkTickRadius)
