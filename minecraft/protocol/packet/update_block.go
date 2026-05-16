@@ -25,6 +25,14 @@ type UpdateBlock struct {
 	//
 	// Added: v1.12
 	NewBlockRuntimeID uint32
+	// LegacyBlockID is the numeric block ID written before block runtime IDs were introduced.
+	//
+	// Removed: v1.2.13
+	LegacyBlockID uint32
+	// LegacyBlockData is the block data written alongside LegacyBlockID.
+	//
+	// Removed: v1.2.13
+	LegacyBlockData uint32
 	// Flags is a combination of flags that specify the way the block is updated client-side. It is a
 	// combination of the flags above, but typically sending only the BlockUpdateNetwork flag is sufficient.
 	//
@@ -44,7 +52,15 @@ func (*UpdateBlock) ID() uint32 {
 
 func (pk *UpdateBlock) Marshal(io protocol.IO) {
 	io.UBlockPos(&pk.Position)
-	io.Varuint32(&pk.NewBlockRuntimeID)
-	io.Varuint32(&pk.Flags)
-	io.Varuint32(&pk.Layer)
+	if io.Protocol() > protocol.Protocol1v2v10 {
+		io.Varuint32(&pk.NewBlockRuntimeID)
+		io.Varuint32(&pk.Flags)
+	} else {
+		io.Varuint32(&pk.LegacyBlockID)
+		legacyBlockData := 0xb0 | pk.LegacyBlockData&0xf
+		io.Varuint32(&legacyBlockData)
+	}
+	if io.Protocol() > protocol.Protocol1v2v13v11 {
+		io.Varuint32(&pk.Layer)
+	}
 }
