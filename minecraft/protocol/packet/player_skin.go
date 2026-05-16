@@ -38,8 +38,24 @@ func (*PlayerSkin) ID() uint32 {
 
 func (pk *PlayerSkin) Marshal(io protocol.IO) {
 	io.UUID(&pk.UUID)
+	if io.Protocol() < protocol.Protocol1v13v0 {
+		geometryName := "geometry.humanoid.custom"
+		io.String(&geometryName)
+		io.String(&pk.NewSkinName)
+		io.String(&pk.OldSkinName)
+		io.ByteSlice(&pk.Skin.SkinData)
+		io.ByteSlice(&pk.Skin.CapeData)
+		io.String(&geometryName)
+		io.ByteSlice(&pk.Skin.SkinGeometry)
+		if io.Protocol() > protocol.Protocol1v5v0 {
+			io.Bool(&pk.Skin.PremiumSkin)
+		}
+		return
+	}
 	protocol.Single(io, &pk.Skin)
 	io.String(&pk.NewSkinName)
 	io.String(&pk.OldSkinName)
-	io.Bool(&pk.Skin.Trusted)
+	if io.Protocol() >= protocol.Protocol1v14v60 {
+		io.Bool(&pk.Skin.Trusted)
+	}
 }
