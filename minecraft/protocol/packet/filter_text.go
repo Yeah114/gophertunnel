@@ -9,10 +9,16 @@ import (
 // safer version of the text.
 //
 // Deprecated: This packet was deprecated in unknown.
+//
+// Added: v1.16.200
 type FilterText struct {
 	// Text is either the text from the client or the safer version of the text sent by the server.
+	//
+	// Added: v1.16.200
 	Text string
 	// FromServer indicates if the packet was sent by the server or not.
+	//
+	// Added: v1.16.200
 	FromServer bool
 }
 

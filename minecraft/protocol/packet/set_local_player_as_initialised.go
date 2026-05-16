@@ -7,9 +7,13 @@ import (
 // SetLocalPlayerAsInitialised is sent by the client in response to a PlayStatus packet with the status set
 // to 3. The packet marks the moment at which the client is fully initialised and can receive any packet
 // without discarding it.
+//
+// Added: v1.12
 type SetLocalPlayerAsInitialised struct {
 	// EntityRuntimeID is the entity runtime ID the player was assigned earlier in the login sequence in the
 	// StartGame packet.
+	//
+	// Added: v1.12
 	EntityRuntimeID uint64
 }
 

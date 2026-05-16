@@ -7,8 +7,12 @@ import (
 // PhotoInfoRequest is sent by the client to request photo information from the server.
 //
 // Deprecated: This packet was deprecated in 1.19.80.
+//
+// Added: v1.17.40
 type PhotoInfoRequest struct {
 	// PhotoID is the ID of the photo.
+	//
+	// Added: v1.17.40
 	PhotoID int64
 }
 

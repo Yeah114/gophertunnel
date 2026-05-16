@@ -6,12 +6,18 @@ import (
 
 // TakeItemActor is sent by the server when a player picks up an item entity. It makes the item entity
 // disappear to viewers and shows the pick-up animation.
+//
+// Added: v1.12
 type TakeItemActor struct {
 	// ItemEntityRuntimeID is the entity runtime ID of the item that is being taken by another entity. It will
 	// disappear to viewers after showing the pick-up animation.
+	//
+	// Added: v1.12
 	ItemEntityRuntimeID uint64
 	// TakerEntityRuntimeID is the runtime ID of the entity that took the item, which is usually a player, but
 	// could be another entity like a zombie too.
+	//
+	// Added: v1.12
 	TakerEntityRuntimeID uint64
 }
 

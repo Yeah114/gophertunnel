@@ -6,9 +6,13 @@ import (
 
 // OnScreenTextureAnimation is sent by the server to show a certain animation on the screen of the player.
 // The packet is used, as an example, for when a raid is triggered and when a raid is defeated.
+//
+// Added: v1.16.100
 type OnScreenTextureAnimation struct {
 	// AnimationType is the type of the animation to show. The packet provides no further extra data to allow
 	// modifying the duration or other properties of the animation.
+	//
+	// Added: v1.16.100
 	AnimationType uint32
 }
 

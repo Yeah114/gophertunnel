@@ -9,12 +9,20 @@ import (
 // entities. This packet fills the "history" of that component and entity movement is computed based on the
 // points. Vanilla sends this packet instead of the SetActorMotion packet when 'spatial optimisations' are
 // enabled.
+//
+// Added: v1.16.100
 type MotionPredictionHints struct {
 	// EntityRuntimeID is the runtime ID of the entity whose velocity is sent to the client.
+	//
+	// Added: v1.16.100
 	EntityRuntimeID uint64
 	// Velocity is the server-calculated velocity of the entity at the point of sending the packet.
+	//
+	// Added: v1.16.100
 	Velocity mgl32.Vec3
 	// OnGround specifies if the server currently thinks the entity is on the ground.
+	//
+	// Added: v1.16.100
 	OnGround bool
 }
 

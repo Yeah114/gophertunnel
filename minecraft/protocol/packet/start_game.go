@@ -36,235 +36,398 @@ const (
 // StartGame is sent by the server to send information about the world the player will be spawned in. It
 // contains information about the position the player spawns in, and information about the world in general
 // such as its game rules.
+//
+// Added: v1.11.1
 type StartGame struct {
 	// EntityUniqueID is the unique ID of the player. The unique ID is a value that remains consistent across
 	// different sessions of the same world, but most servers simply fill the runtime ID of the entity out for
 	// this field.
+	//
+	// Added: v1.11.1
 	EntityUniqueID int64
 	// EntityRuntimeID is the runtime ID of the player. The runtime ID is unique for each world session, and
 	// entities are generally identified in packets using this runtime ID.
+	//
+	// Added: v1.11.1
 	EntityRuntimeID uint64
 	// PlayerGameMode is the game mode the player currently has. It is a value from 0-4, with 0 being
 	// survival mode, 1 being creative mode, 2 being adventure mode, 3 being survival spectator and 4 being
 	// creative spectator.
 	// This field may be set to 5 to make the client fall back to the game mode set in the WorldGameMode
 	// field.
+	//
+	// Added: v1.11.1
 	PlayerGameMode int32
 	// PlayerPosition is the spawn position of the player in the world. In servers this is often the same as
 	// the world's spawn position found below.
+	//
+	// Added: v1.11.1
 	PlayerPosition mgl32.Vec3
 	// Pitch is the vertical rotation of the player. Facing straight forward yields a pitch of 0. Pitch is
 	// measured in degrees.
+	//
+	// Added: v1.11.1
 	Pitch float32
 	// Yaw is the horizontal rotation of the player. Yaw is also measured in degrees.
+	//
+	// Added: v1.11.1
 	Yaw float32
 	// WorldSeed is the seed used to generate the world. Unlike in PC edition, the seed is a 32bit integer
 	// here.
+	//
+	// Added: v1.11.1, Changed: v1.18.30
 	WorldSeed int64
 	// SpawnBiomeType specifies if the biome that the player spawns in is user defined (through behaviour
 	// packs) or builtin. See the constants above.
+	//
+	// Added: v1.16.100
 	SpawnBiomeType int16
 	// UserDefinedBiomeName is a readable name of the biome that the player spawned in, such as 'plains'. This
 	// might be a custom biome name if any custom biomes are present through behaviour packs.
+	//
+	// Added: v1.16.100
 	UserDefinedBiomeName string
 	// Dimension is the ID of the dimension that the player spawns in. It is a value from 0-2, with 0 being
 	// the overworld, 1 being the nether and 2 being the end.
+	//
+	// Added: v1.11.1
 	Dimension int32
 	// Generator is the generator used for the world. It is a value from 0-4, with 0 being old limited worlds,
 	// 1 being infinite worlds, 2 being flat worlds, 3 being nether worlds and 4 being end worlds. A value of
 	// 0 will actually make the client stop rendering chunks you send beyond the world limit.
+	//
+	// Added: v1.11.1
 	Generator int32
 	// WorldGameMode is the game mode that a player gets when it first spawns in the world. It is shown in the
 	// settings and is used if the PlayerGameMode is set to 5.
+	//
+	// Added: v1.11.1
 	WorldGameMode int32
 	// Hardcore is if the world is in hardcore mode. In hardcore mode, the player cannot respawn after dying.
+	//
+	// Added: v1.20.80
 	Hardcore bool
 	// Difficulty is the difficulty of the world. It is a value from 0-3, with 0 being peaceful, 1 being easy,
 	// 2 being normal and 3 being hard.
+	//
+	// Added: v1.11.1
 	Difficulty int32
 	// WorldSpawn is the block on which the world spawn of the world. This coordinate has no effect on the
 	// place that the client spawns, but it does have an effect on the direction that a compass points.
+	//
+	// Added: v1.11.1
 	WorldSpawn protocol.BlockPos
 	// AchievementsDisabled defines if achievements are disabled in the world. The client crashes if this
 	// value is set to true while the player's or the world's game mode is creative, and it's recommended to
 	// simply always set this to false as a server.
+	//
+	// Added: v1.11.1
 	AchievementsDisabled bool
 	// EditorWorldType is a value to dictate the type of editor mode, a special mode recently introduced adding
 	// "powerful tools for editing worlds, intended for experienced creators." It is one of the constants above.
+	//
+	// Added: v1.20.80
 	EditorWorldType int32
 	// CreatedInEditor is a value to dictate if the world was created as a project in the editor mode. The functionality
 	// of this field is currently unknown.
+	//
+	// Added: v1.19.80
 	CreatedInEditor bool
 	// ExportedFromEditor is a value to dictate if the world was exported from editor mode. The functionality of this
 	// field is currently unknown.
+	//
+	// Added: v1.19.80
 	ExportedFromEditor bool
 	// DayCycleLockTime is the time at which the day cycle was locked if the day cycle is disabled using the
 	// respective game rule. The client will maintain this time as long as the day cycle is disabled.
+	//
+	// Added: v1.11.1
 	DayCycleLockTime int32
 	// EducationEditionOffer is some Minecraft: Education Edition field that specifies what 'region' the world
 	// was from, with 0 being None, 1 being RestOfWorld, and 2 being China.
 	// The actual use of this field is unknown.
+	//
+	// Added: v1.13
 	EducationEditionOffer int32
 	// EducationFeaturesEnabled specifies if the world has education edition features enabled, such as the
 	// blocks or entities specific to education edition.
+	//
+	// Added: v1.11.1
 	EducationFeaturesEnabled bool
 	// EducationProductID is a UUID used to identify the education edition server instance. It is generally
 	// unique for education edition servers.
+	//
+	// Added: v1.16.100
 	EducationProductID string
 	// RainLevel is the level specifying the intensity of the rain falling. When set to 0, no rain falls at
 	// all.
+	//
+	// Added: v1.11.1
 	RainLevel float32
 	// LightningLevel is the level specifying the intensity of the thunder. This may actually be set
 	// independently from the RainLevel, meaning dark clouds can be produced without rain.
+	//
+	// Added: v1.11.1
 	LightningLevel float32
 	// ConfirmedPlatformLockedContent ...
+	//
+	// Added: v1.11.1
 	ConfirmedPlatformLockedContent bool
 	// MultiPlayerGame specifies if the world is a multi-player game. This should always be set to true for
 	// servers.
+	//
+	// Added: v1.11.1
 	MultiPlayerGame bool
 	// LANBroadcastEnabled specifies if LAN broadcast was intended to be enabled for the world.
+	//
+	// Added: v1.11.1
 	LANBroadcastEnabled bool
 	// XBLBroadcastMode is the mode used to broadcast the joined game across Xbox Live.
 	// When set to 0, the 'Invite' button in the pause screen is grayed out and players
 	// cannot invite their friends to the Xbox Live multiplayer session they're currently in.
 	// It only applies to worlds and has no effect on external servers.
+	//
+	// Added: v1.11.1
 	XBLBroadcastMode int32
 	// PlatformBroadcastMode is the mode used to broadcast the joined game across the platform.
+	//
+	// Added: v1.11.1
 	PlatformBroadcastMode int32
 	// CommandsEnabled specifies if commands are enabled for the player. It is recommended to always set this
 	// to true on the server, as setting it to false means the player cannot, under any circumstance, use a
 	// command.
+	//
+	// Added: v1.11.1
 	CommandsEnabled bool
 	// TexturePackRequired specifies if the texture pack the world might hold is required, meaning the client
 	// was forced to download it before joining.
+	//
+	// Added: v1.11.1
 	TexturePackRequired bool
 	// GameRules defines game rules currently active with their respective values. The value of these game
 	// rules may be either 'bool', 'int32' or 'float32'. Some game rules are server side only, and don't
 	// necessarily need to be sent to the client.
+	//
+	// Added: v1.11.1, Changed: v1.17.0
 	GameRules []protocol.GameRule
 	// Experiments holds a list of experiments that are either enabled or disabled in the world that the
 	// player spawns in.
+	//
+	// Added: v1.16.100
 	Experiments []protocol.ExperimentData
 	// ExperimentsPreviouslyToggled specifies if any experiments were previously toggled in this world. It is
 	// probably used for some kind of metrics.
+	//
+	// Added: v1.16.100
 	ExperimentsPreviouslyToggled bool
 	// BonusChestEnabled specifies if the world had the bonus map setting enabled when generating it. It does
 	// not have any effect client-side.
+	//
+	// Added: v1.11.1
 	BonusChestEnabled bool
 	// StartWithMapEnabled specifies if the world has the start with map setting enabled, meaning each joining
 	// player obtains a map. This should always be set to false, because the client obtains a map all on its
 	// own accord if this is set to true.
+	//
+	// Added: v1.11.1
 	StartWithMapEnabled bool
 	// PlayerPermissions is the permission level of the player. It is a value from 0-3, with 0 being visitor,
 	// 1 being member, 2 being operator and 3 being custom.
+	//
+	// Added: v1.11.1
 	PlayerPermissions int32
 	// ServerChunkTickRadius is the radius around the player in which chunks are ticked. Most servers set this
 	// value to a fixed number, as it does not necessarily affect anything client-side.
+	//
+	// Added: v1.11.1
 	ServerChunkTickRadius int32
 	// HasLockedBehaviourPack specifies if the behaviour pack of the world is locked, meaning it cannot be
 	// disabled from the world. This is typically set for worlds on the marketplace that have a dedicated
 	// behaviour pack.
+	//
+	// Added: v1.11.1
 	HasLockedBehaviourPack bool
 	// HasLockedTexturePack specifies if the texture pack of the world is locked, meaning it cannot be
 	// disabled from the world. This is typically set for worlds on the marketplace that have a dedicated
 	// texture pack.
+	//
+	// Added: v1.11.1
 	HasLockedTexturePack bool
 	// FromLockedWorldTemplate specifies if the world from the server was from a locked world template. For
 	// servers this should always be set to false.
+	//
+	// Added: v1.11.1
 	FromLockedWorldTemplate bool
 	// MSAGamerTagsOnly ..
+	//
+	// Added: v1.11.1
 	MSAGamerTagsOnly bool
 	// FromWorldTemplate specifies if the world from the server was from a world template. For servers this
 	// should always be set to false.
+	//
+	// Added: v1.11.1
 	FromWorldTemplate bool
 	// WorldTemplateSettingsLocked specifies if the world was a template that locks all settings that change
 	// properties above in the settings GUI. It is recommended to set this to true for servers that do not
 	// allow things such as setting game rules through the GUI.
+	//
+	// Added: v1.11.1
 	WorldTemplateSettingsLocked bool
 	// OnlySpawnV1Villagers is a hack that Mojang put in place to preserve backwards compatibility with old
 	// villagers. The bool is never actually read though, so it has no functionality.
+	//
+	// Added: v1.12
 	OnlySpawnV1Villagers bool
 	// PersonaDisabled is true if persona skins are disabled for the current game session.
+	//
+	// Added: v1.19.20
 	PersonaDisabled bool
 	// CustomSkinsDisabled is true if custom skins are disabled for the current game session.
+	//
+	// Added: v1.19.20
 	CustomSkinsDisabled bool
 	// EmoteChatMuted specifies if players will be sent a chat message when using certain emotes.
+	//
+	// Added: v1.19.60
 	EmoteChatMuted bool
 	// BaseGameVersion is the version of the game from which Vanilla features will be used. The exact function
 	// of this field isn't clear.
+	//
+	// Added: v1.13
 	BaseGameVersion string
 	// LimitedWorldWidth and LimitedWorldDepth are the dimensions of the world if the world is a limited
 	// world. For unlimited worlds, these may simply be left as 0.
+	//
+	// Added: v1.16.100
 	LimitedWorldWidth, LimitedWorldDepth int32
 	// NewNether specifies if the server runs with the new nether introduced in the 1.16 update.
+	//
+	// Added: v1.16.100
 	NewNether bool
 	// EducationSharedResourceURI is an education edition feature that transmits education resource settings to clients.
+	//
+	// Added: v1.17.30
 	EducationSharedResourceURI protocol.EducationSharedResourceURI
 	// ForceExperimentalGameplay specifies if experimental gameplay should be force enabled/disabled. For servers this
 	// should always be empty.
+	//
+	// Added: v1.20.0, Changed: v1.21.130
 	ForceExperimentalGameplay protocol.Optional[bool]
 	// LevelID is a base64 encoded world ID that is used to identify the world.
+	//
+	// Added: v1.11.1
 	LevelID string
 	// WorldName is the name of the world that the player is joining. Note that this field shows up above the
 	// player list for the rest of the game session, and cannot be changed. Setting the server name to this
 	// field is recommended.
+	//
+	// Added: v1.11.1
 	WorldName string
 	// TemplateContentIdentity is a UUID specific to the premium world template that might have been used to
 	// generate the world. Servers should always fill out an empty string for this.
+	//
+	// Added: v1.11.1, Changed: v1.19.0
 	TemplateContentIdentity string
 	// Trial specifies if the world was a trial world, meaning features are limited and there is a time limit
 	// on the world.
+	//
+	// Added: v1.11.1
 	Trial bool
 	// PlayerMovementSettings ...
+	//
+	// Added: v1.16.210
 	PlayerMovementSettings protocol.PlayerMovementSettings
 	// Time is the total time that has elapsed since the start of the world.
+	//
+	// Added: v1.11.1
 	Time int64
 	// EnchantmentSeed is the seed used to seed the random used to produce enchantments in the enchantment
 	// table. Note that the exact correct random implementation must be used to produce the correct results
 	// both client- and server-side.
+	//
+	// Added: v1.11.1
 	EnchantmentSeed int32
 	// Blocks is a list of all custom blocks registered on the server.
+	//
+	// Added: v1.16.100
 	Blocks []protocol.BlockEntry
 	// MultiPlayerCorrelationID is a unique ID specifying the multi-player session of the player. A random
 	// UUID should be filled out for this field.
+	//
+	// Added: v1.11.1
 	MultiPlayerCorrelationID string
 	// ServerAuthoritativeInventory specifies if the server authoritative inventory system is enabled. This
 	// is a new system introduced in 1.16. Backwards compatibility with the inventory transactions has to
 	// some extent been preserved, but will eventually be removed.
+	//
+	// Added: v1.16.100
 	ServerAuthoritativeInventory bool
 	// GameVersion is the version of the game the server is running. The exact function of this field isn't clear.
+	//
+	// Added: v1.17.0
 	GameVersion string
 	// PropertyData contains properties that should be applied on the player. These properties are the same as the
 	// ones that are sent in the SyncActorProperty packet.
+	//
+	// Added: v1.19.0
 	PropertyData map[string]any
 	// ServerBlockStateChecksum is a checksum to ensure block states between the server and client match.
 	// This can simply be left empty, and the client will avoid trying to verify it.
+	//
+	// Added: v1.18.0
 	ServerBlockStateChecksum uint64
 	// ClientSideGeneration is true if the client should use the features registered in the FeatureRegistry packet to
 	// generate terrain client-side to save on bandwidth.
+	//
+	// Added: v1.19.20
 	ClientSideGeneration bool
 	// WorldTemplateID is a UUID that identifies the template that was used to generate the world. Servers that do not
 	// use a world based off of a template can set this to an empty UUID.
+	//
+	// Added: v1.19.0
 	WorldTemplateID uuid.UUID
 	// ChatRestrictionLevel specifies the level of restriction on in-game chat. It is one of the constants above.
+	//
+	// Added: v1.19.20
 	ChatRestrictionLevel uint8
 	// DisablePlayerInteractions is true if the client should ignore other players when interacting with the world.
+	//
+	// Added: v1.19.20
 	DisablePlayerInteractions bool
+	// TickDeathSystemsEnabled specifies if the new tick death systems are enabled.
+	//
+	// Added: v1.21.130
+	// Removed: v1.21.130
+	TickDeathSystemsEnabled bool
 	// UseBlockNetworkIDHashes is true if the client should use the hash of a block's name as its network ID rather than
 	// its index in the expected block palette. This is useful for servers that wish to support multiple protocol versions
 	// and custom blocks, but it will result in extra bytes being written for every block in a sub chunk palette.
+	//
+	// Added: v1.20.0
 	UseBlockNetworkIDHashes bool
 	// ServerAuthoritativeSound is currently unknown as to what it does.
+	//
+	// Added: v1.20.0
 	ServerAuthoritativeSound bool
 	// ServerJoinInformation contains optional information about the server the player is joining.
+	//
+	// Added: v1.26.0
 	ServerJoinInformation protocol.Optional[protocol.ServerJoinInformation]
 	// ServerID is the server identifier for telemetry.
+	//
+	// Added: v1.21.130
 	ServerID string
 	// ScenarioID is the scenario identifier for telemetry.
+	//
+	// Added: v1.21.130
 	ScenarioID string
 	// WorldID is the world identifier for telemetry.
+	//
+	// Added: v1.21.130
 	WorldID string
 	// OwnerID is the owner identifier for telemetry.
+	//
+	// Added: v1.26.0
 	OwnerID string
 }
 
@@ -328,9 +491,21 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Int32(&pk.LimitedWorldDepth)
 	io.Bool(&pk.NewNether)
 	protocol.Single(io, &pk.EducationSharedResourceURI)
-	protocol.OptionalFunc(io, &pk.ForceExperimentalGameplay, io.Bool)
+	if io.Protocol() >= protocol.Protocol1v21v130 {
+		protocol.OptionalFunc(io, &pk.ForceExperimentalGameplay, io.Bool)
+	} else {
+		forceExperimentalGameplay, _ := pk.ForceExperimentalGameplay.Value()
+		io.Bool(&forceExperimentalGameplay)
+		pk.ForceExperimentalGameplay = protocol.Option(forceExperimentalGameplay)
+	}
 	io.Uint8(&pk.ChatRestrictionLevel)
 	io.Bool(&pk.DisablePlayerInteractions)
+	if io.Protocol() < protocol.Protocol1v26v0 {
+		io.String(&pk.ServerID)
+		io.String(&pk.WorldID)
+		io.String(&pk.ScenarioID)
+		io.String(&pk.OwnerID)
+	}
 	io.String(&pk.LevelID)
 	io.String(&pk.WorldName)
 	io.String(&pk.TemplateContentIdentity)
@@ -347,10 +522,15 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.UUID(&pk.WorldTemplateID)
 	io.Bool(&pk.ClientSideGeneration)
 	io.Bool(&pk.UseBlockNetworkIDHashes)
+	if io.Protocol() < protocol.Protocol1v21v130 {
+		io.Bool(&pk.TickDeathSystemsEnabled)
+	}
 	io.Bool(&pk.ServerAuthoritativeSound)
-	protocol.OptionalMarshaler(io, &pk.ServerJoinInformation)
-	io.String(&pk.ServerID)
-	io.String(&pk.ScenarioID)
-	io.String(&pk.WorldID)
-	io.String(&pk.OwnerID)
+	if io.Protocol() >= protocol.Protocol1v26v0 {
+		protocol.OptionalMarshaler(io, &pk.ServerJoinInformation)
+		io.String(&pk.ServerID)
+		io.String(&pk.ScenarioID)
+		io.String(&pk.WorldID)
+		io.String(&pk.OwnerID)
+	}
 }

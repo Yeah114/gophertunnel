@@ -7,9 +7,13 @@ import (
 // ServerToClientHandshake is sent by the server to the client to complete the key exchange in order to
 // initialise encryption on client and server side. It is followed up by a ClientToServerHandshake packet
 // from the client.
+//
+// Added: v1.11.1
 type ServerToClientHandshake struct {
 	// JWT is a raw JWT token containing data such as the public key from the server, the algorithm used and
 	// the server's token. It is used for the client to produce a shared secret.
+	//
+	// Added: v1.11.1
 	JWT []byte
 }
 

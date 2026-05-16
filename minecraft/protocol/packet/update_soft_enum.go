@@ -15,16 +15,24 @@ const (
 // options should be removed.
 // The UpdateSoftEnum packet will apply for enums that have been set in the AvailableCommands packet with the
 // 'Dynamic' field of the CommandEnum set to true.
+//
+// Added: v1.12
 type UpdateSoftEnum struct {
 	// EnumType is the type of the enum. This type must be identical to the one set in the AvailableCommands
 	// packet, because the client uses this to recognise which enum to update.
+	//
+	// Added: v1.12
 	EnumType string
 	// Options is a list of options that should be updated. Depending on the ActionType field, either these
 	// options will be added to the enum, the enum options will be set to these options or all of these
 	// options will be removed from the enum.
+	//
+	// Added: v1.12
 	Options []string
 	// ActionType is the type of the action to execute on the enum. The Options field has a different result,
 	// depending on what ActionType is used.
+	//
+	// Added: v1.12
 	ActionType byte
 }
 

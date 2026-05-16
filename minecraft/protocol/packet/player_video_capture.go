@@ -12,16 +12,23 @@ const (
 // PlayerVideoCapture packet is sent by the server to start or stop video recording for a player. It only works on
 // development builds and has no effect on retail builds. When recording,
 // the client will save individual frames to '/LocalCache/minecraftpe' in the format specified below.
+//
 // Added: v1.21.70
 type PlayerVideoCapture struct {
 	// Action is the action to perform with the video capture. It is one of the constants above.
+	//
+	// Added: v1.21.70
 	Action byte
 	// FrameRate is the frame rate at which the video should be recorded. It is only used when Action is
 	// PlayerVideoCaptureActionStart. A higher frame rate will cause more frames to be recorded, but also
 	// a noticeable increase in lag.
+	//
+	// Added: v1.21.70
 	FrameRate int32
 	// FilePrefix is the prefix of the file name that will be used to save the frames. The frames will be saved
 	// in the format 'FilePrefix%d.png' where %d is the frame index.
+	//
+	// Added: v1.21.70
 	FilePrefix string
 }
 

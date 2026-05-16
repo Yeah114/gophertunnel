@@ -6,8 +6,12 @@ import (
 )
 
 // SyncActorProperty is an alternative to synced actor data.
+//
+// Added: v1.17.0
 type SyncActorProperty struct {
 	// PropertyData ...
+	//
+	// Added: v1.17.0
 	PropertyData map[string]any
 }
 

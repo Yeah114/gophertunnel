@@ -18,22 +18,37 @@ const (
 // sending a Text packet will not do what is expected: The message should go to the websocket server, not to
 // the client's chat. The CommandOutput packet will make sure the messages are relayed to the correct origin
 // of the command request.
+//
+// Added: v1.11.1
 type CommandOutput struct {
 	// CommandOrigin is the data specifying the origin of the command. In other words, the source that the
 	// command request was from, such as the player itself or a websocket server. The client forwards the
 	// messages in this packet to the right origin, depending on what is sent here.
+	//
+	// Added: v1.11.1
 	CommandOrigin protocol.CommandOrigin
 	// OutputType specifies the type of output that is sent. The OutputType sent by vanilla games appears to
 	// be CommandOutputTypeAllOutput, which seems to work.
+	//
+	// Added: v1.11.1
+	// Changed: v1.21.130, encoded as a string output type identifier instead of a uint8 enum value.
 	OutputType byte
 	// SuccessCount is the amount of times that a command was executed successfully as a result of the command
 	// that was requested. For servers, this is usually a rather meaningless fields, but for vanilla, this is
 	// applicable for commands created with Functions.
+	//
+	// Added: v1.11.1
+	// Changed: v1.21.130, encoded as a uint32 instead of a varuint32.
 	SuccessCount uint32
 	// OutputMessages is a list of all output messages that should be sent to the player. Whether they are
 	// shown or not, depends on the type of the messages.
+	//
+	// Added: v1.11.1
 	OutputMessages []protocol.CommandOutputMessage
 	// DataSet ... TODO: Find out what this is for.
+	//
+	// Added: v1.11.1
+	// Changed: v1.21.130, encoded as an optional string instead of a conditional string for CommandOutputTypeDataSet.
 	DataSet protocol.Optional[string]
 }
 

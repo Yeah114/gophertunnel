@@ -7,12 +7,18 @@ import (
 // BiomeDefinitionList is sent by the server to let the client know all biomes that are available and
 // implemented on the server side. When enabled, it also includes information for the client to
 // accurately recreate the server-side generation in vanilla worlds/servers for increased performance.
+//
+// Added: v1.12
 type BiomeDefinitionList struct {
 	// BiomeDefinitions is a list of biomes that are available on the server.
+	//
+	// Added: v1.21.120
 	BiomeDefinitions []protocol.BiomeDefinition
 	// StringList is a makeshift dictionary implementation Mojang created to try and reduce the size of the
 	// overall packet. It is a list of common strings that are used in the biome definitions, such as
 	// biome names, float values or query expressions.
+	//
+	// Added: v1.21.120
 	StringList []string
 }
 

@@ -22,36 +22,60 @@ const (
 
 // MovePlayer is sent by players to send their movement to the server, and by the server to update the
 // movement of player entities to other players.
+//
+// Added: v1.11.1
 type MovePlayer struct {
 	// EntityRuntimeID is the runtime ID of the player. The runtime ID is unique for each world session, and
 	// entities are generally identified in packets using this runtime ID.
+	//
+	// Added: v1.11.1
 	EntityRuntimeID uint64
 	// Position is the position to spawn the player on. If the player is on a distance that the viewer cannot
 	// see it, the player will still show up if the viewer moves closer.
+	//
+	// Added: v1.11.1
 	Position mgl32.Vec3
 	// Pitch is the vertical rotation of the player. Facing straight forward yields a pitch of 0. Pitch is
 	// measured in degrees.
+	//
+	// Added: v1.11.1
 	Pitch float32
 	// Yaw is the horizontal rotation of the player. Yaw is also measured in degrees.
+	//
+	// Added: v1.11.1
 	Yaw float32
 	// HeadYaw is the same as Yaw, except that it applies specifically to the head of the player. A different
 	// value for HeadYaw than Yaw means that the player will have its head turned.
+	//
+	// Added: v1.11.1
 	HeadYaw float32
 	// Mode is the mode of the movement. It specifies the way the player's movement should be shown to other
 	// players. It is one of the constants above.
+	//
+	// Added: v1.11.1
 	Mode byte
 	// OnGround specifies if the player is considered on the ground. Note that proxies or hacked clients could
 	// fake this to always be true, so it should not be taken for granted.
+	//
+	// Added: v1.11.1
 	OnGround bool
 	// RiddenEntityRuntimeID is the runtime ID of the entity that the player might currently be riding. If not
 	// riding, this should be left 0.
+	//
+	// Added: v1.11.1
 	RiddenEntityRuntimeID uint64
 	// TeleportCause is written only if Mode is MoveModeTeleport. It specifies the cause of the teleportation,
 	// which is one of the constants above.
+	//
+	// Added: v1.11.1
 	TeleportCause int32
 	// TeleportSourceEntityType is the entity type that caused the teleportation, for example an ender pearl.
+	//
+	// Added: v1.11.1
 	TeleportSourceEntityType int32
 	// Tick is the server tick at which the packet was sent. It is used in relation to CorrectPlayerMovePrediction.
+	//
+	// Added: v1.16.100
 	Tick uint64
 }
 

@@ -11,6 +11,8 @@ import (
 // encrypt holds an encryption session with several fields required to encrypt and/or decrypt incoming
 // packets. It may be initialised using secret key bytes computed using the shared secret produced with a
 // private and a public ECDSA key.
+//
+// Added: v1.11.1
 type encrypt struct {
 	sendCounter uint64
 	buf         [8]byte

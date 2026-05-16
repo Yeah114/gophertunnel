@@ -7,8 +7,12 @@ import (
 // SetHealth is sent by the server. It sets the health of the player it is sent to. The SetHealth packet
 // should no longer be used. Instead, the health attribute should be used so that the health and maximum
 // health may be changed directly.
+//
+// Added: v1.11.1
 type SetHealth struct {
 	// Health is the new health of the player.
+	//
+	// Added: v1.11.1
 	Health int32
 }
 

@@ -1,12 +1,17 @@
 package protocol
 
 // EnchantmentOption represents a single option in the enchantment table for a single item.
+//
+// Added: v1.16
 type EnchantmentOption struct {
 	// Cost is the cost of the option. This is the amount of XP levels required to select this enchantment
 	// option.
-	// Changed: v1.26.20.26
+	//
+	// Changed: v1.26.20.26, encoded as a uint8 instead of a varuint32.
 	Cost uint8
 	// Enchantments holds the enchantments that will be applied to the item when this option is clicked.
+	//
+	// Added: v1.16
 	Enchantments ItemEnchantments
 	// Name is a name that will be translated to the 'Standard Galactic Alphabet'
 	// (https://minecraft.wiki/w/Enchanting_Table#Standard_Galactic_Alphabet) client-side. The names
@@ -14,12 +19,16 @@ type EnchantmentOption struct {
 	// 'animal imbue range galvanize '
 	// 'bless inside creature shrink '
 	// 'elder free of inside '
+	//
+	// Added: v1.16
 	Name string
 	// RecipeNetworkID is a unique network ID for this enchantment option. When enchanting, the client
 	// will submit this network ID in a ItemStackRequest packet with the CraftRecipe action, so that the
 	// server knows which enchantment was selected.
 	// Note that this ID should still be unique with other actual recipes. It's recommended to start counting
 	// for enchantment network IDs from the counter used for producing network IDs for the normal recipes.
+	//
+	// Added: v1.16
 	RecipeNetworkID uint32
 }
 
@@ -39,8 +48,12 @@ func (x *EnchantmentOption) Marshal(r IO) {
 
 // ItemEnchantments holds information on the enchantments that are applied to an item when a specific button
 // is clicked in the enchantment table.
+//
+// Added: v1.16
 type ItemEnchantments struct {
 	// Slot is either 0, 1 or 2. Its exact usage is not clear.
+	//
+	// Added: v1.16
 	Slot int32
 	// Enchantments is an array of 3 slices of enchantment instances. Each array represents enchantments that
 	// will be added to the item with a different activation type. The arrays in which enchantments are sent
@@ -53,6 +66,8 @@ type ItemEnchantments struct {
 	//           curse of vanishing, riptide, loyalty, channeling, multishot, piercing, quick charge }
 	// The first slice holds armour enchantments, the differences between the slice 2 and slice 3 are more
 	// vaguely defined.
+	//
+	// Added: v1.16
 	Enchantments [3][]EnchantmentInstance
 }
 
@@ -66,11 +81,16 @@ func (x *ItemEnchantments) Marshal(r IO) {
 
 // EnchantmentInstance represents a single enchantment instance with the type of the enchantment and its
 // level.
+//
+// Added: v1.16
 type EnchantmentInstance struct {
 	// Type is the type of the enchantment.
-	// Changed: v1.26.20.26
+	//
+	// Changed: v1.26.20.26, encoded as a varuint32 instead of a uint8.
 	Type byte
 	// Level is the level of the enchantment.
+	//
+	// Added: v1.16
 	Level byte
 }
 

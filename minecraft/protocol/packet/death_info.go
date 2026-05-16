@@ -6,10 +6,16 @@ import (
 
 // DeathInfo is a packet sent from the server to the client expected to be sent when a player dies. It contains messages
 // related to the player's death, which are shown on the death screen as of v1.19.10.
+//
+// Added: v1.19.10
 type DeathInfo struct {
 	// Cause is the cause of the player's death, such as "suffocation" or "suicide".
+	//
+	// Added: v1.19.10
 	Cause string
 	// Messages is a list of death messages to be shown on the death screen.
+	//
+	// Added: v1.19.10
 	Messages []string
 }
 

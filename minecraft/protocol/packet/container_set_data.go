@@ -21,14 +21,22 @@ const (
 // ContainerSetData is sent by the server to update specific data of a single container, meaning a block such
 // as a furnace or a brewing stand. This data is usually used by the client to display certain features
 // client-side.
+//
+// Added: v1.11.1
 type ContainerSetData struct {
 	// WindowID is the ID of the window that should have its data set. The player must have a window open with
 	// the window ID passed, or nothing will happen.
+	//
+	// Added: v1.11.1
 	WindowID byte
 	// Key is the key of the property. It is one of the constants that can be found above. Multiple properties
 	// share the same key, but the functionality depends on the type of the container that the data is set to.
+	//
+	// Added: v1.11.1
 	Key int32
 	// Value is the value of the property. Its use differs per property.
+	//
+	// Added: v1.11.1
 	Value int32
 }
 

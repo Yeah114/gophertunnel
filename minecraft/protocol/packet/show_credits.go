@@ -11,12 +11,18 @@ const (
 
 // ShowCredits is sent by the server to show the Minecraft credits screen to the client. It is typically sent
 // when the player beats the ender dragon and leaves the End.
+//
+// Added: v1.12
 type ShowCredits struct {
 	// PlayerRuntimeID is the entity runtime ID of the player to show the credits to. It's not clear why this
 	// field is actually here in the first place.
+	//
+	// Added: v1.12
 	PlayerRuntimeID uint64
 	// StatusType is the status type of the credits. It is one of the constants above, and either starts or
 	// stops the credits.
+	//
+	// Added: v1.12
 	StatusType int32
 }
 

@@ -6,12 +6,18 @@ import (
 
 // MapCreateLockedCopy is sent by the client to create a locked copy of one map into another map. In vanilla,
 // it is used in the cartography table to create a map that is locked and cannot be modified.
+//
+// Added: v1.12
 type MapCreateLockedCopy struct {
 	// OriginalMapID is the ID of the map that is being copied. The locked copy will obtain all content that
 	// is visible on this map, except the content will not change.
+	//
+	// Added: v1.12
 	OriginalMapID int64
 	// NewMapID is the ID of the map that holds the locked copy of the map that OriginalMapID points to. Its
 	// contents will be impossible to change.
+	//
+	// Added: v1.12
 	NewMapID int64
 }
 

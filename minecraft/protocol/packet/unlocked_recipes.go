@@ -14,11 +14,17 @@ const (
 
 // UnlockedRecipes gives the client a list of recipes that have been unlocked, restricting the recipes that appear in
 // the recipe book.
+//
+// Added: v1.19.70
 type UnlockedRecipes struct {
 	// UnlockType is the type of unlock that the packet represents, and can either be adding or removing a list of recipes.
 	// It is one of the constants listed above.
+	//
+	// Added: v1.19.70
 	UnlockType uint32
 	// Recipes is a list of recipe names that have been unlocked.
+	//
+	// Added: v1.19.70
 	Recipes []string
 }
 

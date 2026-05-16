@@ -15,6 +15,8 @@ const (
 // ClientBoundControlSchemeSet is sent by the server upon the client's request or the usage of the vanilla
 // /controlscheme command. It is used to set the control scheme of the client, often used in combination with
 // custom cameras.
+//
+// Added: v1.21.80
 type ClientBoundControlSchemeSet struct {
 	// ControlScheme is the control scheme that the client should use. It is one of the following:
 	//  - ControlSchemeLockedPlayerRelativeStrafe is the default behaviour, this cannot be set when the client
@@ -27,6 +29,8 @@ type ClientBoundControlSchemeSet struct {
 	//    left/right will make the player turn in a circle.
 	//  - ControlSchemePlayerRelativeStrafe makes movement the same as the default behaviour, but can be
 	//    used in a custom camera.
+	//
+	// Added: v1.21.80
 	ControlScheme byte
 }
 

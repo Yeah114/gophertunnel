@@ -5,6 +5,8 @@ import (
 )
 
 // RefreshEntitlements is sent by the client to the server to refresh the entitlements of the player.
+//
+// Added: v1.20.30
 type RefreshEntitlements struct{}
 
 // ID ...

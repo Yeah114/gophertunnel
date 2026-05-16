@@ -14,9 +14,13 @@ const (
 // to online players by the server.
 // The MultiPlayerSettings packet is a Minecraft: Education Edition packet. It has no functionality for the
 // base game.
+//
+// Added: v1.13
 type MultiPlayerSettings struct {
 	// ActionType is the action that should be done when this packet is sent. It is one of the constants that
 	// may be found above.
+	//
+	// Added: v1.13
 	ActionType int32
 }
 

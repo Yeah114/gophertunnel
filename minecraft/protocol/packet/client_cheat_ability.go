@@ -7,8 +7,12 @@ import (
 // ClientCheatAbility functions the same as UpdateAbilities. It is unclear why these two were separated.
 //
 // Deprecated: ClientCheatAbility is deprecated as of 1.20.10.
+//
+// Added: v1.19.60
 type ClientCheatAbility struct {
 	// AbilityData represents various data about the abilities of a player, such as ability layers or permissions.
+	//
+	// Added: v1.19.60
 	AbilityData protocol.AbilityData
 }
 

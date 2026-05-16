@@ -10,8 +10,12 @@ const (
 )
 
 // SimulationType is an in-progress packet. We currently do not know the use case.
+//
+// Added: v1.17.10
 type SimulationType struct {
 	// SimulationType is the simulation type selected.
+	//
+	// Added: v1.17.10
 	SimulationType byte
 }
 

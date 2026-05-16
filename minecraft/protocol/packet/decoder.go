@@ -12,6 +12,8 @@ import (
 
 // Decoder handles the decoding of Minecraft packets sent through an io.Reader. These packets in turn contain
 // multiple compressed packets.
+//
+// Added: v1.11.1
 type Decoder struct {
 	// r holds the io.Reader that packets are read from if the reader does not implement packetReader. When
 	// this is the case, the buf field has a non-zero length.

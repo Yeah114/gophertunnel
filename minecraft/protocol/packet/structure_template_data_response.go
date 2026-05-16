@@ -12,17 +12,27 @@ const (
 
 // StructureTemplateDataResponse is sent by the server to send data of a structure to the client in response
 // to a StructureTemplateDataRequest packet.
+//
+// Added: v1.19.50
 type StructureTemplateDataResponse struct {
 	// StructureName is the name of the structure that was requested. This is the name used to export the
 	// structure to a file.
+	//
+	// Added: v1.19.50
 	StructureName string
 	// Success specifies if a structure template was found by the StructureName that was sent in a
 	// StructureTemplateDataRequest packet.
+	//
+	// Added: v1.19.50
 	Success bool
 	// ResponseType specifies the response type of the packet. This depends on the RequestType field sent in
 	// the StructureTemplateDataRequest packet and is one of the constants above.
+	//
+	// Added: v1.19.50
 	ResponseType byte
 	// StructureTemplate holds the data of the structure template.
+	//
+	// Added: v1.19.50
 	StructureTemplate map[string]any
 }
 

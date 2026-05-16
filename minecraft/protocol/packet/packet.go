@@ -20,9 +20,20 @@ type Packet interface {
 
 // Header is the header of a packet. It exists out of a single varuint32 which is composed of a packet ID and
 // a sender and target sub client ID. These IDs are used for split screen functionality.
+//
+// Added: v1.11.1
 type Header struct {
-	PacketID        uint32
+	// PacketID is the numeric ID of the packet contained in the header.
+	//
+	// Added: v1.11.1
+	PacketID uint32
+	// SenderSubClient is the originating split-screen sub-client ID encoded into the header.
+	//
+	// Added: v1.11.1
 	SenderSubClient byte
+	// TargetSubClient is the destination split-screen sub-client ID encoded into the header.
+	//
+	// Added: v1.11.1
 	TargetSubClient byte
 }
 

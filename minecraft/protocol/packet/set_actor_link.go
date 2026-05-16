@@ -6,10 +6,14 @@ import (
 
 // SetActorLink is sent by the server to initiate an entity link client-side, meaning one entity will start
 // riding another.
+//
+// Added: v1.12
 type SetActorLink struct {
 	// EntityLink is the link to be set client-side. It links two entities together, so that one entity rides
 	// another. Note that players that see those entities later will not see the link, unless it is also sent
 	// in the AddActor and AddPlayer packets.
+	//
+	// Added: v1.12
 	EntityLink protocol.EntityLink
 }
 

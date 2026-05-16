@@ -257,7 +257,7 @@ type StackResponseContainerInfo struct {
 	// the main inventory, the ContainerID seems to be 0x1b. Fur the cursor, this value seems to be 0x3a. For
 	// the crafting grid, this value seems to be 0x0d.
 	//
-	// Changed: v1.21.20
+	// Changed: v1.21.20, expanded from a plain container ID to a FullContainerName with optional dynamic container data.
 	Container FullContainerName
 	// SlotInfo holds information on what item stack should be present in specific slots in the container.
 	//
@@ -463,6 +463,9 @@ func (a *DestroyStackRequestAction) Marshal(r IO) {
 //
 // Added: v1.16
 type ConsumeStackRequestAction struct {
+	// DestroyStackRequestAction holds the source slot and count of the consumed items.
+	//
+	// Added: v1.16
 	DestroyStackRequestAction
 }
 
@@ -748,7 +751,7 @@ func (a *CraftResultsDeprecatedStackRequestAction) Marshal(r IO) {
 type StackRequestSlotInfo struct {
 	// Container is the FullContainerName that describes the container that the slot is in.
 	//
-	// Changed: v1.21.20
+	// Changed: v1.21.20, expanded from a plain container ID to a FullContainerName with optional dynamic container data.
 	Container FullContainerName
 	// Slot is the index of the slot within the container with the ContainerID above.
 	//

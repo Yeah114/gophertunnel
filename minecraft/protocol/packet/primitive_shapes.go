@@ -4,9 +4,12 @@ import "github.com/sandertv/gophertunnel/minecraft/protocol"
 
 // PrimitiveShapes is a packet sent by the server to instruct the client to render one or more shapes in the world.
 // Shapes can be added, removed or updated based on the data provided individually.
+//
 // Added: v1.26.20
 type PrimitiveShapes struct {
 	// Shapes is a list of shapes to draw on the client-side.
+	//
+	// Added: v1.26.20
 	Shapes []protocol.PrimitiveShape
 }
 

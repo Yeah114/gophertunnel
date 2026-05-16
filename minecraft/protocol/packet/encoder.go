@@ -12,6 +12,8 @@ import (
 
 // Encoder handles the encoding of Minecraft packets that are sent to an io.Writer. The packets are compressed
 // and optionally encoded before they are sent to the io.Writer.
+//
+// Added: v1.11.1
 type Encoder struct {
 	w io.Writer
 

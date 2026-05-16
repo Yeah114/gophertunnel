@@ -30,6 +30,9 @@ type ItemInstance struct {
 //
 // Added: v1.16
 type ItemStack struct {
+	// ItemType identifies the item type and metadata of the stack.
+	//
+	// Added: v1.16
 	ItemType
 	// BlockRuntimeID is the runtime ID of the block represented by the item, if applicable.
 	//

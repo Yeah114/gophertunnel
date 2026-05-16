@@ -11,22 +11,40 @@ const (
 )
 
 // ClientBoundDebugRenderer is sent by the server to spawn an outlined cube on client-side.
+//
+// Added: v1.16.210
 type ClientBoundDebugRenderer struct {
 	// Type is the type of action. It is one of the constants above.
+	//
+	// Added: v1.16.210
 	Type uint32
 	// Text is the text that is displayed above the debug.
+	//
+	// Added: v1.16.210
 	Text string
 	// Position is the position to spawn the debug on.
+	//
+	// Added: v1.16.210
 	Position mgl32.Vec3
 	// Red is the red value from the RGBA colour rendered on the debug. This value is in the range 0-1.
+	//
+	// Added: v1.16.210
 	Red float32
 	// Green is the green value from the RGBA colour rendered on the debug. This value is in the range 0-1.
+	//
+	// Added: v1.16.210
 	Green float32
 	// Blue is the blue value from the RGBA colour rendered on the debug. This value is in the range 0-1.
+	//
+	// Added: v1.16.210
 	Blue float32
 	// Alpha is the alpha value from the RGBA colour rendered on the debug. This value is in the range 0-1.
+	//
+	// Added: v1.16.210
 	Alpha float32
 	// Duration is how long the debug will last in the world for. It is measured in milliseconds.
+	//
+	// Added: v1.16.210
 	Duration uint64
 }
 

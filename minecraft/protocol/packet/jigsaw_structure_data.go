@@ -6,9 +6,13 @@ import (
 )
 
 // JigsawStructureData is sent by the server to let the client know all the rules for jigsaw structures.
+//
+// Added: v1.21.20
 type JigsawStructureData struct {
 	// StructureData is a network NBT serialised compound of all the jigsaw structure rules defined
 	// on the server.
+	//
+	// Added: v1.21.20
 	StructureData map[string]any
 }
 

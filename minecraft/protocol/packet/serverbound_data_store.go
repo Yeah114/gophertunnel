@@ -5,9 +5,12 @@ import (
 )
 
 // ServerBoundDataStore is sent by the client to update a data store property on the server.
+//
 // Added: v1.26.10
 type ServerBoundDataStore struct {
 	// Update contains the data store update.
+	//
+	// Added: v1.26.10
 	Update protocol.DataStoreUpdate
 }
 

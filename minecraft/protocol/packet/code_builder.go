@@ -6,12 +6,18 @@ import (
 
 // CodeBuilder is an Education Edition packet sent by the server to the client to open the URL to a Code
 // Builder (websocket) server.
+//
+// Added: v1.16.0
 type CodeBuilder struct {
 	// URL is the url to the Code Builder (websocket) server.
+	//
+	// Added: v1.16.0
 	URL string
 	// ShouldOpenCodeBuilder specifies if the client should automatically open the Code Builder app. If set to
 	// true, the client will attempt to use the Code Builder app to connect to and interface with the server
 	// running at the URL above.
+	//
+	// Added: v1.16.0
 	ShouldOpenCodeBuilder bool
 }
 

@@ -7,22 +7,34 @@ import (
 // UpdateEquip is sent by the server to the client upon opening a horse inventory. It is used to set the
 // content of the inventory and specify additional properties, such as the items that are allowed to be put
 // in slots of the inventory.
+//
+// Added: v1.12
 type UpdateEquip struct {
 	// WindowID is the identifier associated with the window that the UpdateEquip packet concerns. It is the
 	// ID sent for the horse inventory that was opened before this packet was sent.
+	//
+	// Added: v1.12
 	WindowID byte
 	// WindowType is the type of the window that was opened. Generally, this is the type of a horse inventory,
 	// as the packet is specifically made for that.
+	//
+	// Added: v1.12
 	WindowType byte
 	// Size is the size of the horse inventory that should be opened. A bigger size does, in fact, change the
 	// amount of slots displayed.
+	//
+	// Added: v1.12
 	Size int32
 	// EntityUniqueID is the unique ID of the entity whose equipment was 'updated' to the player. It is
 	// typically the horse entity that had its inventory opened.
+	//
+	// Added: v1.12
 	EntityUniqueID int64
 	// SerialisedInventoryData is a network NBT serialised compound holding the content of the inventory of
 	// the entity (the equipment) and additional data such as the allowed items for a particular slot, used to
 	// make sure only saddles can be put in the saddle slot etc.
+	//
+	// Added: v1.12
 	SerialisedInventoryData []byte
 }
 

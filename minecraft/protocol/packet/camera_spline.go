@@ -5,9 +5,12 @@ import (
 )
 
 // CameraSpline is sent by the server to define camera spline paths.
+//
 // Added: v1.26.0
 type CameraSpline struct {
 	// Splines is a list of camera spline definitions.
+	//
+	// Added: v1.26.0
 	Splines []protocol.CameraSplineDefinition
 }
 

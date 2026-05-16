@@ -28,6 +28,9 @@ func (x *BlockEntry) Marshal(r IO) {
 //
 // Added: v1.17.30
 type BlockChangeEntry struct {
+	// BlockPos is the position of the block that changed.
+	//
+	// Added: v1.17.30
 	BlockPos
 	// BlockRuntimeID is the runtime ID of the block.
 	//

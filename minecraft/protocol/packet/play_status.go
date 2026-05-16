@@ -19,8 +19,12 @@ const (
 
 // PlayStatus is sent by the server to update a player on the play status. This includes failed statuses due
 // to a mismatched version, but also success statuses.
+//
+// Added: v1.11.1
 type PlayStatus struct {
 	// Status is the status of the packet. It is one of the constants found above.
+	//
+	// Added: v1.11.1
 	Status int32
 }
 

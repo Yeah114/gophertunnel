@@ -6,9 +6,13 @@ import (
 
 // LevelEventGeneric is sent by the server to send a 'generic' level event to the client. This packet sends an
 // NBT serialised object and may for that reason be used for any event holding additional data.
+//
+// Added: v1.12
 type LevelEventGeneric struct {
 	// EventID is a unique identifier that identifies the event called. The data that follows has fields in
 	// the NBT depending on what event it is.
+	//
+	// Added: v1.12
 	EventID int32
 	// SerialisedEventData is a network little endian serialised object of event data, with fields that vary
 	// depending on EventID.
@@ -80,6 +84,8 @@ type LevelEventGeneric struct {
 	// })
 	// The 'originX', 'originY' and 'originZ' fields are present in every event and serve as a replacement for
 	// a Position field in this packet.
+	//
+	// Added: v1.12
 	SerialisedEventData []byte
 }
 

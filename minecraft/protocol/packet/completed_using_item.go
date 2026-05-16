@@ -26,12 +26,18 @@ const (
 
 // CompletedUsingItem is sent by the server to tell the client that it should be done using the item it is
 // currently using.
+//
+// Added: v1.13
 type CompletedUsingItem struct {
 	// UsedItemID is the item ID of the item that the client completed using. This should typically be the
 	// ID of the item held in the hand.
+	//
+	// Added: v1.13
 	UsedItemID int16
 	// UseMethod is the method of the using of the item that was completed. It is one of the constants that
 	// may be found above.
+	//
+	// Added: v1.13
 	UseMethod int32
 }
 

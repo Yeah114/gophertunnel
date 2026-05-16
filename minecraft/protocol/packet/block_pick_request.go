@@ -6,14 +6,22 @@ import (
 
 // BlockPickRequest is sent by the client when it requests to pick a block in the world and place its item in
 // their inventory.
+//
+// Added: v1.11.1
 type BlockPickRequest struct {
 	// Position is the position at which the client requested to pick the block. The block at that position
 	// should have its item put in HotBarSlot if it is empty.
+	//
+	// Added: v1.11.1
 	Position protocol.BlockPos
 	// AddBlockNBT specifies if the item should get all NBT tags from the block, meaning the item places a
 	// block practically always equal to the one picked.
+	//
+	// Added: v1.11.1
 	AddBlockNBT bool
 	// HotBarSlot is the slot that was held at the time of picking a block.
+	//
+	// Added: v1.11.1
 	HotBarSlot byte
 }
 

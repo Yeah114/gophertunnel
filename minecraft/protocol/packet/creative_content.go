@@ -31,10 +31,16 @@ import (
 //			{CreativeItemNetworkID: 5, Item: protocol.ItemStack{...}, GroupIndex: 2}, // Ungrouped after "planks"
 //		}
 //	}
+//
+// Added: v1.16
 type CreativeContent struct {
 	// Groups is a list of the groups that should be added to the creative inventory.
+	//
+	// Added: v1.21.60
 	Groups []protocol.CreativeGroup
 	// Items is a list of the items that should be added to the creative inventory.
+	//
+	// Added: v1.16
 	Items []protocol.CreativeItem
 }
 

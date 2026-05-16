@@ -6,6 +6,8 @@ import (
 
 // ServerSettingsRequest is sent by the client to request the settings specific to the server. These settings
 // are shown in a separate tab client-side, and have the same structure as a custom form.
+//
+// Added: v1.12
 type ServerSettingsRequest struct {
 	// ServerSettingsRequest has no fields.
 }

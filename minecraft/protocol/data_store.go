@@ -21,18 +21,23 @@ const (
 )
 
 // DataStoreChangeEntry represents a single entry in the data store changes array.
+//
 // Added: v1.26.10
 type DataStoreChangeEntry struct {
 	// ChangeType is the type of change. It is one of the DataStoreChangeType constants.
+	//
 	// Added: v1.26.10
 	ChangeType uint32
 	// Update is set if ChangeType is DataStoreChangeTypeUpdate.
+	//
 	// Added: v1.26.10
 	Update DataStoreUpdate
 	// Change is set if ChangeType is DataStoreChangeTypeChange.
+	//
 	// Added: v1.26.10
 	Change DataStoreChange
 	// Removal is set if ChangeType is DataStoreChangeTypeRemoval.
+	//
 	// Added: v1.26.10
 	Removal DataStoreRemoval
 }
@@ -56,33 +61,43 @@ func (x *DataStoreChangeEntry) Marshal(r IO) {
 }
 
 // DataStoreUpdate represents an update to a data store property.
+//
 // Added: v1.26.10
 type DataStoreUpdate struct {
 	// DataStoreName is the name of the data store.
+	//
 	// Added: v1.26.10
 	DataStoreName string
 	// Property is the property being updated.
+	//
 	// Added: v1.26.10
 	Property string
 	// Path is the path within the property.
+	//
 	// Added: v1.26.10
 	Path string
 	// ControlType is the type of the data value. It is one of the DataStoreControl constants.
+	//
 	// Added: v1.26.10
 	ControlType uint32
 	// DoubleValue is the value if ControlType is DataStoreControlDouble.
+	//
 	// Added: v1.26.10
 	DoubleValue float64
 	// BoolValue is the value if ControlType is DataStoreControlBoolean.
+	//
 	// Added: v1.26.10
 	BoolValue bool
 	// StringValue is the value if ControlType is DataStoreControlString.
+	//
 	// Added: v1.26.10
 	StringValue string
 	// PropertyUpdateCount is the update count for the property.
+	//
 	// Added: v1.26.10
 	PropertyUpdateCount uint32
 	// PathUpdateCount is the update count for the path.
+	//
 	// Added: v1.26.10
 	PathUpdateCount uint32
 }
@@ -108,32 +123,41 @@ func (x *DataStoreUpdate) Marshal(r IO) {
 }
 
 // DataStorePropertyValue represents a typed property value in a data store.
+//
 // Added: v1.26.10
 type DataStorePropertyValue struct {
 	// Type is the property value type. It is one of the DataStorePropertyType constants.
+	//
 	// Added: v1.26.10
 	Type int32
 	// BoolValue is the value if Type is DataStorePropertyTypeBool.
+	//
 	// Added: v1.26.10
 	BoolValue bool
 	// Int64Value is the value if Type is DataStorePropertyTypeInt64.
+	//
 	// Added: v1.26.10
 	Int64Value int64
 	// StringValue is the value if Type is DataStorePropertyTypeString.
+	//
 	// Added: v1.26.10
 	StringValue string
 	// MapValue is the value if Type is DataStorePropertyTypeMap.
+	//
 	// Added: v1.26.10
 	MapValue []DataStoreMapEntry
 }
 
 // DataStoreMapEntry represents a key-value pair in a data store map property.
+//
 // Added: v1.26.10
 type DataStoreMapEntry struct {
 	// Key is the map key.
+	//
 	// Added: v1.26.10
 	Key string
 	// Value is the map value.
+	//
 	// Added: v1.26.10
 	Value DataStorePropertyValue
 }
@@ -161,26 +185,33 @@ func MarshalDataStorePropertyValue(r IO, x *DataStorePropertyValue) {
 }
 
 // DataStoreChange represents a change to a data store property value.
+//
 // Added: v1.26.10
 type DataStoreChange struct {
 	// DataStoreName is the name of the data store.
+	//
 	// Added: v1.26.10
 	DataStoreName string
 	// Property is the property that changed.
+	//
 	// Added: v1.26.10
 	Property string
 	// UpdateCount is the update count.
+	//
 	// Added: v1.26.10
 	UpdateCount uint32
 	// NewValue is the new property value.
+	//
 	// Added: v1.26.10
 	NewValue DataStorePropertyValue
 }
 
 // DataStoreRemoval represents a removal from a data store.
+//
 // Added: v1.26.10
 type DataStoreRemoval struct {
 	// DataStoreName is the name of the data store being removed.
+	//
 	// Added: v1.26.10
 	DataStoreName string
 }

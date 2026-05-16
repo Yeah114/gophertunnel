@@ -5,9 +5,12 @@ import (
 )
 
 // ServerPresenceInfo is sent by the server to provide the client with presence info.
+//
 // Added: v1.26.20
 type ServerPresenceInfo struct {
 	// PresenceInfo is the presence info to set, or nothing to fall back to the default.
+	//
+	// Added: v1.26.20
 	PresenceInfo protocol.Optional[protocol.PresenceInfo]
 }
 

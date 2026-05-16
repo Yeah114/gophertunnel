@@ -15,23 +15,37 @@ const (
 // It is sent with a combination of flags that specify what data is updated.
 // The ClientBoundMapItemData packet may be used to update specific parts of the map only. It is not required
 // to send the entire map each time when updating one part.
+//
+// Added: v1.11.1
 type ClientBoundMapItemData struct {
 	// MapID is the unique identifier that represents the map that is updated over network. It remains
 	// consistent across sessions.
+	//
+	// Added: v1.11.1
 	MapID int64
 	// UpdateFlags is a combination of flags found above that indicate what parts of the map should be updated
 	// client-side.
+	//
+	// Added: v1.11.1
 	UpdateFlags uint32
 	// Dimension is the dimension of the map that should be updated, for example the overworld (0), the nether
 	// (1) or the end (2).
+	//
+	// Added: v1.11.1
 	Dimension byte
 	// LockedMap specifies if the map that was updated was a locked map, which may be done using a cartography
 	// table.
+	//
+	// Added: v1.11.1
 	LockedMap bool
 	// Origin is the center position of the map being updated.
+	//
+	// Added: v1.19.20
 	Origin protocol.BlockPos
 	// Scale is the scale of the map as it is shown in-game. It is written when any of the MapUpdateFlags are
 	// set to the UpdateFlags field.
+	//
+	// Added: v1.11.1
 	Scale byte
 
 	// The following fields apply only for the MapUpdateFlagInitialisation.
@@ -41,32 +55,49 @@ type ClientBoundMapItemData struct {
 	// a bigger scale. This means that a scale 0 map will have 5 map IDs in this slice, whereas a scale 4 map
 	// will have only 1 (its own).
 	// The actual use of this field remains unknown.
+	//
+	// Added: v1.11.1
 	MapsIncludedIn []int64
 
 	// The following fields apply only for the MapUpdateFlagDecoration.
 
 	// TrackedObjects is a list of tracked objects on the map, which may either be entities or blocks. The
 	// client makes sure these tracked objects are actually tracked. (position updated etc.)
+	//
+	// Added: v1.11.1
 	TrackedObjects []protocol.MapTrackedObject
 	// Decorations is a list of fixed decorations located on the map. The decorations will not change
 	// client-side, unless the server updates them.
+	//
+	// Added: v1.11.1
 	Decorations []protocol.MapDecoration
 
 	// The following fields apply only for the MapUpdateFlagTexture update flag.
 
 	// Height is the height of the texture area that was updated. The height may be a subset of the total
 	// height of the map.
+	//
+	// Added: v1.11.1
 	Height int32
 	// Width is the width of the texture area that was updated. The width may be a subset of the total width
 	// of the map.
+	//
+	// Added: v1.11.1
 	Width int32
 	// XOffset is the X offset in pixels at which the updated texture area starts. From this X, the updated
 	// texture will extend exactly Width pixels to the right.
+	//
+	// Added: v1.11.1
 	XOffset int32
 	// YOffset is the Y offset in pixels at which the updated texture area starts. From this Y, the updated
 	// texture will extend exactly Height pixels up.
+	//
+	// Added: v1.11.1
 	YOffset int32
 	// Pixels is a list of pixel colours for the new texture of the map. It is indexed as Pixels[y*height + x].
+	//
+	// Added: v1.11.1
+	// Changed: v1.19.20, flattened from a 2D slice to a single slice indexed as Pixels[y*height + x].
 	Pixels []color.RGBA
 }
 

@@ -14,11 +14,17 @@ const (
 // ResourcePackClientResponse is sent by the client in response to resource packets sent by the server. It is
 // used to let the server know what action needs to be taken for the client to have all resource packs ready
 // and set.
+//
+// Added: v1.11.1
 type ResourcePackClientResponse struct {
 	// Response is the response type of the response. It is one of the constants found above.
+	//
+	// Added: v1.11.1
 	Response byte
 	// PacksToDownload is a list of resource pack UUIDs combined with their version that need to be downloaded
 	// (for example SomePack_1.0.0), if the Response field is PackResponseSendPacks.
+	//
+	// Added: v1.11.1
 	PacksToDownload []string
 }
 

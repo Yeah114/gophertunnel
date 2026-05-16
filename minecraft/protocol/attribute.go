@@ -48,6 +48,9 @@ func (x *AttributeValue) Marshal(r IO) {
 //
 // Added: v1.16
 type Attribute struct {
+	// AttributeValue holds the attribute name and its current value range.
+	//
+	// Added: v1.16
 	AttributeValue
 	// DefaultMin is the default minimum value of the attribute. It's not clear why this field must be sent to
 	// the client, but it is required regardless.

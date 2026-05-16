@@ -5,6 +5,7 @@ import (
 )
 
 // ClientBoundDataDrivenUIReload is sent by the server to reload the data-driven UI on the client.
+//
 // Added: v1.26.0
 type ClientBoundDataDrivenUIReload struct{}
 

@@ -13,13 +13,19 @@ const (
 // The client will send this request to find the position a lodestone compass needs to point to. If found, it
 // will point to the lodestone. If not, it will start spinning around.
 // A PositionTrackingDBServerBroadcast packet should be sent in response to this packet.
+//
+// Added: v1.16
 type PositionTrackingDBClientRequest struct {
 	// RequestAction is the action that should be performed upon the receiving of the packet. It is one of the
 	// constants found above.
+	//
+	// Added: v1.16
 	RequestAction byte
 	// TrackingID is a unique ID used to identify the request. The server responds with a
 	// PositionTrackingDBServerBroadcast packet holding the same ID, so that the client can find out what that
 	// packet was in response to.
+	//
+	// Added: v1.16
 	TrackingID int32
 }
 

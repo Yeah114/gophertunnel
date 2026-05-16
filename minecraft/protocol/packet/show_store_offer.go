@@ -17,11 +17,17 @@ const (
 // a store buttons show up in the in-game pause menu and will, as a result, not be able to open store offers
 // on the client side. Sending the packet does therefore not work when using a proxy that is not connected to
 // with the domain of one of the partnered servers.
+//
+// Added: v1.12
 type ShowStoreOffer struct {
 	// OfferID is a UUID that identifies the offer for which a window should be opened.
+	//
+	// Added: v1.12
 	OfferID uuid.UUID
 	// Type is the type of the store offer that is being shown to the player. It is one of the constants that may be
 	// found above.
+	//
+	// Added: v1.20.50
 	Type byte
 }
 

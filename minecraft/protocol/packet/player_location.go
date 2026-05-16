@@ -13,14 +13,22 @@ const (
 // PlayerLocation is sent by the server to the client to either update a player's position on the locator bar,
 // or remove them completely. The client will determine how to render the player on the locator bar based on
 // their own distance to Position.
+//
+// Added: v1.21.80
 type PlayerLocation struct {
 	// Type is the action that is being performed. It is one of the constants above.
+	//
+	// Added: v1.21.80
 	Type int32
 	// EntityUniqueID is the unique ID of the entity. The unique ID is a value that remains consistent across
 	// different sessions of the same world.
+	//
+	// Added: v1.21.80
 	EntityUniqueID int64
 	// Position is the position of the player to be used on the locator bar. This is only set when the Type is
 	// PlayerLocationTypeCoordinates.
+	//
+	// Added: v1.21.80
 	Position mgl32.Vec3
 }
 

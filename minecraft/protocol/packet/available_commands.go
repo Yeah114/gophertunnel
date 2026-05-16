@@ -9,34 +9,52 @@ import (
 // of each commands as well, making it possible for the client to provide
 // auto-completion and command usages. AvailableCommands packets can be resent,
 // but the packet is often very big, so doing this very often should be avoided.
+//
+// Added: v1.12
 type AvailableCommands struct {
 	// EnumValues is a slice of all enum values of any enum in the
 	// AvailableCommands packet. EnumValues generally should contain each
 	// possible value only once. Enums are built by pointing to entries in this
 	// slice.
+	//
+	// Added: v1.12
 	EnumValues []string
 	// ChainedSubcommandValues is a slice of all chained subcommand names. ChainedSubcommandValues generally should
 	//contain each possible value only once. ChainedSubcommands are built by pointing to entries in this slice.
+	//
+	// Added: v1.20.0
 	ChainedSubcommandValues []string
 	// Suffixes, like EnumValues, is a slice of all suffix values of any command
 	// parameter in the AvailableCommands packet.
+	//
+	// Added: v1.12
 	Suffixes []string
 	// Enums is a slice of all (fixed) command enums present in any of the
 	// commands.
+	//
+	// Added: v1.12
 	Enums []protocol.CommandEnum
 	// ChainedSubcommands is a slice of all subcommands that are followed by a chained command. An example usage of this
 	// is /execute which allows you to run another command as another entity or at a different position etc.
+	//
+	// Added: v1.20.0
 	ChainedSubcommands []protocol.ChainedSubcommand
 	// Commands is a list of all commands that the client should show
 	// client-side. The AvailableCommands packet replaces any commands sent
 	// before. It does not only add the commands that are sent in it.
+	//
+	// Added: v1.12
 	Commands []protocol.Command
 	// DynamicEnums is a slice of dynamic command enums. These command enums can
 	// be changed during runtime without having to resend an AvailableCommands
 	// packet.
+	//
+	// Added: v1.12
 	DynamicEnums []protocol.DynamicEnum
 	// Constraints is a list of constraints that should be applied to certain
 	// options of enums in the commands above.
+	//
+	// Added: v1.12
 	Constraints []protocol.CommandEnumConstraint
 }
 

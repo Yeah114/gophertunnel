@@ -7,39 +7,61 @@ import (
 // ServerBoundDiagnostics is sent by the client to tell the server about the performance diagnostics
 // of the client. It is sent by the client roughly every 500ms or 10 in-game ticks when the
 // "Creator > Enable Client Diagnostics" setting is enabled.
+//
 // Added: v1.21.20
 type ServerBoundDiagnostics struct {
 	// AverageFramesPerSecond is the average amount of frames per second that the client has been
 	// running at.
+	//
+	// Added: v1.21.20
 	AverageFramesPerSecond float32
 	// AverageServerSimTickTime is the average time that the server spends simulating a single tick
 	// in milliseconds.
+	//
+	// Added: v1.21.20
 	AverageServerSimTickTime float32
 	// AverageClientSimTickTime is the average time that the client spends simulating a single tick
 	// in milliseconds.
+	//
+	// Added: v1.21.20
 	AverageClientSimTickTime float32
 	// AverageBeginFrameTime is the average time that the client spends beginning a frame in
 	// milliseconds.
+	//
+	// Added: v1.21.20
 	AverageBeginFrameTime float32
 	// AverageInputTime is the average time that the client spends processing input in milliseconds.
+	//
+	// Added: v1.21.20
 	AverageInputTime float32
 	// AverageRenderTime is the average time that the client spends rendering in milliseconds.
+	//
+	// Added: v1.21.20
 	AverageRenderTime float32
 	// AverageEndFrameTime is the average time that the client spends ending a frame in milliseconds.
+	//
+	// Added: v1.21.20
 	AverageEndFrameTime float32
 	// AverageRemainderTimePercent is the average percentage of time that the client spends on
 	// tasks that are not accounted for.
+	//
+	// Added: v1.21.20
 	AverageRemainderTimePercent float32
 	// AverageUnaccountedTimePercent is the average percentage of time that the client spends on
 	// unaccounted tasks.
+	//
+	// Added: v1.21.20
 	AverageUnaccountedTimePercent float32
 	// MemoryCategoryValues is a list of memory category counters sent by the client.
+	//
 	// Added: v1.26.0
 	MemoryCategoryValues []protocol.MemoryCategoryCounter
 	// EntityDiagnostics is a list of entity timing entries sent by the client.
+	//
 	// Added: v1.26.20.26
 	EntityDiagnostics []protocol.EntityDiagnosticTimingInfo
 	// SystemDiagnostics is a list of system timing entries sent by the client.
+	//
 	// Added: v1.26.20.26
 	SystemDiagnostics []protocol.SystemDiagnosticTimingInfo
 }

@@ -5,21 +5,36 @@ import (
 )
 
 // ClientBoundAttributeLayerSync is sent by the server to synchronise attribute layers with the client.
+//
 // Added: v1.26.10
 type ClientBoundAttributeLayerSync struct {
 	// PayloadType is the type of attribute layer payload. It is one of the protocol.AttributeLayerPayloadType constants.
+	//
+	// Added: v1.26.10
 	PayloadType uint32
 	// Layers is set if PayloadType is AttributeLayerPayloadTypeUpdateLayers.
+	//
+	// Added: v1.26.10
 	Layers []protocol.AttributeLayerData
 	// LayerName is the attribute layer name, used for UpdateSettings, UpdateEnvironment and RemoveEnvironment.
+	//
+	// Added: v1.26.10
 	LayerName string
 	// DimensionID is the dimension ID, used for UpdateSettings, UpdateEnvironment and RemoveEnvironment.
+	//
+	// Added: v1.26.10
 	DimensionID int32
 	// Settings is set if PayloadType is AttributeLayerPayloadTypeUpdateSettings.
+	//
+	// Added: v1.26.10
 	Settings protocol.AttributeLayerSettings
 	// EnvironmentAttributes is set if PayloadType is AttributeLayerPayloadTypeUpdateEnvironment.
+	//
+	// Added: v1.26.10
 	EnvironmentAttributes []protocol.EnvironmentAttributeData
 	// RemoveAttributeNames is set if PayloadType is AttributeLayerPayloadTypeRemoveEnvironment.
+	//
+	// Added: v1.26.10
 	RemoveAttributeNames []string
 }
 

@@ -23,22 +23,40 @@ import (
 // a public key used to verify other claims.
 type chain []string
 
+// certificate holds the certificate chain payload embedded in modern login requests.
+//
+// Added: v1.21.90
 type certificate struct {
+	// Chain holds the encoded certificate chain used during login authentication.
+	//
+	// Added: v1.21.90
 	Chain chain `json:"chain"`
 }
 
 // request is the outer encapsulation of the request. It holds a chain and a ClientData object.
+//
+// Added: v1.21.90
 type request struct {
 	// Certificate holds the client certificate chain. The chain holds several claims that the server may verify in order to
 	// make sure that the client is logged into XBOX Live.
+	//
+	// Added: v1.21.90
 	Certificate certificate `json:"Certificate"`
 	// AuthenticationType is the authentication type of the request.
+	//
+	// Added: v1.21.90
 	AuthenticationType uint8 `json:"AuthenticationType"`
 	// Token is an empty string, it's unclear what's used for.
+	//
+	// Added: v1.21.90
 	Token string `json:"Token"`
 	// RawToken holds the raw token that follows the JWT chain, holding the ClientData.
+	//
+	// Added: v1.21.90
 	RawToken string `json:"-"`
 	// Legacy specifies whether to use the legacy format of the request or not.
+	//
+	// Added: v1.21.90
 	Legacy bool `json:"-"`
 }
 
@@ -76,8 +94,16 @@ var mojangKey = new(ecdsa.PublicKey)
 
 // AuthResult is returned by a call to Parse. It holds the ecdsa.PublicKey of the client and a bool that
 // indicates if the player was logged in with XBOX Live.
+//
+// Added: v1.21.90
 type AuthResult struct {
-	PublicKey             *ecdsa.PublicKey
+	// PublicKey is the verified client public key used for encryption.
+	//
+	// Added: v1.21.90
+	PublicKey *ecdsa.PublicKey
+	// XBOXLiveAuthenticated indicates if the login request was authenticated through Xbox Live.
+	//
+	// Added: v1.21.90
 	XBOXLiveAuthenticated bool
 }
 
@@ -425,28 +451,44 @@ func EncodeOffline(identityData IdentityData, data ClientData, key *ecdsa.Privat
 
 // tokenClaims holds the claims for the multiplayer token from the first chain,
 // which contains the fields related to the identity of the player.
+//
+// Added: v1.21.90
 type tokenClaims struct {
 	jwt.Claims
 
 	// IdentityProviderType is seemingly the underlying identity provider
 	// used to sign in to the authorization service. It is always 'PlayFab'.
+	//
+	// Added: v1.21.90
 	IdentityProviderType string `json:"ipt"`
 	// PlayFabID is the PlayFab entity ID for the authenticated player.
 	// It is the ID for the master player account of the player, which
 	// is shared across multiple PlayFab titles published by Mojang.
+	//
+	// Added: v1.21.90
 	PlayFabID string `json:"mid"`
 	// PlayFabTitleID is the title ID specific to PlayFab.
 	// It is typically '20CA2' for the base version of the game.
+	//
+	// Added: v1.21.90
 	PlayFabTitleID string `json:"tid"`
 	// ClientPublicKey is the public key of the client used to sign the client data
 	// and to initialise the encryption in the handshake.
+	//
+	// Added: v1.21.90
 	ClientPublicKey string `json:"cpk"`
 	// XUID is the ID of the authenticated player specific to Xbox Live.
+	//
+	// Added: v1.21.90
 	XUID string `json:"xid"`
 	// DisplayName is the in-game name for the authenticated player.
+	//
+	// Added: v1.21.90
 	DisplayName string `json:"xname"`
 	// Identity is the UUID of the player. It is only set for offline logins where
 	// the UUID cannot be derived from the XUID.
+	//
+	// Added: v1.26.20
 	Identity string `json:"identity,omitempty"`
 }
 
@@ -488,12 +530,19 @@ func identityFromXUID(xuid string) uuid.UUID {
 
 // identityClaims holds the claims for the last token in the chain, which contains the IdentityData of the
 // player.
+//
+// Added: v1.21.90
 type identityClaims struct {
 	jwt.Claims
 
 	// ExtraData holds the extra data of this claim, which is the IdentityData of the player.
+	//
+	// Added: v1.21.90
 	ExtraData IdentityData `json:"extraData"`
 
+	// IdentityPublicKey holds the public key that signs the next claim in the chain.
+	//
+	// Added: v1.21.90
 	IdentityPublicKey string `json:"identityPublicKey"`
 }
 
@@ -507,12 +556,19 @@ func (c identityClaims) Validate(e jwt.Expected) error {
 }
 
 // identityPublicKeyClaims holds the claims for a JWT that holds an identity public key.
+//
+// Added: v1.21.90
 type identityPublicKeyClaims struct {
 	jwt.Claims
 
 	// IdentityPublicKey holds a serialised ecdsa.PublicKey used in the next JWT in the chain.
-	IdentityPublicKey    string `json:"identityPublicKey"`
-	CertificateAuthority bool   `json:"certificateAuthority,omitempty"`
+	//
+	// Added: v1.21.90
+	IdentityPublicKey string `json:"identityPublicKey"`
+	// CertificateAuthority indicates if the key belongs to a certificate authority.
+	//
+	// Added: v1.21.90
+	CertificateAuthority bool `json:"certificateAuthority,omitempty"`
 }
 
 // ParsePublicKey parses an ecdsa.PublicKey from the base64 encoded public key data passed and sets it to a

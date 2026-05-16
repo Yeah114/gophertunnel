@@ -7,14 +7,22 @@ import (
 // HurtArmour is sent by the server to damage the player's armour after being hit. The packet should never be
 // used by servers as it hands the responsibility over to the player completely, while the server can easily
 // reliably update the armour damage of players itself.
+//
+// Added: v1.11.1
 type HurtArmour struct {
 	// Cause is the cause of the damage dealt to the armour.
+	//
+	// Added: v1.11.1
 	Cause int32
 	// Damage is the amount of damage points that was dealt to the player. The damage to the armour will be
 	// calculated by the client based upon this damage, and will also be based upon any enchantments like
 	// thorns that the armour may have.
+	//
+	// Added: v1.11.1
 	Damage int32
 	// ArmourSlots is a bitset of all armour slots affected.
+	//
+	// Added: v1.17.30
 	ArmourSlots int64
 }
 

@@ -149,18 +149,29 @@ const (
 
 // Disconnect may be sent by the server to disconnect the client using an optional message to send as the
 // disconnect screen.
+//
+// Added: v1.11.1
 type Disconnect struct {
 	// Reason is the reason for the disconnection. This affects the error code displayed on the Ore UI
 	// disconnection screen and is one of the constants above.
+	//
+	// Added: v1.11.1
 	Reason int32
 	// HideDisconnectionScreen specifies if the disconnection screen should be hidden when the client is
 	// disconnected, meaning it will be sent directly to the main menu.
+	//
+	// Added: v1.11.1
+	// Changed: v1.26.20.26, encoded as a varuint32 flag instead of a bool.
 	HideDisconnectionScreen bool
 	// Message is an optional message to show when disconnected. This message is only written if the
 	// HideDisconnectionScreen field is set to true.
+	//
+	// Added: v1.11.1
 	Message string
 	// FilteredMessage is a filtered version of Message with all the profanity removed. The client will use
 	// this over Message if this field is not empty and they have the "Filter Profanity" setting enabled.
+	//
+	// Added: v1.21.20
 	FilteredMessage string
 }
 

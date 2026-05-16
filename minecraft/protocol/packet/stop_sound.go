@@ -6,14 +6,22 @@ import (
 
 // StopSound is sent by the server to stop a sound playing to the player, such as a playing music disk track
 // or other long-lasting sounds.
+//
+// Added: v1.12
 type StopSound struct {
 	// SoundName is the name of the sound that should be stopped from playing. If no sound with this name is
 	// currently active, the packet is ignored.
+	//
+	// Added: v1.12
 	SoundName string
 	// StopAll specifies if all sounds currently playing to the player should be stopped. If set to true, the
 	// SoundName field may be left empty.
+	//
+	// Added: v1.12
 	StopAll bool
 	// StopMusicLegacy is currently unknown.
+	//
+	// Added: v1.21.20
 	StopMusicLegacy bool
 }
 

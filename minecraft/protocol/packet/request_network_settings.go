@@ -5,9 +5,13 @@ import (
 )
 
 // RequestNetworkSettings is sent by the client to request network settings, such as compression, from the server.
+//
+// Added: v1.19.30
 type RequestNetworkSettings struct {
 	// ClientProtocol is the protocol version of the player. The player is disconnected if the protocol is
 	// incompatible with the protocol of the server.
+	//
+	// Added: v1.19.30
 	ClientProtocol int32
 }
 

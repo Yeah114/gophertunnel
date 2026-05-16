@@ -11,13 +11,21 @@ const (
 
 // ClientCameraAimAssist is sent by the server to send a player animation from one player to all viewers of that player. It
 // is used for a couple of actions, such as arm swimming and critical hits.
+//
+// Added: v1.21.70
 type ClientCameraAimAssist struct {
 	// PresetID is the identifier of the preset to use which was previously defined in the CameraAimAssistPresets
 	// packet.
+	//
+	// Added: v1.21.70
 	PresetID string
 	// Action is the action to perform with the aim assist. It is one of the constants above.
+	//
+	// Added: v1.21.70
 	Action byte
 	// AllowAimAssist specifies the client can use aim assist or not.
+	//
+	// Added: v1.21.70
 	AllowAimAssist bool
 }
 

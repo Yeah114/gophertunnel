@@ -6,9 +6,13 @@ import (
 
 // PurchaseReceipt is sent by the client to the server to notify the server it purchased an item from the
 // Marketplace store that was offered by the server. The packet is only used for partnered servers.
+//
+// Added: v1.13
 type PurchaseReceipt struct {
 	// Receipts is a list of receipts, or proofs of purchases, for the offers that have been purchased by the
 	// player.
+	//
+	// Added: v1.13
 	Receipts []string
 }
 

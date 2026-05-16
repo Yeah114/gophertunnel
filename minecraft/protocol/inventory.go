@@ -21,22 +21,36 @@ const (
 // InventoryAction represents a single action that took place during an inventory transaction. On itself, this
 // inventory action is always unbalanced: It must be combined with other actions in an inventory transaction
 // to form a balanced transaction.
+//
+// Added: v1.16
 type InventoryAction struct {
 	// SourceType is the source type of the inventory action. It is one of the constants above.
+	//
+	// Added: v1.16
 	SourceType uint32
 	// WindowID is the ID of the window that the client has opened. The window ID is not set if the SourceType
 	// is InventoryActionSourceWorld.
+	//
+	// Added: v1.16
 	WindowID int32
 	// SourceFlags is a combination of flags that is only set if the SourceType is InventoryActionSourceWorld.
+	//
+	// Added: v1.16
 	SourceFlags uint32
 	// InventorySlot is the slot in which the action took place. Each action only describes the change of item
 	// in a single slot.
+	//
+	// Added: v1.16
 	InventorySlot uint32
 	// OldItem is the item that was present in the slot before the inventory action. It should be checked by
 	// the server to ensure the inventories were not out of sync.
+	//
+	// Added: v1.16
 	OldItem ItemInstance
 	// NewItem is the new item that was put in the InventorySlot that the OldItem was in. It must be checked
 	// in combination with other inventory actions to ensure that the transaction is balanced.
+	//
+	// Added: v1.16
 	NewItem ItemInstance
 }
 
@@ -109,9 +123,13 @@ func lookupTransactionDataType(x InventoryTransactionData, id *uint32) bool {
 
 // NormalTransactionData represents an inventory transaction data object for normal transactions, such as
 // crafting. It has no content.
+//
+// Added: v1.16
 type NormalTransactionData struct{}
 
 // MismatchTransactionData represents a mismatched inventory transaction's data object.
+//
+// Added: v1.16
 type MismatchTransactionData struct{}
 
 const (
@@ -139,6 +157,8 @@ const (
 
 // UseItemTransactionData represents an inventory transaction data object sent when the client uses an item on
 // a block.
+//
+// Added: v1.16
 type UseItemTransactionData struct {
 	// LegacyRequestID is an ID that is only non-zero at times when sent by the client. The server should
 	// always send 0 for this. When this field is not 0, the LegacySetItemSlots slice below will have values
@@ -146,50 +166,77 @@ type UseItemTransactionData struct {
 	// LegacyRequestID ties in with the ItemStackResponse packet. If this field is non-0, the server should
 	// respond with an ItemStackResponse packet. Some inventory actions such as dropping an item out of the
 	// hotbar are still one using this packet, and the ItemStackResponse packet needs to tie in with it.
+	//
+	// Added: v1.16.210
 	LegacyRequestID int32
 	// LegacySetItemSlots are only present if the LegacyRequestID is non-zero. These item slots inform the
 	// server of the slots that were changed during the inventory transaction, and the server should send
 	// back an ItemStackResponse packet with these slots present in it. (Or false with no slots, if rejected.)
+	//
+	// Added: v1.16.210
 	LegacySetItemSlots []LegacySetItemSlot
 	// Actions is a list of actions that took place, that form the inventory transaction together. Each of
 	// these actions hold one slot in which one item was changed to another. In general, the combination of
 	// all of these actions results in a balanced inventory transaction. This should be checked to ensure that
 	// no items are cheated into the inventory.
+	//
+	// Added: v1.16.210
 	Actions []InventoryAction
 	// ActionType is the type of the UseItem inventory transaction. It is one of the action types found above,
 	// and specifies the way the player interacted with the block.
+	//
+	// Added: v1.16
 	ActionType uint32
 	// TriggerType is the type of the trigger that caused the inventory transaction. It is one of the trigger
 	// types found in the constants above. If TriggerType is TriggerTypePlayerInput, the transaction is from
 	// the initial input of the player. If it is TriggerTypeSimulationTick, the transaction is from a simulation
 	// tick when the player is holding down the input.
+	//
+	// Added: v1.21.20
 	TriggerType uint32
 	// BlockPosition is the position of the block that was interacted with. This is only really a correct
 	// block position if ActionType is not UseItemActionClickAir.
+	//
+	// Added: v1.16
 	BlockPosition BlockPos
 	// BlockFace is the face of the block that was interacted with. When clicking the block, it is the face
 	// clicked. When breaking the block, it is the face that was last being hit until the block broke.
+	//
+	// Added: v1.16
 	BlockFace int32
 	// HotBarSlot is the hot bar slot that the player was holding while clicking the block. It should be used
 	// to ensure that the hot bar slot and held item are correctly synchronised with the server.
+	//
+	// Added: v1.16
 	HotBarSlot int32
 	// HeldItem is the item that was held to interact with the block. The server should check if this item
 	// is actually present in the HotBarSlot.
+	//
+	// Added: v1.16
 	HeldItem ItemInstance
 	// Position is the position of the player at the time of interaction. For clicking a block, this is the
 	// position at that time, whereas for breaking the block it is the position at the time of breaking.
+	//
+	// Added: v1.16
 	Position mgl32.Vec3
 	// ClickedPosition is the position that was clicked relative to the block's base coordinate. It can be
 	// used to find out exactly where a player clicked the block.
+	//
+	// Added: v1.16
 	ClickedPosition mgl32.Vec3
 	// BlockRuntimeID is the runtime ID of the block that was clicked. It may be used by the server to verify
 	// that the player's world client-side is synchronised with the server's.
+	//
+	// Added: v1.16
 	BlockRuntimeID uint32
 	// ClientPrediction is the client's prediction on the output of the transaction. It is one of the client
 	// prediction found in the constants above.
+	//
+	// Added: v1.21.20
 	ClientPrediction uint32
 	// ClientCooldownState is the client's cooldown state for the item used. It is one of the
 	// ClientCooldownState constants above.
+	//
 	// Added: v1.26.10
 	ClientCooldownState byte
 }
@@ -201,23 +248,37 @@ const (
 
 // UseItemOnEntityTransactionData represents an inventory transaction data object sent when the client uses
 // an item on an entity.
+//
+// Added: v1.16
 type UseItemOnEntityTransactionData struct {
 	// TargetEntityRuntimeID is the entity runtime ID of the target that was clicked. It is the runtime ID
 	// that was assigned to it in the AddEntity packet.
+	//
+	// Added: v1.16
 	TargetEntityRuntimeID uint64
 	// ActionType is the type of the UseItemOnEntity inventory transaction. It is one of the action types
 	// found in the constants above, and specifies the way the player interacted with the entity.
+	//
+	// Added: v1.16
 	ActionType uint32
 	// HotBarSlot is the hot bar slot that the player was holding while clicking the entity. It should be used
 	// to ensure that the hot bar slot and held item are correctly synchronised with the server.
+	//
+	// Added: v1.16
 	HotBarSlot int32
 	// HeldItem is the item that was held to interact with the entity. The server should check if this item
 	// is actually present in the HotBarSlot.
+	//
+	// Added: v1.16
 	HeldItem ItemInstance
 	// Position is the position of the player at the time of clicking the entity.
+	//
+	// Added: v1.16
 	Position mgl32.Vec3
 	// ClickedPosition is the position that was clicked relative to the entity's base coordinate. It can be
 	// used to find out exactly where a player clicked the entity.
+	//
+	// Added: v1.16
 	ClickedPosition mgl32.Vec3
 }
 
@@ -228,20 +289,30 @@ const (
 
 // ReleaseItemTransactionData represents an inventory transaction data object sent when the client releases
 // the item it was using, for example when stopping while eating or stopping the charging of a bow.
+//
+// Added: v1.16
 type ReleaseItemTransactionData struct {
 	// ActionType is the type of the ReleaseItem inventory transaction. It is one of the action types found
 	// in the constants above, and specifies the way the item was released.
 	// As of 1.13, the ActionType is always 0. This field can be ignored, because releasing food (by consuming
 	// it) or releasing a bow (to shoot an arrow) is essentially the same.
+	//
+	// Added: v1.16
 	ActionType uint32
 	// HotBarSlot is the hot bar slot that the player was holding while releasing the item. It should be used
 	// to ensure that the hot bar slot and held item are correctly synchronised with the server.
+	//
+	// Added: v1.16
 	HotBarSlot int32
 	// HeldItem is the item that was released. The server should check if this item is actually present in the
 	// HotBarSlot.
+	//
+	// Added: v1.16
 	HeldItem ItemInstance
 	// HeadPosition is the position of the player's head at the time of releasing the item. This is used
 	// mainly for purposes such as spawning eating particles at that position.
+	//
+	// Added: v1.16
 	HeadPosition mgl32.Vec3
 }
 
@@ -289,9 +360,17 @@ func (*MismatchTransactionData) Marshal(IO) {}
 // LegacySetItemSlot represents a slot that was changed during an InventoryTransaction. These slots have to
 // have their values set accordingly for actions such as when dropping an item out of the hotbar, where the
 // inventory container and the slot that had its item dropped is passed.
+//
+// Added: v1.16
 type LegacySetItemSlot struct {
+	// ContainerID is the ID of the container that was updated.
+	//
+	// Added: v1.16
 	ContainerID byte
-	Slots       []byte
+	// Slots is a list of slots in the container that were updated.
+	//
+	// Added: v1.16
+	Slots []byte
 }
 
 // Marshal encodes/decodes a LegacySetItemSlot.

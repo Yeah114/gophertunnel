@@ -7,10 +7,16 @@ import (
 
 // ServerBoundPackSettingChange is sent by the client to the server when it changes a setting
 // for a specific pack in the pack settings UI.
+//
+// Added: v1.21.111
 type ServerBoundPackSettingChange struct {
 	// PackID is the UUID of the pack.
+	//
+	// Added: v1.21.111
 	PackID uuid.UUID
 	// PackSetting is the new setting value applied to the pack.
+	//
+	// Added: v1.21.111
 	PackSetting protocol.PackSetting
 }
 

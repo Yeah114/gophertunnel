@@ -5,9 +5,13 @@ import (
 )
 
 // CameraPresets gives the client a list of custom camera presets.
+//
+// Added: v1.20.30
 type CameraPresets struct {
 	// Presets is a list of camera presets that can be used by other cameras. The order of this list is important because
 	// the index of presets is used as a pointer in the CameraInstruction packet.
+	//
+	// Added: v1.20.30
 	Presets []protocol.CameraPreset
 }
 

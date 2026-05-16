@@ -14,21 +14,33 @@ const (
 
 // NPCRequest is sent by the client when it interacts with an NPC.
 // The packet is specifically made for Education Edition, where NPCs are available to use.
+//
+// Added: v1.12
 type NPCRequest struct {
 	// EntityRuntimeID is the runtime ID of the NPC entity that the player interacted with. It is the same
 	// as sent by the server when spawning the entity.
+	//
+	// Added: v1.12
 	EntityRuntimeID uint64
 	// RequestType is the type of the request, which depends on the permission that the player has. It will
 	// be either a type that indicates that the NPC should show its dialog, or that it should open the
 	// editing window.
+	//
+	// Added: v1.12
 	RequestType byte
 	// CommandString is the command string set in the NPC. It may consist of multiple commands, depending on
 	// what the player set in it.
+	//
+	// Added: v1.12
 	CommandString string
 	// ActionType is the type of the action to execute.
+	//
+	// Added: v1.12
 	ActionType byte
 	// SceneName is the name of the scene. This can be left empty to specify the last scene that the player
 	// was sent.
+	//
+	// Added: v1.12
 	SceneName string
 }
 

@@ -9,12 +9,18 @@ import (
 // a specific tab for the server in the settings of the client. A ModalFormResponse packet is sent by the
 // client in response to a ServerSettingsResponse, when the client fills out the settings and closes the
 // settings again.
+//
+// Added: v1.12
 type ServerSettingsResponse struct {
 	// FormID is an ID used to identify the form. The ID is saved by the client and sent back when the player
 	// submits the form, so that the server can identify which form was submitted.
+	//
+	// Added: v1.12
 	FormID uint32
 	// FormData is a JSON encoded object of form data. The content of the object differs, depending on the
 	// type of the form sent, which is also set in the JSON.
+	//
+	// Added: v1.12
 	FormData []byte
 }
 

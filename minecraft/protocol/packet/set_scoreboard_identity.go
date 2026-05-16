@@ -13,13 +13,19 @@ const (
 // scoreboard. This is used to change, for example, an entry pointing to a player, to a fake player when it
 // leaves the server, and to change it back to a real player when it joins again.
 // In non-vanilla situations, the packet is quite useless.
+//
+// Added: v1.12
 type SetScoreboardIdentity struct {
 	// ActionType is the type of the action to execute. The action is either ScoreboardIdentityActionRegister
 	// to associate an identity with the entry, or ScoreboardIdentityActionClear to remove associations with
 	// an entity.
+	//
+	// Added: v1.12
 	ActionType byte
 	// Entries is a list of all entries in the packet. Each of these entries points to one of the entries on
 	// a scoreboard. Depending on ActionType, their identity will either be registered or cleared.
+	//
+	// Added: v1.12
 	Entries []protocol.ScoreboardIdentityEntry
 }
 

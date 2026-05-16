@@ -17,15 +17,25 @@ const (
 // PacketViolationWarning is sent by the client when it receives an invalid packet from the server. It holds
 // some information on the error that occurred.
 // noinspection GoNameStartsWithPackageName
+//
+// Added: v1.16
 type PacketViolationWarning struct {
 	// Type is the type of violation. It is one of the constants above.
+	//
+	// Added: v1.16
 	Type int32
 	// Severity specifies the severity of the packet violation. The action the client takes after this
 	// violation depends on the severity sent.
+	//
+	// Added: v1.16
 	Severity int32
 	// PacketID is the ID of the invalid packet that was received.
+	//
+	// Added: v1.16
 	PacketID int32
 	// ViolationContext holds a description on the violation of the packet.
+	//
+	// Added: v1.16
 	ViolationContext string
 }
 

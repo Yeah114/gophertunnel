@@ -7,29 +7,45 @@ import (
 
 // AddItemActor is sent by the server to the client to make an item entity show up. It is one of the few
 // entities that cannot be sent using the AddActor packet
+//
+// Added: v1.16
 type AddItemActor struct {
 	// EntityUniqueID is the unique ID of the entity. The unique ID is a value that remains consistent across
 	// different sessions of the same world, but most servers simply fill the runtime ID of the entity out for
 	// this field.
+	//
+	// Added: v1.16
 	EntityUniqueID int64
 	// EntityRuntimeID is the runtime ID of the entity. The runtime ID is unique for each world session, and
 	// entities are generally identified in packets using this runtime ID.
+	//
+	// Added: v1.16
 	EntityRuntimeID uint64
 	// Item is the item that is spawned. It must have a valid ID for it to show up client-side. If it is not
 	// a valid item, the client will crash when coming near.
+	//
+	// Added: v1.16
 	Item protocol.ItemInstance
 	// Position is the position to spawn the entity on. If the entity is on a distance that the player cannot
 	// see it, the entity will still show up if the player moves closer.
+	//
+	// Added: v1.16
 	Position mgl32.Vec3
 	// Velocity is the initial velocity the entity spawns with. This velocity will initiate client side
 	// movement of the entity.
+	//
+	// Added: v1.16
 	Velocity mgl32.Vec3
 	// EntityMetadata is a map of entity metadata, which includes flags and data properties that alter in
 	// particular the way the entity looks. Flags include ones such as 'on fire' and 'sprinting'.
 	// The metadata values are indexed by their property key.
+	//
+	// Added: v1.16
 	EntityMetadata protocol.EntityMetadata
 	// FromFishing specifies if the item was obtained by fishing it up using a fishing rod. It is not clear
 	// why the client needs to know this.
+	//
+	// Added: v1.16
 	FromFishing bool
 }
 

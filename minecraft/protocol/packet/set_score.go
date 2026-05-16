@@ -11,14 +11,20 @@ const (
 
 // SetScore is sent by the server to send the contents of a scoreboard to the player. It may be used to either
 // add, remove or edit entries on the scoreboard.
+//
+// Added: v1.12
 type SetScore struct {
 	// ActionType is the type of the action to execute upon the scoreboard with the entries that the packet
 	// has. If ActionType is ScoreboardActionModify, all entries will be added to the scoreboard if not yet
 	// present, or modified if already present. If set to ScoreboardActionRemove, all scoreboard entries set
 	// will be removed from the scoreboard.
+	//
+	// Added: v1.12
 	ActionType byte
 	// Entries is a list of all entries that the client should operate on. When modifying, it will add or
 	// modify all entries, whereas when removing, it will remove all entries.
+	//
+	// Added: v1.12
 	Entries []protocol.ScoreboardEntry
 }
 

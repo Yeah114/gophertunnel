@@ -8,15 +8,19 @@ const (
 )
 
 // SyncWorldClockStateData represents the state data for synchronising a world clock.
+//
 // Added: v1.26.10
 type SyncWorldClockStateData struct {
 	// ClockID is the unique identifier for the clock.
+	//
 	// Added: v1.26.10
 	ClockID uint64
 	// Time is the current time of the clock.
+	//
 	// Added: v1.26.10
 	Time int32
 	// Paused indicates if the clock is paused.
+	//
 	// Added: v1.26.10
 	Paused bool
 }
@@ -29,18 +33,23 @@ func (x *SyncWorldClockStateData) Marshal(r IO) {
 }
 
 // TimeMarkerData represents a time marker within a world clock.
+//
 // Added: v1.26.10
 type TimeMarkerData struct {
 	// ID is the unique identifier for the time marker.
+	//
 	// Added: v1.26.10
 	ID uint64
 	// Name is the name of the time marker.
+	//
 	// Added: v1.26.10
 	Name string
 	// Time is the time at which the marker is set.
+	//
 	// Added: v1.26.10
 	Time int32
 	// Period is the optional period for the time marker.
+	//
 	// Added: v1.26.10
 	Period Optional[int32]
 }
@@ -54,21 +63,27 @@ func (x *TimeMarkerData) Marshal(r IO) {
 }
 
 // WorldClockData represents a complete world clock with its time markers.
+//
 // Added: v1.26.10
 type WorldClockData struct {
 	// ID is the unique identifier for the clock.
+	//
 	// Added: v1.26.10
 	ID uint64
 	// Name is the name of the clock.
+	//
 	// Added: v1.26.10
 	Name string
 	// Time is the current time of the clock.
+	//
 	// Added: v1.26.10
 	Time int32
 	// Paused indicates if the clock is paused.
+	//
 	// Added: v1.26.10
 	Paused bool
 	// TimeMarkers is a list of time markers for this clock.
+	//
 	// Added: v1.26.10
 	TimeMarkers []TimeMarkerData
 }

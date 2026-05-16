@@ -7,8 +7,12 @@ import (
 // FeatureRegistry is a packet used to notify the client about the world generation features the server is currently
 // using. This is used in combination with the client-side world generation system introduced in v1.19.20, allowing the
 // client to completely generate the chunks of the world without having to rely on the server.
+//
+// Added: v1.19.20
 type FeatureRegistry struct {
 	// Features is a slice of all registered world generation features.
+	//
+	// Added: v1.19.20
 	Features []protocol.GenerationFeature
 }
 

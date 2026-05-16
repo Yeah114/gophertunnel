@@ -12,21 +12,32 @@ const (
 )
 
 // PlayerUpdateEntityOverrides is sent by the server to modify an entity's properties individually.
+//
 // Added: v1.21.70
 type PlayerUpdateEntityOverrides struct {
 	// EntityUniqueID is the unique ID of the entity. The unique ID is a value that remains consistent across
 	// different sessions of the same world, but most servers simply fill the runtime ID of the entity out for
 	// this field.
+	//
+	// Added: v1.21.70
 	EntityUniqueID int64
 	// PropertyIndex is the index of the property to modify. The index is unique for each property of an entity.
+	//
+	// Added: v1.21.70
 	PropertyIndex uint32
 	// Type is the type of action to perform with the property. It is one of the constants above.
+	//
+	// Added: v1.21.70
 	Type byte
 	// IntValue is the new integer value of the property. It is only used when Type is set to
 	// PlayerUpdateEntityOverridesTypeInt.
+	//
+	// Added: v1.21.70
 	IntValue int32
 	// FloatValue is the new float value of the property. It is only used when Type is set to
 	// PlayerUpdateEntityOverridesTypeFloat.
+	//
+	// Added: v1.21.70
 	FloatValue float32
 }
 

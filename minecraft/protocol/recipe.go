@@ -247,6 +247,9 @@ type ShapelessRecipe struct {
 //
 // Added: v1.19.21
 type ShulkerBoxRecipe struct {
+	// ShapelessRecipe holds the underlying shapeless recipe data.
+	//
+	// Added: v1.19.21
 	ShapelessRecipe
 }
 
@@ -255,6 +258,9 @@ type ShulkerBoxRecipe struct {
 //
 // Added: v1.19.21
 type ShapelessChemistryRecipe struct {
+	// ShapelessRecipe holds the underlying shapeless recipe data.
+	//
+	// Added: v1.19.21
 	ShapelessRecipe
 }
 
@@ -321,27 +327,41 @@ type ShapedRecipe struct {
 //
 // Added: v1.19.21
 type ShapedChemistryRecipe struct {
+	// ShapedRecipe holds the underlying shaped recipe data.
+	//
+	// Added: v1.19.21
 	ShapedRecipe
 }
 
 // FurnaceRecipe is a recipe that is specifically used for all kinds of furnaces. These recipes don't just
 // apply to furnaces, but also blast furnaces and smokers.
+//
 // Removed: v1.26.20.26
 type FurnaceRecipe struct {
 	// InputType is the item type of the input item. The metadata value of the item is not used in the
 	// FurnaceRecipe. Use FurnaceDataRecipe to allow an item with only one metadata value.
+	//
+	// Removed: v1.26.20.26
 	InputType ItemType
 	// Output is the item that is created as a result of smelting/cooking an item in the furnace.
+	//
+	// Removed: v1.26.20.26
 	Output ItemStack
 	// Block is the block name that is required to create the output of the recipe. The block is not prefixed
 	// with 'minecraft:', so it will look like 'furnace' as an example.
+	//
+	// Removed: v1.26.20.26
 	Block string
 }
 
 // FurnaceDataRecipe is a recipe specifically used for furnace-type crafting stations. It is equal to
 // FurnaceRecipe, except it has an input item with a specific metadata value, instead of any metadata value.
+//
 // Removed: v1.26.20.26
 type FurnaceDataRecipe struct {
+	// FurnaceRecipe holds the underlying furnace recipe data.
+	//
+	// Removed: v1.26.20.26
 	FurnaceRecipe
 }
 

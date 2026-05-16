@@ -6,12 +6,20 @@ import (
 
 // Transfer is sent by the server to transfer a player from the current server to another. Doing so will
 // fully disconnect the client, bring it back to the main menu and make it connect to the next server.
+//
+// Added: v1.12
 type Transfer struct {
 	// Address is the address of the new server, which might be either a hostname or an actual IP address.
+	//
+	// Added: v1.12
 	Address string
 	// Port is the UDP port of the new server.
+	//
+	// Added: v1.12
 	Port uint16
 	// ReloadWorld currently has an unknown usage.
+	//
+	// Added: v1.21.30
 	ReloadWorld bool
 }
 

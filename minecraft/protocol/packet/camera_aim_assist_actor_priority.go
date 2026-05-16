@@ -5,9 +5,12 @@ import (
 )
 
 // CameraAimAssistActorPriority is sent by the server to define actor-specific aim assist priorities.
+//
 // Added: v1.26.0
 type CameraAimAssistActorPriority struct {
 	// PriorityData is a list of aim assist actor priority entries.
+	//
+	// Added: v1.26.0
 	PriorityData []protocol.CameraAimAssistActorPriorityData
 }
 

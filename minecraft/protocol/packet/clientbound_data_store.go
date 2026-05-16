@@ -5,9 +5,12 @@ import (
 )
 
 // ClientBoundDataStore is sent by the server to update, change or remove data store entries on the client.
+//
 // Added: v1.26.10
 type ClientBoundDataStore struct {
 	// Updates is an array of data store changes. Each entry has its own change type discriminator.
+	//
+	// Added: v1.26.10
 	Updates []protocol.DataStoreChangeEntry
 }
 

@@ -5,10 +5,16 @@ import (
 )
 
 // RemoveVolumeEntity indicates a volume entity to be removed from server to client.
+//
+// Added: v1.17.0
 type RemoveVolumeEntity struct {
-	// EntityRuntimeID ...
+	// EntityRuntimeID is the runtime ID of the volume entity that should be removed.
+	//
+	// Added: v1.17.0
 	EntityRuntimeID uint32
-	// Dimension ...
+	// Dimension is the dimension that the volume entity belongs to.
+	//
+	// Added: v1.17.0
 	Dimension int32
 }
 

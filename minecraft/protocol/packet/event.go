@@ -6,14 +6,25 @@ import (
 
 // Event is sent by the server to send an event with additional data. It is typically sent to the client for
 // telemetry reasons, much like the SimpleEvent packet.
+//
+// Added: v1.11.1
 type Event struct {
 	// EntityRuntimeID is the runtime ID of the player. The runtime ID is unique for each world session, and
 	// entities are generally identified in packets using this runtime ID.
+	//
+	// Added: v1.11.1
+	// Changed: v1.21.20, encoded as a signed varint64 instead of an unsigned varuint64.
 	EntityRuntimeID int64
 	// UsePlayerID ...
 	// TODO: Figure out what UsePlayerID is for.
+	//
+	// Added: v1.17.0
+	// Changed: v1.21.130, encoded as a bool instead of a uint8.
 	UsePlayerID bool
 	// Event is the event that is transmitted.
+	//
+	// Added: v1.17.0
+	// Changed: v1.21.130, followed by an event ordinal before the event payload.
 	Event protocol.Event
 }
 

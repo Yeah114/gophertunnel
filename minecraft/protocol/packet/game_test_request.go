@@ -10,21 +10,37 @@ const (
 	GameTestRequestRotation360
 )
 
-// GameTestRequest ...
+// GameTestRequest requests that the server run a game test instance with the parameters provided.
+//
+// Added: v1.19.40
 type GameTestRequest struct {
 	// Name represents the name of the test.
+	//
+	// Added: v1.19.40
 	Name string
 	// Rotation represents the rotation of the test. It is one of the constants above.
+	//
+	// Added: v1.19.40
 	Rotation uint8
 	// Repetitions represents the amount of times the test will be run.
+	//
+	// Added: v1.19.40
 	Repetitions int32
 	// Position is the position at which the test will be performed.
+	//
+	// Added: v1.19.40
 	Position protocol.BlockPos
 	// StopOnError indicates whether the test should immediately stop when an error is encountered.
+	//
+	// Added: v1.19.40
 	StopOnError bool
-	// TestsPerRow ...
+	// TestsPerRow is the amount of tests that should be placed on each row when building repeated test instances.
+	//
+	// Added: v1.19.40
 	TestsPerRow int32
-	// MaxTestsPerBatch ...
+	// MaxTestsPerBatch is the maximum amount of test instances that may be processed in a single batch.
+	//
+	// Added: v1.19.40
 	MaxTestsPerBatch int32
 }
 

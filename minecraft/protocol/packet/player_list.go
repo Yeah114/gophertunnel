@@ -14,12 +14,19 @@ const (
 // Sending the PlayerList packet is obligatory when sending an AddPlayer packet. The added player will not
 // show up to a client if it has not been added to the player list, because several properties of the player
 // are obtained from the player list, such as the skin.
+//
+// Added: v1.11.1
 type PlayerList struct {
 	// ActionType is the action to execute upon the player list. The entries that follow specify which entries
 	// are added or removed from the player list.
+	//
+	// Added: v1.11.1
 	ActionType byte
 	// Entries is a list of all player list entries that should be added/removed from the player list,
 	// depending on the ActionType set.
+	//
+	// Added: v1.11.1
+	// Changed: v1.14.60, add entries have their trusted skin booleans appended after the entry list.
 	Entries []protocol.PlayerListEntry
 }
 

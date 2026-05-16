@@ -6,24 +6,40 @@ import (
 )
 
 // AddVolumeEntity sends a volume entity's definition and metadata from server to client.
+//
+// Added: v1.17.30
 type AddVolumeEntity struct {
 	// EntityRuntimeID is the runtime ID of the volume. The runtime ID is unique for each world session, and
 	// entities are generally identified in packets using this runtime ID.
+	//
+	// Added: v1.17.30
 	EntityRuntimeID uint32
 	// EntityMetadata is a map of entity metadata, which includes flags and data properties that alter in
 	// particular the way the volume functions or looks.
+	//
+	// Added: v1.17.30
 	EntityMetadata map[string]any
 	// EncodingIdentifier is the unique identifier for the volume. It must be of the form 'namespace:name', where
 	// namespace cannot be 'minecraft'.
+	//
+	// Added: v1.17.30
 	EncodingIdentifier string
 	// InstanceIdentifier is the identifier of a fog definition.
+	//
+	// Added: v1.17.30
 	InstanceIdentifier string
 	// Bounds represent the volume's bounds. The first value is the minimum bounds, and the second value is the
 	// maximum bounds.
+	//
+	// Added: v1.17.30
 	Bounds [2]protocol.BlockPos
 	// Dimension is the dimension in which the volume exists.
+	//
+	// Added: v1.17.30
 	Dimension int32
 	// EngineVersion is the engine version the entity is using, for example, '1.17.0'.
+	//
+	// Added: v1.17.30
 	EngineVersion string
 }
 

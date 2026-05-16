@@ -6,9 +6,13 @@ import (
 
 // AvailableActorIdentifiers is sent by the server at the start of the game to let the client know all
 // entities that are available on the server.
+//
+// Added: v1.12
 type AvailableActorIdentifiers struct {
 	// SerialisedEntityIdentifiers is a network NBT serialised compound of all entity identifiers that are
 	// available in the server.
+	//
+	// Added: v1.12
 	SerialisedEntityIdentifiers []byte
 }
 

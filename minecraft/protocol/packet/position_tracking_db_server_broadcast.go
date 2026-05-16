@@ -19,14 +19,20 @@ const (
 // What is actually done with the data sent depends on what the client chooses to do with it. For the
 // lodestone compass, it is used to make the compass point towards lodestones and to make it spin if the
 // lodestone at a position is no longer there.
+//
+// Added: v1.16
 type PositionTrackingDBServerBroadcast struct {
 	// BroadcastAction specifies the status of the position tracking DB response. It is one of the constants
 	// above, specifying the result of the request with the ID below.
 	// The Update action is sent for setting the position of a lodestone compass, the Destroy and NotFound to
 	// indicate that there is not (no longer) a lodestone at that position.
+	//
+	// Added: v1.16
 	BroadcastAction byte
 	// TrackingID is the ID of the PositionTrackingDBClientRequest packet that this packet was in response to.
 	// The tracking ID is also present as the 'id' field in the SerialisedData field.
+	//
+	// Added: v1.16
 	TrackingID int32
 	// Payload is a network little endian compound tag holding the data retrieved from the position tracking DB.
 	// An example data structure sent if BroadcastAction is of the type Update:
@@ -41,6 +47,8 @@ type PositionTrackingDBServerBroadcast struct {
 	//        }),
 	//        'status': TAG_Byte(0x00), // 0x00 for updating, 0x02 for not found/block destroyed.
 	// })
+	//
+	// Added: v1.16
 	Payload map[string]any
 }
 
