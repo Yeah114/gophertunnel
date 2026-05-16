@@ -31,14 +31,14 @@ type CommandOutput struct {
 	// be CommandOutputTypeAllOutput, which seems to work.
 	//
 	// Added: v1.11.1
-	// Changed: v1.21.130, encoded as a string output type identifier instead of a uint8 enum value.
+	// Changed: v1.21.130.28, encoded as a string output type identifier instead of a uint8 enum value.
 	OutputType byte
 	// SuccessCount is the amount of times that a command was executed successfully as a result of the command
 	// that was requested. For servers, this is usually a rather meaningless fields, but for vanilla, this is
 	// applicable for commands created with Functions.
 	//
 	// Added: v1.11.1
-	// Changed: v1.21.130, encoded as a uint32 instead of a varuint32.
+	// Changed: v1.21.130.28, encoded as a uint32 instead of a varuint32.
 	SuccessCount uint32
 	// OutputMessages is a list of all output messages that should be sent to the player. Whether they are
 	// shown or not, depends on the type of the messages.
@@ -48,7 +48,7 @@ type CommandOutput struct {
 	// DataSet ... TODO: Find out what this is for.
 	//
 	// Added: v1.11.1
-	// Changed: v1.21.130, encoded as an optional string instead of a conditional string for CommandOutputTypeDataSet.
+	// Changed: v1.21.130.28, encoded as an optional string instead of a conditional string for CommandOutputTypeDataSet.
 	DataSet protocol.Optional[string]
 }
 

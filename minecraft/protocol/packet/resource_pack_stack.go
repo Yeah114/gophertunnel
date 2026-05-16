@@ -19,7 +19,7 @@ type ResourcePackStack struct {
 	// All of these behaviour packs will be applied together, and the order does not necessarily matter.
 	//
 	// Added: v1.11.1
-	// Removed: v1.21.130
+	// Removed: v1.21.130.28
 	BehaviourPacks []protocol.StackResourcePack
 	// TexturePacks is a list of texture packs that the client needs to download before joining the server.
 	// The order of these texture packs specifies the order that they are applied in on the client side. The
@@ -45,7 +45,7 @@ type ResourcePackStack struct {
 	// IncludeEditorPacks specifies if vanilla editor packs should be included in the resource pack stack when
 	// connecting to an editor world.
 	//
-	// Added: v1.21.130
+	// Added: v1.21.130.28
 	IncludeEditorPacks bool
 }
 
@@ -56,7 +56,7 @@ func (*ResourcePackStack) ID() uint32 {
 
 func (pk *ResourcePackStack) Marshal(io protocol.IO) {
 	io.Bool(&pk.TexturePackRequired)
-	if io.Protocol() < protocol.Protocol1v21v130 {
+	if io.Protocol() < protocol.Protocol1v21v130v28 {
 		protocol.Slice(io, &pk.BehaviourPacks)
 	}
 	protocol.Slice(io, &pk.TexturePacks)

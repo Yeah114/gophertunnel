@@ -82,7 +82,7 @@ type MobEffect struct {
 	Tick uint64
 	// Ambient specifies if the effect is ambient. If set to false, it will not get treated as an ambient effect.
 	//
-	// Added: v1.21.130
+	// Added: v1.21.130.28
 	Ambient bool
 }
 

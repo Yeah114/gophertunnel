@@ -311,7 +311,7 @@ type StartGame struct {
 	// ForceExperimentalGameplay specifies if experimental gameplay should be force enabled/disabled. For servers this
 	// should always be empty.
 	//
-	// Added: v1.20.0, Changed: v1.21.130
+	// Added: v1.20.0, Changed: v1.21.130.28
 	ForceExperimentalGameplay protocol.Optional[bool]
 	// LevelID is a base64 encoded world ID that is used to identify the world.
 	//
@@ -396,8 +396,8 @@ type StartGame struct {
 	DisablePlayerInteractions bool
 	// TickDeathSystemsEnabled specifies if the new tick death systems are enabled.
 	//
-	// Added: v1.21.130
-	// Removed: v1.21.130
+	// Added: v1.21.100
+	// Removed: v1.21.130.28
 	TickDeathSystemsEnabled bool
 	// UseBlockNetworkIDHashes is true if the client should use the hash of a block's name as its network ID rather than
 	// its index in the expected block palette. This is useful for servers that wish to support multiple protocol versions
@@ -491,7 +491,7 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Int32(&pk.LimitedWorldDepth)
 	io.Bool(&pk.NewNether)
 	protocol.Single(io, &pk.EducationSharedResourceURI)
-	if io.Protocol() >= protocol.Protocol1v21v130 {
+	if io.Protocol() >= protocol.Protocol1v21v130v28 {
 		protocol.OptionalFunc(io, &pk.ForceExperimentalGameplay, io.Bool)
 	} else {
 		forceExperimentalGameplay, _ := pk.ForceExperimentalGameplay.Value()
@@ -522,7 +522,7 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.UUID(&pk.WorldTemplateID)
 	io.Bool(&pk.ClientSideGeneration)
 	io.Bool(&pk.UseBlockNetworkIDHashes)
-	if io.Protocol() < protocol.Protocol1v21v130 {
+	if io.Protocol() < protocol.Protocol1v21v130v28 {
 		io.Bool(&pk.TickDeathSystemsEnabled)
 	}
 	io.Bool(&pk.ServerAuthoritativeSound)

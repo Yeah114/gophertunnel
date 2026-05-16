@@ -28,7 +28,7 @@ type CommandRequest struct {
 	// Version is the version of the command that is being executed. This field currently has no purpose or functionality.
 	//
 	// Added: v1.19.60
-	// Changed: v1.21.130, encoded as a string instead of a varint32.
+	// Changed: v1.21.130.28, encoded as a string instead of a varint32.
 	Version string
 }
 

@@ -34,7 +34,7 @@ type Interact struct {
 	// InteractActionLeaveVehicle, this is the position that the player spawns at after leaving the vehicle.
 	//
 	// Added: v1.11.1
-	// Changed: v1.21.130, encoded as an optional Vec3 instead of conditionally encoding a plain Vec3 for specific action types.
+	// Changed: v1.21.130.28, encoded as an optional Vec3 instead of conditionally encoding a plain Vec3 for specific action types.
 	Position protocol.Optional[mgl32.Vec3]
 }
 

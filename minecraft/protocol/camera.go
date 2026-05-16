@@ -611,7 +611,7 @@ type CameraAimAssistPriorities struct {
 	Blocks []CameraAimAssistPriority
 	// BlockTags is a list of priorities for specific block tags.
 	//
-	// Added: v1.21.130
+	// Added: v1.21.130.28
 	BlockTags []CameraAimAssistPriority
 	// EntityTypeFamilies is a list of priorities for specific entity type families.
 	//
@@ -631,7 +631,7 @@ type CameraAimAssistPriorities struct {
 func (x *CameraAimAssistPriorities) Marshal(r IO) {
 	Slice(r, &x.Entities)
 	Slice(r, &x.Blocks)
-	if r.Protocol() >= Protocol1v21v130 {
+	if r.Protocol() >= Protocol1v21v130v28 {
 		Slice(r, &x.BlockTags)
 	}
 	if r.Protocol() >= Protocol1v26v0 {
@@ -675,11 +675,11 @@ type CameraAimAssistPreset struct {
 	BlockExclusions []string
 	// EntityExclusions is a list of entity identifiers that should be ignored by the aim assist.
 	//
-	// Added: v1.21.130
+	// Added: v1.21.130.28
 	EntityExclusions []string
 	// BlockTagExclusions is a list of block tags that should be ignored by the aim assist.
 	//
-	// Added: v1.21.130
+	// Added: v1.21.130.28
 	BlockTagExclusions []string
 	// EntityTypeFamilyExclusions is a list of entity type families that should be ignored by the aim assist.
 	//
@@ -710,7 +710,7 @@ type CameraAimAssistPreset struct {
 func (x *CameraAimAssistPreset) Marshal(r IO) {
 	r.String(&x.Identifier)
 	FuncSlice(r, &x.BlockExclusions, r.String)
-	if r.Protocol() >= Protocol1v21v130 {
+	if r.Protocol() >= Protocol1v21v130v28 {
 		FuncSlice(r, &x.EntityExclusions, r.String)
 		FuncSlice(r, &x.BlockTagExclusions, r.String)
 	}
