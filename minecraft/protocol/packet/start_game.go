@@ -72,10 +72,11 @@ type StartGame struct {
 	//
 	// Added: v1.11.1
 	Yaw float32
-	// WorldSeed is the seed used to generate the world. Unlike in PC edition, the seed is a 32bit integer
-	// here.
+	// WorldSeed is the seed used to generate the world. Unlike in PC edition, the seed was a 32-bit varint before it
+	// was changed to a 64-bit little endian integer.
 	//
-	// Added: v1.11.1, Changed: v1.18.30
+	// Added: v1.11.1
+	// Changed: v1.18.30, encoded as a 64-bit little endian integer.
 	WorldSeed int64
 	// SpawnBiomeType specifies if the biome that the player spawns in is user defined (through behaviour
 	// packs) or builtin. See the constants above.
@@ -443,7 +444,13 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Vec3(&pk.PlayerPosition)
 	io.Float32(&pk.Pitch)
 	io.Float32(&pk.Yaw)
-	io.Int64(&pk.WorldSeed)
+	if io.Protocol() >= protocol.Protocol1v18v30 {
+		io.Int64(&pk.WorldSeed)
+	} else {
+		worldSeed := int32(pk.WorldSeed)
+		io.Varint32(&worldSeed)
+		pk.WorldSeed = int64(worldSeed)
+	}
 	io.Int16(&pk.SpawnBiomeType)
 	io.String(&pk.UserDefinedBiomeName)
 	io.Varint32(&pk.Dimension)
@@ -458,8 +465,10 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	if io.Protocol() >= protocol.Protocol1v20v80 {
 		io.Varint32(&pk.EditorWorldType)
 	}
-	io.Bool(&pk.CreatedInEditor)
-	io.Bool(&pk.ExportedFromEditor)
+	if io.Protocol() >= protocol.Protocol1v19v80 {
+		io.Bool(&pk.CreatedInEditor)
+		io.Bool(&pk.ExportedFromEditor)
+	}
 	io.Varint32(&pk.DayCycleLockTime)
 	io.Varint32(&pk.EducationEditionOffer)
 	io.Bool(&pk.EducationFeaturesEnabled)
@@ -529,9 +538,15 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.String(&pk.MultiPlayerCorrelationID)
 	io.Bool(&pk.ServerAuthoritativeInventory)
 	io.String(&pk.GameVersion)
-	io.NBT(&pk.PropertyData, nbt.NetworkLittleEndian)
-	io.Uint64(&pk.ServerBlockStateChecksum)
-	io.UUID(&pk.WorldTemplateID)
+	if io.Protocol() >= protocol.Protocol1v19v0 {
+		io.NBT(&pk.PropertyData, nbt.NetworkLittleEndian)
+	}
+	if io.Protocol() >= protocol.Protocol1v18v0 {
+		io.Uint64(&pk.ServerBlockStateChecksum)
+	}
+	if io.Protocol() >= protocol.Protocol1v19v0 {
+		io.UUID(&pk.WorldTemplateID)
+	}
 	if io.Protocol() >= protocol.Protocol1v19v20 {
 		io.Bool(&pk.ClientSideGeneration)
 	}
@@ -541,7 +556,7 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	if io.Protocol() >= protocol.Protocol1v21v100 && io.Protocol() < protocol.Protocol1v21v130v28 {
 		io.Bool(&pk.TickDeathSystemsEnabled)
 	}
-	if io.Protocol() >= protocol.Protocol1v20v0 {
+	if io.Protocol() >= protocol.Protocol1v20v0v23 {
 		io.Bool(&pk.ServerAuthoritativeSound)
 	}
 	if io.Protocol() >= protocol.Protocol1v26v0 {

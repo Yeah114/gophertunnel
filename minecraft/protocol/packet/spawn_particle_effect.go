@@ -50,5 +50,7 @@ func (pk *SpawnParticleEffect) Marshal(io protocol.IO) {
 	io.Varint64(&pk.EntityUniqueID)
 	io.Vec3(&pk.Position)
 	io.String(&pk.ParticleName)
-	protocol.OptionalFunc(io, &pk.MoLangVariables, io.ByteSlice)
+	if io.Protocol() >= protocol.Protocol1v18v30 {
+		protocol.OptionalFunc(io, &pk.MoLangVariables, io.ByteSlice)
+	}
 }

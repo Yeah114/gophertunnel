@@ -22,6 +22,13 @@ type AddPlayer struct {
 	//
 	// Added: v1.16
 	Username string
+	// EntityUniqueID is the unique ID of the player. The unique ID is a value that remains consistent across
+	// different sessions of the same world, but most servers simply fill the runtime ID of the player out for
+	// this field.
+	//
+	// Added: v1.16
+	// Removed: v1.19.10
+	EntityUniqueID int64
 	// EntityRuntimeID is the runtime ID of the player. The runtime ID is unique for each world session, and
 	// entities are generally identified in packets using this runtime ID.
 	//
@@ -65,7 +72,7 @@ type AddPlayer struct {
 	HeldItem protocol.ItemInstance
 	// GameType is the game type of the player. If set to GameTypeSpectator, the player will not be shown to viewers.
 	//
-	// Added: v1.16
+	// Added: v1.18.30
 	GameType int32
 	// EntityMetadata is a map of entity metadata, which includes flags and data properties that alter in
 	// particular the way the player looks. Flags include ones such as 'on fire' and 'sprinting'.
@@ -76,11 +83,39 @@ type AddPlayer struct {
 	// EntityProperties is a list of properties that the entity inhibits. These properties define and alter specific
 	// attributes of the entity.
 	//
-	// Added: v1.19.20
+	// Added: v1.19.40
 	EntityProperties protocol.EntityProperties
+	// LegacyAbilityFlags is a set of flags that specify certain properties of the player, such as whether it can fly
+	// and/or move through blocks.
+	//
+	// Added: v1.16
+	// Removed: v1.19.10
+	LegacyAbilityFlags uint32
+	// LegacyCommandPermissionLevel specifies what commands a player is allowed to execute before ability data was moved
+	// into its own structure.
+	//
+	// Added: v1.16
+	// Removed: v1.19.10
+	LegacyCommandPermissionLevel uint32
+	// LegacyActionPermissions is a set of flags that specify actions that the player is allowed to undertake.
+	//
+	// Added: v1.16
+	// Removed: v1.19.10
+	LegacyActionPermissions uint32
+	// LegacyPermissionLevel is the permission level of the player as it shows up in the player list built up using the
+	// PlayerList packet.
+	//
+	// Added: v1.16
+	// Removed: v1.19.10
+	LegacyPermissionLevel uint32
+	// LegacyCustomStoredPermissions is an old permission field that was replaced by AbilityData.
+	//
+	// Added: v1.16
+	// Removed: v1.19.10
+	LegacyCustomStoredPermissions uint32
 	// AbilityData represents various data about the abilities of a player, such as ability layers or permissions.
 	//
-	// Added: v1.19.30
+	// Added: v1.19.10
 	AbilityData protocol.AbilityData
 	// EntityLinks is a list of entity links that are currently active on the player. These links alter the
 	// way the player shows up when first spawned in terms of it shown as riding an entity. Setting these
@@ -108,6 +143,9 @@ func (*AddPlayer) ID() uint32 {
 func (pk *AddPlayer) Marshal(io protocol.IO) {
 	io.UUID(&pk.UUID)
 	io.String(&pk.Username)
+	if io.Protocol() < protocol.Protocol1v19v10 {
+		io.Varint64(&pk.EntityUniqueID)
+	}
 	io.Varuint64(&pk.EntityRuntimeID)
 	io.String(&pk.PlatformChatID)
 	io.Vec3(&pk.Position)
@@ -116,12 +154,23 @@ func (pk *AddPlayer) Marshal(io protocol.IO) {
 	io.Float32(&pk.Yaw)
 	io.Float32(&pk.HeadYaw)
 	io.ItemInstance(&pk.HeldItem)
-	io.Varint32(&pk.GameType)
+	if io.Protocol() >= protocol.Protocol1v18v30 {
+		io.Varint32(&pk.GameType)
+	}
 	io.EntityMetadata(&pk.EntityMetadata)
 	if io.Protocol() >= protocol.Protocol1v19v40 {
 		protocol.Single(io, &pk.EntityProperties)
 	}
-	protocol.Single(io, &pk.AbilityData)
+	if io.Protocol() >= protocol.Protocol1v19v10 {
+		protocol.Single(io, &pk.AbilityData)
+	} else {
+		io.Varuint32(&pk.LegacyAbilityFlags)
+		io.Varuint32(&pk.LegacyCommandPermissionLevel)
+		io.Varuint32(&pk.LegacyActionPermissions)
+		io.Varuint32(&pk.LegacyPermissionLevel)
+		io.Varuint32(&pk.LegacyCustomStoredPermissions)
+		io.Int64(&pk.EntityUniqueID)
+	}
 	protocol.Slice(io, &pk.EntityLinks)
 	io.String(&pk.DeviceID)
 	io.Int32(&pk.BuildPlatform)

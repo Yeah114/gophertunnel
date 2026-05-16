@@ -66,9 +66,11 @@ func (*LevelChunk) ID() uint32 {
 
 func (pk *LevelChunk) Marshal(io protocol.IO) {
 	io.ChunkPos(&pk.Position)
-	io.Varint32(&pk.Dimension)
+	if io.Protocol() >= protocol.Protocol1v20v60 {
+		io.Varint32(&pk.Dimension)
+	}
 	io.Varuint32(&pk.SubChunkCount)
-	if pk.SubChunkCount == protocol.SubChunkRequestModeLimited {
+	if io.Protocol() >= protocol.Protocol1v18v10 && pk.SubChunkCount == protocol.SubChunkRequestModeLimited {
 		io.Uint16(&pk.HighestSubChunk)
 	}
 	io.Bool(&pk.CacheEnabled)
