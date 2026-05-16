@@ -70,6 +70,8 @@ func (pk *ResourcePackDataInfo) Marshal(io protocol.IO) {
 	io.Uint32(&pk.ChunkCount)
 	io.Uint64(&pk.Size)
 	io.ByteSlice(&pk.Hash)
-	io.Bool(&pk.Premium)
-	io.Uint8(&pk.PackType)
+	if io.Protocol() >= protocol.Protocol1v12v0 {
+		io.Bool(&pk.Premium)
+		io.Uint8(&pk.PackType)
+	}
 }
