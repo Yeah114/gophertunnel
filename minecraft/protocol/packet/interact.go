@@ -46,5 +46,13 @@ func (*Interact) ID() uint32 {
 func (pk *Interact) Marshal(io protocol.IO) {
 	io.Uint8(&pk.ActionType)
 	io.Varuint64(&pk.TargetEntityRuntimeID)
-	protocol.OptionalFunc(io, &pk.Position, io.Vec3)
+	if io.Protocol() >= protocol.Protocol1v21v130v28 {
+		protocol.OptionalFunc(io, &pk.Position, io.Vec3)
+		return
+	}
+	if io.Protocol() >= protocol.Protocol1v2v0 && (pk.ActionType == InteractActionMouseOverEntity || (io.Protocol() >= protocol.Protocol1v13v0 && pk.ActionType == InteractActionLeaveVehicle)) {
+		position, _ := pk.Position.Value()
+		io.Vec3(&position)
+		pk.Position = protocol.Option(position)
+	}
 }
