@@ -81,6 +81,16 @@ func (*Text) ID() uint32 {
 }
 
 func (pk *Text) Marshal(io protocol.IO) {
+	if io.Protocol() >= protocol.Protocol1v26v0 {
+		pk.marshalCategorised(io, false)
+	} else if io.Protocol() >= protocol.Protocol1v21v130v28 {
+		pk.marshalCategorised(io, true)
+	} else {
+		pk.marshalLegacy(io)
+	}
+}
+
+func (pk *Text) marshalCategorised(io protocol.IO, writeCategoryNames bool) {
 	io.Bool(&pk.NeedsTranslation)
 
 	var categoryType uint8
@@ -93,7 +103,32 @@ func (pk *Text) Marshal(io protocol.IO) {
 		categoryType = TextCategoryMessageWithParameters
 	}
 	io.Uint8(&categoryType)
+	if writeCategoryNames {
+		pk.marshalCategoryNames(io, categoryType)
+	}
 	io.Uint8(&pk.TextType)
+	pk.marshalPayload(io)
+	pk.marshalModernMetadata(io)
+}
+
+func (pk *Text) marshalCategoryNames(io protocol.IO, categoryType uint8) {
+	switch categoryType {
+	case TextCategoryMessageOnly:
+		for _, name := range []string{"raw", "tip", "systemMessage", "textObjectWhisper", "textObjectAnnouncement", "textObject"} {
+			io.String(&name)
+		}
+	case TextCategoryAuthoredMessage:
+		for _, name := range []string{"chat", "whisper", "announcement"} {
+			io.String(&name)
+		}
+	case TextCategoryMessageWithParameters:
+		for _, name := range []string{"translate", "popup", "jukeboxPopup"} {
+			io.String(&name)
+		}
+	}
+}
+
+func (pk *Text) marshalPayload(io protocol.IO) {
 	switch pk.TextType {
 	case TextTypeChat, TextTypeWhisper, TextTypeAnnouncement:
 		io.String(&pk.SourceName)
@@ -104,17 +139,50 @@ func (pk *Text) Marshal(io protocol.IO) {
 		io.String(&pk.Message)
 		protocol.FuncSlice(io, &pk.Parameters, io.String)
 	}
-
 	if len(pk.Message) == 0 {
 		io.InvalidValue(pk.Message, "message", "string cannot be empty")
 	}
-	if io.Protocol() >= protocol.Protocol1v12v0 {
-		io.String(&pk.XUID)
+}
+
+func (pk *Text) marshalModernMetadata(io protocol.IO) {
+	io.String(&pk.XUID)
+	io.String(&pk.PlatformChatID)
+	protocol.OptionalFunc(io, &pk.FilteredMessage, io.String)
+}
+
+func (pk *Text) marshalLegacy(io protocol.IO) {
+	io.Uint8(&pk.TextType)
+	if io.Protocol() >= protocol.Protocol1v2v0 {
+		io.Bool(&pk.NeedsTranslation)
 	}
+
+	switch pk.TextType {
+	case TextTypeChat, TextTypeWhisper, TextTypeAnnouncement:
+		io.String(&pk.SourceName)
+		if io.Protocol() > protocol.Protocol1v2v10 && io.Protocol() <= protocol.Protocol1v6v0 {
+			thirdPartyName := ""
+			thirdPartyID := int32(0)
+			io.String(&thirdPartyName)
+			io.Varint32(&thirdPartyID)
+		}
+		io.String(&pk.Message)
+	case TextTypeRaw, TextTypeTip, TextTypeSystem, TextTypeObject, TextTypeObjectWhisper, TextTypeObjectAnnouncement:
+		io.String(&pk.Message)
+	case TextTypeTranslation, TextTypePopup, TextTypeJukeboxPopup:
+		io.String(&pk.Message)
+		protocol.FuncSlice(io, &pk.Parameters, io.String)
+	}
+	if len(pk.Message) == 0 {
+		io.InvalidValue(pk.Message, "message", "string cannot be empty")
+	}
+
 	if io.Protocol() >= protocol.Protocol1v2v13 {
+		io.String(&pk.XUID)
 		io.String(&pk.PlatformChatID)
 	}
 	if io.Protocol() >= protocol.Protocol1v21v0 {
-		protocol.OptionalFunc(io, &pk.FilteredMessage, io.String)
+		filteredMessage, _ := pk.FilteredMessage.Value()
+		io.String(&filteredMessage)
+		pk.FilteredMessage = protocol.Option(filteredMessage)
 	}
 }
