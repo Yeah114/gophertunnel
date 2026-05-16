@@ -26,6 +26,10 @@ type AddActor struct {
 	//
 	// Added: v1.16
 	EntityType string
+	// LegacyEntityType is the numeric entity type written before string entity identifiers were introduced.
+	//
+	// Removed: v1.8.0
+	LegacyEntityType uint32
 	// Position is the position to spawn the entity on. If the entity is on a distance that the player cannot
 	// see it, the entity will still show up if the player moves closer.
 	//
@@ -88,13 +92,21 @@ func (*AddActor) ID() uint32 {
 func (pk *AddActor) Marshal(io protocol.IO) {
 	io.Varint64(&pk.EntityUniqueID)
 	io.Varuint64(&pk.EntityRuntimeID)
-	io.String(&pk.EntityType)
+	if io.Protocol() < protocol.Protocol1v8v0 {
+		io.Varuint32(&pk.LegacyEntityType)
+	} else {
+		io.String(&pk.EntityType)
+	}
 	io.Vec3(&pk.Position)
 	io.Vec3(&pk.Velocity)
 	io.Float32(&pk.Pitch)
 	io.Float32(&pk.Yaw)
-	io.Float32(&pk.HeadYaw)
-	io.Float32(&pk.BodyYaw)
+	if io.Protocol() >= protocol.Protocol1v5v0 {
+		io.Float32(&pk.HeadYaw)
+		if io.Protocol() >= protocol.Protocol1v19v10 {
+			io.Float32(&pk.BodyYaw)
+		}
+	}
 	protocol.Slice(io, &pk.Attributes)
 	io.EntityMetadata(&pk.EntityMetadata)
 	if io.Protocol() >= protocol.Protocol1v19v40 {
