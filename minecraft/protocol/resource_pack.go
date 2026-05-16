@@ -41,12 +41,12 @@ type TexturePackInfo struct {
 	// ContentIdentity is another UUID for the resource pack, and is generally set for marketplace texture
 	// packs. It is also required for client-side validations when the resource pack is encrypted.
 	//
-	// Added: v1.16.200
+	// Added: v1.6.0.5
 	ContentIdentity string
 	// HasScripts specifies if the texture packs has any scripts in it. A client will only download the
 	// behaviour pack if it supports scripts, which, up to 1.11, only includes Windows 10.
 	//
-	// Added: v1.16.200
+	// Added: v1.9.0
 	HasScripts bool
 	// AddonPack specifies if the texture pack is from an addon.
 	//
@@ -78,10 +78,16 @@ func (x *TexturePackInfo) Marshal(r IO) {
 	r.Uint64(&x.Size)
 	r.String(&x.ContentKey)
 	r.String(&x.SubPackName)
-	r.String(&x.ContentIdentity)
-	r.Bool(&x.HasScripts)
-	r.Bool(&x.AddonPack)
-	r.Bool(&x.RTXEnabled)
+	if r.Protocol() > Protocol1v5v0 {
+		r.String(&x.ContentIdentity)
+	}
+	if r.Protocol() >= Protocol1v9v0 {
+		r.Bool(&x.HasScripts)
+	}
+	if r.Protocol() >= Protocol1v16v200 {
+		r.Bool(&x.AddonPack)
+		r.Bool(&x.RTXEnabled)
+	}
 	if r.Protocol() >= Protocol1v21v40 {
 		r.String(&x.DownloadURL)
 	}
