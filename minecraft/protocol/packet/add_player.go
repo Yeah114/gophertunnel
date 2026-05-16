@@ -143,6 +143,12 @@ func (*AddPlayer) ID() uint32 {
 func (pk *AddPlayer) Marshal(io protocol.IO) {
 	io.UUID(&pk.UUID)
 	io.String(&pk.Username)
+	if io.Protocol() >= protocol.Protocol1v2v13 && io.Protocol() <= protocol.Protocol1v6v0 {
+		thirdPartyName := ""
+		thirdPartyID := int32(0)
+		io.String(&thirdPartyName)
+		io.Varint32(&thirdPartyID)
+	}
 	if io.Protocol() < protocol.Protocol1v19v10 {
 		io.Varint64(&pk.EntityUniqueID)
 	}
@@ -160,6 +166,9 @@ func (pk *AddPlayer) Marshal(io protocol.IO) {
 		io.Varint32(&pk.GameType)
 	}
 	io.EntityMetadata(&pk.EntityMetadata)
+	if io.Protocol() <= protocol.Protocol1v5v0 {
+		return
+	}
 	if io.Protocol() >= protocol.Protocol1v19v40 {
 		protocol.Single(io, &pk.EntityProperties)
 	}
@@ -175,5 +184,7 @@ func (pk *AddPlayer) Marshal(io protocol.IO) {
 	}
 	protocol.Slice(io, &pk.EntityLinks)
 	io.String(&pk.DeviceID)
-	io.Int32(&pk.BuildPlatform)
+	if io.Protocol() >= protocol.Protocol1v13v0 {
+		io.Int32(&pk.BuildPlatform)
+	}
 }
