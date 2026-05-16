@@ -449,11 +449,15 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Varint32(&pk.Dimension)
 	io.Varint32(&pk.Generator)
 	io.Varint32(&pk.WorldGameMode)
-	io.Bool(&pk.Hardcore)
+	if io.Protocol() >= protocol.Protocol1v20v80 {
+		io.Bool(&pk.Hardcore)
+	}
 	io.Varint32(&pk.Difficulty)
 	io.UBlockPos(&pk.WorldSpawn)
 	io.Bool(&pk.AchievementsDisabled)
-	io.Varint32(&pk.EditorWorldType)
+	if io.Protocol() >= protocol.Protocol1v20v80 {
+		io.Varint32(&pk.EditorWorldType)
+	}
 	io.Bool(&pk.CreatedInEditor)
 	io.Bool(&pk.ExportedFromEditor)
 	io.Varint32(&pk.DayCycleLockTime)
@@ -504,7 +508,9 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 		io.String(&pk.ServerID)
 		io.String(&pk.WorldID)
 		io.String(&pk.ScenarioID)
-		io.String(&pk.OwnerID)
+		if io.Protocol() >= protocol.Protocol1v21v90 {
+			io.String(&pk.OwnerID)
+		}
 	}
 	io.String(&pk.LevelID)
 	io.String(&pk.WorldName)
@@ -521,11 +527,15 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Uint64(&pk.ServerBlockStateChecksum)
 	io.UUID(&pk.WorldTemplateID)
 	io.Bool(&pk.ClientSideGeneration)
-	io.Bool(&pk.UseBlockNetworkIDHashes)
-	if io.Protocol() < protocol.Protocol1v21v130v28 {
+	if io.Protocol() >= protocol.Protocol1v19v80 {
+		io.Bool(&pk.UseBlockNetworkIDHashes)
+	}
+	if io.Protocol() >= protocol.Protocol1v21v100 && io.Protocol() < protocol.Protocol1v21v130v28 {
 		io.Bool(&pk.TickDeathSystemsEnabled)
 	}
-	io.Bool(&pk.ServerAuthoritativeSound)
+	if io.Protocol() >= protocol.Protocol1v20v0 {
+		io.Bool(&pk.ServerAuthoritativeSound)
+	}
 	if io.Protocol() >= protocol.Protocol1v26v0 {
 		protocol.OptionalMarshaler(io, &pk.ServerJoinInformation)
 		io.String(&pk.ServerID)

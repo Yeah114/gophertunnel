@@ -52,8 +52,12 @@ func (*Emote) ID() uint32 {
 func (pk *Emote) Marshal(io protocol.IO) {
 	io.Varuint64(&pk.EntityRuntimeID)
 	io.String(&pk.EmoteID)
-	io.Varuint32(&pk.EmoteLength)
-	io.String(&pk.XUID)
-	io.String(&pk.PlatformID)
+	if io.Protocol() >= protocol.Protocol1v21v30 {
+		io.Varuint32(&pk.EmoteLength)
+	}
+	if io.Protocol() >= protocol.Protocol1v20v0v23 {
+		io.String(&pk.XUID)
+		io.String(&pk.PlatformID)
+	}
 	io.Uint8(&pk.Flags)
 }

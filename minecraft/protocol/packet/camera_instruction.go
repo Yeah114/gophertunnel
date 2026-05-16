@@ -30,7 +30,7 @@ type CameraInstruction struct {
 	RemoveTarget protocol.Optional[bool]
 	// FieldOfView is a camera instruction that updates the field of view for the camera.
 	//
-	// Added: v1.21.80
+	// Added: v1.21.100
 	FieldOfView protocol.Optional[protocol.CameraInstructionFieldOfView]
 	// Spline is a camera instruction that creates a spline path for the camera to follow.
 	//
@@ -55,10 +55,16 @@ func (pk *CameraInstruction) Marshal(io protocol.IO) {
 	protocol.OptionalMarshaler(io, &pk.Set)
 	protocol.OptionalFunc(io, &pk.Clear, io.Bool)
 	protocol.OptionalMarshaler(io, &pk.Fade)
-	protocol.OptionalMarshaler(io, &pk.Target)
-	protocol.OptionalFunc(io, &pk.RemoveTarget, io.Bool)
-	protocol.OptionalMarshaler(io, &pk.FieldOfView)
-	protocol.OptionalMarshaler(io, &pk.Spline)
-	protocol.OptionalFunc(io, &pk.AttachToEntity, io.Int64)
-	protocol.OptionalFunc(io, &pk.DetachFromEntity, io.Bool)
+	if io.Protocol() >= protocol.Protocol1v21v20 {
+		protocol.OptionalMarshaler(io, &pk.Target)
+		protocol.OptionalFunc(io, &pk.RemoveTarget, io.Bool)
+	}
+	if io.Protocol() >= protocol.Protocol1v21v100 {
+		protocol.OptionalMarshaler(io, &pk.FieldOfView)
+	}
+	if io.Protocol() >= protocol.Protocol1v21v120 {
+		protocol.OptionalMarshaler(io, &pk.Spline)
+		protocol.OptionalFunc(io, &pk.AttachToEntity, io.Int64)
+		protocol.OptionalFunc(io, &pk.DetachFromEntity, io.Bool)
+	}
 }

@@ -39,7 +39,7 @@ type CameraAimAssist struct {
 	Action byte
 	// ShowDebugRender specifies if debug render should be shown.
 	//
-	// Added: v1.21.80
+	// Added: v1.21.100
 	ShowDebugRender bool
 }
 
@@ -54,5 +54,7 @@ func (pk *CameraAimAssist) Marshal(io protocol.IO) {
 	io.Float32(&pk.Distance)
 	io.Uint8(&pk.TargetMode)
 	io.Uint8(&pk.Action)
-	io.Bool(&pk.ShowDebugRender)
+	if io.Protocol() >= protocol.Protocol1v21v100 {
+		io.Bool(&pk.ShowDebugRender)
+	}
 }

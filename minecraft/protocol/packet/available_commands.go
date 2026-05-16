@@ -65,11 +65,15 @@ func (*AvailableCommands) ID() uint32 {
 
 func (pk *AvailableCommands) Marshal(io protocol.IO) {
 	protocol.FuncSlice(io, &pk.EnumValues, io.String)
-	protocol.FuncSlice(io, &pk.ChainedSubcommandValues, io.String)
+	if io.Protocol() >= protocol.Protocol1v20v10 {
+		protocol.FuncSlice(io, &pk.ChainedSubcommandValues, io.String)
+	}
 	protocol.FuncSlice(io, &pk.Suffixes, io.String)
 	protocol.FuncIOSlice(io, &pk.Enums, protocol.CommandEnumContext{EnumValues: pk.EnumValues}.Marshal)
-	protocol.Slice(io, &pk.ChainedSubcommands)
-	protocol.Slice(io, &pk.Commands)
+	if io.Protocol() >= protocol.Protocol1v20v10 {
+		protocol.Slice(io, &pk.ChainedSubcommands)
+	}
+	protocol.FuncIOSlice(io, &pk.Commands, protocol.CommandContext{ChainedSubcommands: io.Protocol() >= protocol.Protocol1v20v10}.Marshal)
 	protocol.Slice(io, &pk.DynamicEnums)
 	protocol.Slice(io, &pk.Constraints)
 }

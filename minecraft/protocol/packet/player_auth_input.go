@@ -85,7 +85,8 @@ const (
 	PlayModeNormal = iota
 	PlayModeTeaser
 	PlayModeScreen
-	_
+	PlayModeViewer
+	PlayModeReality
 	_
 	_
 	_
@@ -210,9 +211,15 @@ func (pk *PlayerAuthInput) Marshal(io protocol.IO) {
 	io.Bitset(&pk.InputData, PlayerAuthInputBitsetSize)
 	io.Varuint32(&pk.InputMode)
 	io.Varuint32(&pk.PlayMode)
-	io.Varuint32(&pk.InteractionModel)
-	io.Float32(&pk.InteractPitch)
-	io.Float32(&pk.InteractYaw)
+	if io.Protocol() >= protocol.Protocol1v19v0 {
+		io.Varuint32(&pk.InteractionModel)
+	}
+	if io.Protocol() >= protocol.Protocol1v21v40 {
+		io.Float32(&pk.InteractPitch)
+		io.Float32(&pk.InteractYaw)
+	} else if pk.PlayMode == PlayModeReality {
+		io.Vec3(&pk.CameraOrientation)
+	}
 	io.Varuint64(&pk.Tick)
 	io.Vec3(&pk.Delta)
 
@@ -228,12 +235,20 @@ func (pk *PlayerAuthInput) Marshal(io protocol.IO) {
 		protocol.SliceVarint32Length(io, &pk.BlockActions)
 	}
 
-	if pk.InputData.Load(InputFlagClientPredictedVehicle) {
-		io.Vec2(&pk.VehicleRotation)
+	if io.Protocol() >= protocol.Protocol1v20v60 && pk.InputData.Load(InputFlagClientPredictedVehicle) {
+		if io.Protocol() >= protocol.Protocol1v20v70 {
+			io.Vec2(&pk.VehicleRotation)
+		}
 		io.Varint64(&pk.ClientPredictedVehicle)
 	}
 
-	io.Vec2(&pk.AnalogueMoveVector)
-	io.Vec3(&pk.CameraOrientation)
-	io.Vec2(&pk.RawMoveVector)
+	if io.Protocol() >= protocol.Protocol1v20v60 {
+		io.Vec2(&pk.AnalogueMoveVector)
+	}
+	if io.Protocol() >= protocol.Protocol1v21v40 {
+		io.Vec3(&pk.CameraOrientation)
+	}
+	if io.Protocol() >= protocol.Protocol1v21v50 {
+		io.Vec2(&pk.RawMoveVector)
+	}
 }

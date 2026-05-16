@@ -110,6 +110,8 @@ func (x *AbilityLayer) Marshal(r IO) {
 	r.Uint32(&x.Abilities)
 	r.Uint32(&x.Values)
 	r.Float32(&x.FlySpeed)
-	r.Float32(&x.VerticalFlySpeed)
+	if r.Protocol() >= Protocol1v21v60 {
+		r.Float32(&x.VerticalFlySpeed)
+	}
 	r.Float32(&x.WalkSpeed)
 }

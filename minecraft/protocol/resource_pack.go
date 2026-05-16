@@ -65,7 +65,15 @@ type TexturePackInfo struct {
 
 // Marshal encodes/decodes a TexturePackInfo.
 func (x *TexturePackInfo) Marshal(r IO) {
-	r.UUID(&x.UUID)
+	if r.Protocol() >= Protocol1v21v50 {
+		r.UUID(&x.UUID)
+	} else {
+		u := x.UUID.String()
+		r.String(&u)
+		if parsed, err := uuid.Parse(u); err == nil {
+			x.UUID = parsed
+		}
+	}
 	r.String(&x.Version)
 	r.Uint64(&x.Size)
 	r.String(&x.ContentKey)
@@ -74,7 +82,9 @@ func (x *TexturePackInfo) Marshal(r IO) {
 	r.Bool(&x.HasScripts)
 	r.Bool(&x.AddonPack)
 	r.Bool(&x.RTXEnabled)
-	r.String(&x.DownloadURL)
+	if r.Protocol() >= Protocol1v21v40 {
+		r.String(&x.DownloadURL)
+	}
 }
 
 // StackResourcePack represents a resource pack sent on the stack of the client. When sent, the client will

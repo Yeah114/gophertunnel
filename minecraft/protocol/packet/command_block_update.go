@@ -105,7 +105,9 @@ func (pk *CommandBlockUpdate) Marshal(io protocol.IO) {
 	io.String(&pk.Command)
 	io.String(&pk.LastOutput)
 	io.String(&pk.Name)
-	io.String(&pk.FilteredName)
+	if io.Protocol() >= protocol.Protocol1v21v60 {
+		io.String(&pk.FilteredName)
+	}
 	io.Bool(&pk.ShouldTrackOutput)
 	io.Uint32(&pk.TickDelay)
 	io.Bool(&pk.ExecuteOnFirstTick)

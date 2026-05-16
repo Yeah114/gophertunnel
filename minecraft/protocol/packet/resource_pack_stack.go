@@ -45,7 +45,8 @@ type ResourcePackStack struct {
 	// IncludeEditorPacks specifies if vanilla editor packs should be included in the resource pack stack when
 	// connecting to an editor world.
 	//
-	// Added: v1.21.130.28
+	// Added: v1.20.80
+	// Changed: v1.21.130.28, retained after behaviour packs were removed from this packet.
 	IncludeEditorPacks bool
 }
 
@@ -63,5 +64,7 @@ func (pk *ResourcePackStack) Marshal(io protocol.IO) {
 	io.String(&pk.BaseGameVersion)
 	protocol.SliceUint32Length(io, &pk.Experiments)
 	io.Bool(&pk.ExperimentsPreviouslyToggled)
-	io.Bool(&pk.IncludeEditorPacks)
+	if io.Protocol() >= protocol.Protocol1v20v80 {
+		io.Bool(&pk.IncludeEditorPacks)
+	}
 }

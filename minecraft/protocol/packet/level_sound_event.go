@@ -622,6 +622,8 @@ const (
 	SoundEventWoodenSpearUse        = SoundEventItemWoodenSpearUse
 )
 
+const soundEventRecordLavaChicken1v21v93 = 571
+
 // LevelSoundEvent is sent by the server to make any kind of built-in sound heard to a player. It is sent to,
 // for example, play a stepping sound or a shear sound. The packet is also sent by the client, in which case
 // it could be forwarded by the server to the other players online. If possible, the packets from the client
@@ -664,7 +666,7 @@ type LevelSoundEvent struct {
 	// different sessions of the same world, but most servers simply fill the runtime ID of the entity out for
 	// this field.
 	//
-	// Added: v1.11.1
+	// Added: v1.21.70.24
 	EntityUniqueID int64
 	// FireAtPosition is the position in the same world at which the event should fire. If this is not
 	// present, the position entity will be used instead.
@@ -679,14 +681,71 @@ func (*LevelSoundEvent) ID() uint32 {
 }
 
 func (pk *LevelSoundEvent) Marshal(io protocol.IO) {
-	io.Varuint32(&pk.SoundType)
+	soundType := levelSoundEventProtocolSound(pk.SoundType, io.Protocol())
+	io.Varuint32(&soundType)
+	pk.SoundType = levelSoundEventCanonicalSound(soundType, io.Protocol())
 	io.Vec3(&pk.Position)
-	io.Varint32(&pk.ExtraData)
+	extraData := levelSoundEventProtocolExtraData(pk.SoundType, pk.ExtraData, io.Protocol())
+	io.Varint32(&extraData)
+	pk.ExtraData = levelSoundEventCanonicalExtraData(pk.SoundType, extraData, io.Protocol())
 	io.String(&pk.EntityType)
 	io.Bool(&pk.BabyMob)
 	io.Bool(&pk.DisableRelativeVolume)
-	io.Int64(&pk.EntityUniqueID)
+	if io.Protocol() >= protocol.Protocol1v21v70v24 {
+		io.Int64(&pk.EntityUniqueID)
+	}
 	if io.Protocol() >= protocol.Protocol1v26v20v26 {
 		protocol.OptionalFunc(io, &pk.FireAtPosition, io.Vec3)
 	}
+}
+
+func levelSoundEventCanonicalSound(soundType uint32, proto int32) uint32 {
+	if proto >= protocol.Protocol1v21v93 && proto < protocol.Protocol1v21v100 && soundType == soundEventRecordLavaChicken1v21v93 {
+		return SoundEventRecordLavaChicken
+	}
+	return soundType
+}
+
+func levelSoundEventProtocolSound(soundType uint32, proto int32) uint32 {
+	if proto >= protocol.Protocol1v21v93 && proto < protocol.Protocol1v21v100 && soundType == SoundEventRecordLavaChicken {
+		return soundEventRecordLavaChicken1v21v93
+	}
+	return soundType
+}
+
+func levelSoundEventCanonicalExtraData(soundType uint32, extraData int32, proto int32) int32 {
+	if soundType == SoundEventNote && proto < protocol.Protocol1v21v50 {
+		instrumentID := extraData >> 8
+		strength := extraData & 0xff
+		return levelSoundEventCanonicalNoteInstrument(instrumentID)<<8 | strength
+	}
+	return extraData
+}
+
+func levelSoundEventProtocolExtraData(soundType uint32, extraData int32, proto int32) int32 {
+	if soundType == SoundEventNote && proto < protocol.Protocol1v21v50 {
+		instrumentID := extraData >> 8
+		strength := extraData & 0xff
+		return levelSoundEventProtocolNoteInstrument(instrumentID)<<8 | strength
+	}
+	return extraData
+}
+
+func levelSoundEventCanonicalNoteInstrument(instrumentID int32) int32 {
+	switch instrumentID {
+	case 6:
+		return 5
+	case 5:
+		return 6
+	case 8:
+		return 7
+	case 7:
+		return 8
+	default:
+		return instrumentID
+	}
+}
+
+func levelSoundEventProtocolNoteInstrument(instrumentID int32) int32 {
+	return levelSoundEventCanonicalNoteInstrument(instrumentID)
 }

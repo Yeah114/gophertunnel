@@ -59,8 +59,10 @@ func (pk *CorrectPlayerMovePrediction) Marshal(io protocol.IO) {
 	io.Uint8(&pk.PredictionType)
 	io.Vec3(&pk.Position)
 	io.Vec3(&pk.Delta)
-	io.Vec2(&pk.Rotation)
-	protocol.OptionalFunc(io, &pk.VehicleAngularVelocity, io.Float32)
+	if pk.PredictionType == PredictionTypeVehicle || io.Protocol() >= protocol.Protocol1v21v100 {
+		io.Vec2(&pk.Rotation)
+		protocol.OptionalFunc(io, &pk.VehicleAngularVelocity, io.Float32)
+	}
 	io.Bool(&pk.OnGround)
 	io.Varuint64(&pk.Tick)
 }

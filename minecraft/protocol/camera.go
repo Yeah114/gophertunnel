@@ -276,11 +276,11 @@ type CameraInstructionSet struct {
 	// ViewOffset is an offset based on a pivot point to the player, causing the camera to be shifted in a
 	// certain direction.
 	//
-	// Added: v1.21.30
+	// Added: v1.21.20
 	ViewOffset Optional[mgl32.Vec2]
 	// EntityOffset is an offset from the entity that the camera should be rendered at.
 	//
-	// Added: v1.21.30
+	// Added: v1.21.40
 	EntityOffset Optional[mgl32.Vec3]
 	// Default determines whether the camera is a default camera or not.
 	//
@@ -299,10 +299,16 @@ func (x *CameraInstructionSet) Marshal(r IO) {
 	OptionalFunc(r, &x.Position, r.Vec3)
 	OptionalFunc(r, &x.Rotation, r.Vec2)
 	OptionalFunc(r, &x.Facing, r.Vec3)
-	OptionalFunc(r, &x.ViewOffset, r.Vec2)
-	OptionalFunc(r, &x.EntityOffset, r.Vec3)
+	if r.Protocol() >= Protocol1v21v20 {
+		OptionalFunc(r, &x.ViewOffset, r.Vec2)
+	}
+	if r.Protocol() >= Protocol1v21v40 {
+		OptionalFunc(r, &x.EntityOffset, r.Vec3)
+	}
 	OptionalFunc(r, &x.Default, r.Bool)
-	r.Bool(&x.IgnoreStartingValuesComponent)
+	if r.Protocol() >= Protocol1v21v90 {
+		r.Bool(&x.IgnoreStartingValuesComponent)
+	}
 }
 
 // CameraFadeTimeData represents the time data for a CameraInstructionFade.
@@ -463,7 +469,7 @@ type CameraPreset struct {
 	ContinueTargeting Optional[bool]
 	// TrackingRadius is the radius around the camera that the aim assist should track targets.
 	//
-	// Added: v1.21.40
+	// Added: v1.21.50
 	TrackingRadius Optional[float32]
 	// ViewOffset is only used in a follow_orbit camera and controls an offset based on a pivot point to the
 	// player, causing it to be shifted in a certain direction.
@@ -525,21 +531,42 @@ func (x *CameraPreset) Marshal(r IO) {
 	OptionalFunc(r, &x.PosZ, r.Float32)
 	OptionalFunc(r, &x.RotX, r.Float32)
 	OptionalFunc(r, &x.RotY, r.Float32)
-	OptionalFunc(r, &x.RotationSpeed, r.Float32)
-	OptionalFunc(r, &x.SnapToTarget, r.Bool)
-	OptionalFunc(r, &x.HorizontalRotationLimit, r.Vec2)
-	OptionalFunc(r, &x.VerticalRotationLimit, r.Vec2)
-	OptionalFunc(r, &x.ContinueTargeting, r.Bool)
-	OptionalFunc(r, &x.TrackingRadius, r.Float32)
-	OptionalFunc(r, &x.ViewOffset, r.Vec2)
-	OptionalFunc(r, &x.EntityOffset, r.Vec3)
-	OptionalFunc(r, &x.Radius, r.Float32)
-	OptionalFunc(r, &x.MinYawLimit, r.Float32)
-	OptionalFunc(r, &x.MaxYawLimit, r.Float32)
+	if r.Protocol() >= Protocol1v21v30 {
+		OptionalFunc(r, &x.RotationSpeed, r.Float32)
+		OptionalFunc(r, &x.SnapToTarget, r.Bool)
+	}
+	if r.Protocol() >= Protocol1v21v40 {
+		OptionalFunc(r, &x.HorizontalRotationLimit, r.Vec2)
+		OptionalFunc(r, &x.VerticalRotationLimit, r.Vec2)
+		OptionalFunc(r, &x.ContinueTargeting, r.Bool)
+	}
+	if r.Protocol() >= Protocol1v21v50 {
+		OptionalFunc(r, &x.TrackingRadius, r.Float32)
+	}
+	if r.Protocol() >= Protocol1v21v20 {
+		OptionalFunc(r, &x.ViewOffset, r.Vec2)
+		if r.Protocol() >= Protocol1v21v30 {
+			OptionalFunc(r, &x.EntityOffset, r.Vec3)
+		}
+		OptionalFunc(r, &x.Radius, r.Float32)
+	}
+	if r.Protocol() >= Protocol1v21v60 {
+		OptionalFunc(r, &x.MinYawLimit, r.Float32)
+		OptionalFunc(r, &x.MaxYawLimit, r.Float32)
+	}
 	OptionalFunc(r, &x.AudioListener, r.Uint8)
 	OptionalFunc(r, &x.PlayerEffects, r.Bool)
-	OptionalMarshaler(r, &x.AimAssist)
-	OptionalFunc(r, &x.ControlScheme, r.Uint8)
+	if r.Protocol() >= Protocol1v21v50 {
+		OptionalMarshaler(r, &x.AimAssist)
+	}
+	if r.Protocol() >= Protocol1v21v40 && r.Protocol() < Protocol1v21v90 {
+		// This option was removed from the preset payload when v1.21.90 added IgnoreStartingValuesComponent.
+		var alignTargetAndCameraForward Optional[bool]
+		OptionalFunc(r, &alignTargetAndCameraForward, r.Bool)
+	}
+	if r.Protocol() >= Protocol1v21v80 {
+		OptionalFunc(r, &x.ControlScheme, r.Uint8)
+	}
 }
 
 // CameraPresetAimAssist represents a preset for aim assist settings.

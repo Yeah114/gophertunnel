@@ -47,6 +47,17 @@ func (*SetHud) ID() uint32 {
 }
 
 func (pk *SetHud) Marshal(io protocol.IO) {
-	protocol.FuncSlice(io, &pk.Elements, io.Varint32)
-	io.Varint32(&pk.Visibility)
+	if io.Protocol() >= protocol.Protocol1v21v70v24 {
+		protocol.FuncSlice(io, &pk.Elements, io.Varint32)
+		io.Varint32(&pk.Visibility)
+		return
+	}
+	protocol.FuncSlice(io, &pk.Elements, func(x *int32) {
+		element := uint32(*x)
+		io.Varuint32(&element)
+		*x = int32(element)
+	})
+	visibility := byte(pk.Visibility)
+	io.Uint8(&visibility)
+	pk.Visibility = int32(visibility)
 }

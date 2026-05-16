@@ -16,7 +16,7 @@ const (
 	IDAddActor
 	IDRemoveActor
 	IDAddItemActor
-	_
+	IDServerPostMovePosition
 	IDTakeItemActor
 	IDMoveActorAbsolute
 	IDMovePlayer

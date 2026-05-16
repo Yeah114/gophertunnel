@@ -315,7 +315,9 @@ func (x *StackResponseSlotInfo) Marshal(r IO) {
 		r.InvalidValue(x.HotbarSlot, "hotbar slot", "hot bar slot must be equal to normal slot")
 	}
 	r.String(&x.CustomName)
-	r.String(&x.FilteredCustomName)
+	if r.Protocol() >= Protocol1v21v50 {
+		r.String(&x.FilteredCustomName)
+	}
 	r.Varint32(&x.DurabilityCorrection)
 }
 

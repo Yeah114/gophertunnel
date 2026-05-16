@@ -29,5 +29,7 @@ func (*RequestChunkRadius) ID() uint32 {
 
 func (pk *RequestChunkRadius) Marshal(io protocol.IO) {
 	io.Varint32(&pk.ChunkRadius)
-	io.Uint8(&pk.MaxChunkRadius)
+	if io.Protocol() >= protocol.Protocol1v19v80 {
+		io.Uint8(&pk.MaxChunkRadius)
+	}
 }

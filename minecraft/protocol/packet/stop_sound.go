@@ -33,5 +33,7 @@ func (*StopSound) ID() uint32 {
 func (pk *StopSound) Marshal(io protocol.IO) {
 	io.String(&pk.SoundName)
 	io.Bool(&pk.StopAll)
-	io.Bool(&pk.StopMusicLegacy)
+	if io.Protocol() >= protocol.Protocol1v21v20 {
+		io.Bool(&pk.StopMusicLegacy)
+	}
 }

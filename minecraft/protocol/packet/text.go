@@ -71,7 +71,7 @@ type Text struct {
 	// FilteredMessage is a filtered version of Message with all the profanity removed. The client will use
 	// this over Message if this field is not empty and they have the "Filter Profanity" setting enabled.
 	//
-	// Added: v1.21.50
+	// Added: v1.21.0
 	FilteredMessage protocol.Optional[string]
 }
 
@@ -110,5 +110,7 @@ func (pk *Text) Marshal(io protocol.IO) {
 	}
 	io.String(&pk.XUID)
 	io.String(&pk.PlatformChatID)
-	protocol.OptionalFunc(io, &pk.FilteredMessage, io.String)
+	if io.Protocol() >= protocol.Protocol1v21v0 {
+		protocol.OptionalFunc(io, &pk.FilteredMessage, io.String)
+	}
 }

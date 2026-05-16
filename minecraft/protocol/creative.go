@@ -60,5 +60,7 @@ type CreativeItem struct {
 func (x *CreativeItem) Marshal(r IO) {
 	r.Varuint32(&x.CreativeItemNetworkID)
 	r.Item(&x.Item)
-	r.Varuint32(&x.GroupIndex)
+	if r.Protocol() >= Protocol1v21v60 {
+		r.Varuint32(&x.GroupIndex)
+	}
 }

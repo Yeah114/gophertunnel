@@ -52,5 +52,7 @@ func (x *EntityLink) Marshal(r IO) {
 	r.Uint8(&x.Type)
 	r.Bool(&x.Immediate)
 	r.Bool(&x.RiderInitiated)
-	r.Float32(&x.VehicleAngularVelocity)
+	if r.Protocol() >= Protocol1v21v20 {
+		r.Float32(&x.VehicleAngularVelocity)
+	}
 }

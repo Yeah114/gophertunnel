@@ -33,6 +33,8 @@ func (*UpdatePlayerGameType) ID() uint32 {
 
 func (pk *UpdatePlayerGameType) Marshal(io protocol.IO) {
 	io.Varint32(&pk.GameType)
-	io.Varint64(&pk.PlayerUniqueID)
-	io.Varuint64(&pk.Tick)
+	if io.Protocol() >= protocol.Protocol1v20v80 {
+		io.Varint64(&pk.PlayerUniqueID)
+		io.Varuint64(&pk.Tick)
+	}
 }

@@ -31,5 +31,7 @@ func (*Transfer) ID() uint32 {
 func (pk *Transfer) Marshal(io protocol.IO) {
 	io.String(&pk.Address)
 	io.Uint16(&pk.Port)
-	io.Bool(&pk.ReloadWorld)
+	if io.Protocol() >= protocol.Protocol1v21v30 {
+		io.Bool(&pk.ReloadWorld)
+	}
 }

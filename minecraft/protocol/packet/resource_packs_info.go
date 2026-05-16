@@ -19,7 +19,7 @@ type ResourcePacksInfo struct {
 	// HasAddons specifies if any of the resource packs contain addons in them. If set to true, only clients
 	// that support addons will be able to download them.
 	//
-	// Added: v1.11.1
+	// Added: v1.20.70
 	HasAddons bool
 	// HasScripts specifies if any of the resource packs contain scripts in them. If set to true, only clients
 	// that support scripts will be able to download them.
@@ -57,10 +57,16 @@ func (*ResourcePacksInfo) ID() uint32 {
 
 func (pk *ResourcePacksInfo) Marshal(io protocol.IO) {
 	io.Bool(&pk.TexturePackRequired)
-	io.Bool(&pk.HasAddons)
+	if io.Protocol() >= protocol.Protocol1v20v70 {
+		io.Bool(&pk.HasAddons)
+	}
 	io.Bool(&pk.HasScripts)
-	io.Bool(&pk.ForceDisableVibrantVisuals)
-	io.UUID(&pk.WorldTemplateUUID)
-	io.String(&pk.WorldTemplateVersion)
+	if io.Protocol() >= protocol.Protocol1v21v90 {
+		io.Bool(&pk.ForceDisableVibrantVisuals)
+	}
+	if io.Protocol() >= protocol.Protocol1v21v50 {
+		io.UUID(&pk.WorldTemplateUUID)
+		io.String(&pk.WorldTemplateVersion)
+	}
 	protocol.SliceUint16Length(io, &pk.TexturePacks)
 }

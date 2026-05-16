@@ -56,6 +56,21 @@ type Command struct {
 }
 
 func (c *Command) Marshal(r IO) {
+	CommandContext{ChainedSubcommands: true}.Marshal(r, c)
+}
+
+// CommandContext holds context required for encoding commands.
+//
+// Added: v1.20.10
+type CommandContext struct {
+	// ChainedSubcommands specifies if chained subcommand offsets and overload chaining are encoded.
+	//
+	// Added: v1.20.10
+	ChainedSubcommands bool
+}
+
+// Marshal encodes/decodes a Command.
+func (ctx CommandContext) Marshal(r IO, c *Command) {
 	permissionStr := commandPermissionToString(c.PermissionLevel)
 	r.String(&c.Name)
 	r.String(&c.Description)
@@ -63,8 +78,10 @@ func (c *Command) Marshal(r IO) {
 	r.String(&permissionStr)
 	commandPermissionFromString(r, &c.PermissionLevel, permissionStr)
 	r.Uint32(&c.AliasesOffset)
-	FuncSlice(r, &c.ChainedSubcommandOffsets, r.Uint32)
-	Slice(r, &c.Overloads)
+	if ctx.ChainedSubcommands {
+		FuncSlice(r, &c.ChainedSubcommandOffsets, r.Uint32)
+	}
+	FuncIOSlice(r, &c.Overloads, CommandOverloadContext{Chaining: ctx.ChainedSubcommands}.Marshal)
 }
 
 // CommandOverload represents an overload of a command. This overload can be compared to function overloading
@@ -85,7 +102,25 @@ type CommandOverload struct {
 }
 
 func (c *CommandOverload) Marshal(r IO) {
-	r.Bool(&c.Chaining)
+	CommandOverloadContext{Chaining: true}.Marshal(r, c)
+
+}
+
+// CommandOverloadContext holds context required for encoding command overloads.
+//
+// Added: v1.20.10
+type CommandOverloadContext struct {
+	// Chaining specifies if the overload chaining flag is encoded.
+	//
+	// Added: v1.20.10
+	Chaining bool
+}
+
+// Marshal encodes/decodes a CommandOverload.
+func (ctx CommandOverloadContext) Marshal(r IO, c *CommandOverload) {
+	if ctx.Chaining {
+		r.Bool(&c.Chaining)
+	}
 	Slice(r, &c.Parameters)
 }
 

@@ -37,7 +37,10 @@ func (pk *PlayerArmourDamage) Marshal(io protocol.IO) {
 	}
 
 	var flags uint8
-	maxSlot := int32(PlayerArmourDamageFlagBody)
+	maxSlot := int32(PlayerArmourDamageFlagBoots)
+	if io.Protocol() >= protocol.Protocol1v21v20 {
+		maxSlot = PlayerArmourDamageFlagBody
+	}
 	for _, entry := range pk.List {
 		if entry.ArmourSlot < 0 || entry.ArmourSlot > maxSlot {
 			continue

@@ -42,6 +42,7 @@ const (
 	PlayerActionStopCrawling
 	PlayerActionStartFlying
 	PlayerActionStopFlying
+	PlayerActionReceivedServerData
 	_
 	PlayerActionStartUsingItem
 )
@@ -97,7 +98,7 @@ type PlayerListEntry struct {
 	Host bool
 	// SubClient specifies if the player that is added to the player list is a sub-client of another player.
 	//
-	// Added: v1.16
+	// Added: v1.20.60
 	SubClient bool
 	// PlayerColour is the colour of the player that is shown in UI elements, currently only used for the
 	// player locator bar.
@@ -117,8 +118,12 @@ func (x *PlayerListEntry) Marshal(r IO) {
 	Single(r, &x.Skin)
 	r.Bool(&x.Teacher)
 	r.Bool(&x.Host)
-	r.Bool(&x.SubClient)
-	r.ARGB(&x.PlayerColour)
+	if r.Protocol() >= Protocol1v20v60 {
+		r.Bool(&x.SubClient)
+	}
+	if r.Protocol() >= Protocol1v21v80 {
+		r.ARGB(&x.PlayerColour)
+	}
 }
 
 // PlayerListRemoveEntry encodes/decodes a PlayerListEntry for removal from the list.

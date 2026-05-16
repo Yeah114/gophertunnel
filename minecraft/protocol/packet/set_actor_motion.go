@@ -34,5 +34,7 @@ func (*SetActorMotion) ID() uint32 {
 func (pk *SetActorMotion) Marshal(io protocol.IO) {
 	io.Varuint64(&pk.EntityRuntimeID)
 	io.Vec3(&pk.Velocity)
-	io.Varuint64(&pk.Tick)
+	if io.Protocol() >= protocol.Protocol1v20v70 {
+		io.Varuint64(&pk.Tick)
+	}
 }

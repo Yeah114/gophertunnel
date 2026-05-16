@@ -50,6 +50,8 @@ func (*CreativeContent) ID() uint32 {
 }
 
 func (pk *CreativeContent) Marshal(io protocol.IO) {
-	protocol.Slice(io, &pk.Groups)
+	if io.Protocol() >= protocol.Protocol1v21v60 {
+		protocol.Slice(io, &pk.Groups)
+	}
 	protocol.Slice(io, &pk.Items)
 }

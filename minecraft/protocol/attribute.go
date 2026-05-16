@@ -78,8 +78,10 @@ func (x *Attribute) Marshal(r IO) {
 	r.Float32(&x.Min)
 	r.Float32(&x.Max)
 	r.Float32(&x.Value)
-	r.Float32(&x.DefaultMin)
-	r.Float32(&x.DefaultMax)
+	if r.Protocol() >= Protocol1v21v30 {
+		r.Float32(&x.DefaultMin)
+		r.Float32(&x.DefaultMax)
+	}
 	r.Float32(&x.Default)
 	r.String(&x.Name)
 	Slice(r, &x.Modifiers)

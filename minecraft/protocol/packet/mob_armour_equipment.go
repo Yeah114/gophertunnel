@@ -50,5 +50,7 @@ func (pk *MobArmourEquipment) Marshal(io protocol.IO) {
 	io.ItemInstance(&pk.Chestplate)
 	io.ItemInstance(&pk.Leggings)
 	io.ItemInstance(&pk.Boots)
-	io.ItemInstance(&pk.Body)
+	if io.Protocol() >= protocol.Protocol1v21v20 {
+		io.ItemInstance(&pk.Body)
+	}
 }

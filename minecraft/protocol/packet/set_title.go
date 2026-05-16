@@ -76,5 +76,7 @@ func (pk *SetTitle) Marshal(io protocol.IO) {
 	io.Varint32(&pk.FadeOutDuration)
 	io.String(&pk.XUID)
 	io.String(&pk.PlatformOnlineID)
-	io.String(&pk.FilteredMessage)
+	if io.Protocol() >= protocol.Protocol1v21v20 {
+		io.String(&pk.FilteredMessage)
+	}
 }
