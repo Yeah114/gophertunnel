@@ -533,13 +533,17 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.String(&pk.WorldName)
 	io.String(&pk.TemplateContentIdentity)
 	io.Bool(&pk.Trial)
-	protocol.PlayerMoveSettings(io, &pk.PlayerMovementSettings)
+	if io.Protocol() >= protocol.Protocol1v16v100 {
+		protocol.PlayerMoveSettings(io, &pk.PlayerMovementSettings)
+	}
 	io.Int64(&pk.Time)
 	io.Varint32(&pk.EnchantmentSeed)
 	protocol.Slice(io, &pk.Blocks)
 	io.String(&pk.MultiPlayerCorrelationID)
 	io.Bool(&pk.ServerAuthoritativeInventory)
-	io.String(&pk.GameVersion)
+	if io.Protocol() >= protocol.Protocol1v16v230v50 {
+		io.String(&pk.GameVersion)
+	}
 	if io.Protocol() >= protocol.Protocol1v19v0 {
 		io.NBT(&pk.PropertyData, nbt.NetworkLittleEndian)
 	}

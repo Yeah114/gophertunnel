@@ -47,6 +47,12 @@ const (
 	PlayerActionStartUsingItem
 )
 
+const (
+	PlayerMovementModeClient = iota
+	PlayerMovementModeServer
+	PlayerMovementModeServerWithRewind
+)
+
 // PlayerListEntry is an entry found in the PlayerList packet. It represents a single player using the UUID
 // found in the entry, and contains several properties such as the skin.
 //
@@ -136,9 +142,15 @@ func PlayerListRemoveEntry(r IO, x *PlayerListEntry) {
 //
 // Added: v1.16
 type PlayerMovementSettings struct {
-	// RewindHistorySize is the amount of history to keep at maximum.
+	// MovementType specifies the way the server handles player movement. Available options are
+	// PlayerMovementModeClient, PlayerMovementModeServer and PlayerMovementModeServerWithRewind.
 	//
-	// Added: v1.16
+	// Added: v1.16.100
+	MovementType int32
+	// RewindHistorySize is the amount of history to keep at maximum if MovementType is
+	// PlayerMovementModeServerWithRewind.
+	//
+	// Added: v1.16.210
 	RewindHistorySize int32
 	// ServerAuthoritativeBlockBreaking specifies if block breaking should be sent through
 	// packet.PlayerAuthInput or not.
@@ -149,8 +161,15 @@ type PlayerMovementSettings struct {
 
 // PlayerMoveSettings reads/writes PlayerMovementSettings x to/from IO r.
 func PlayerMoveSettings(r IO, x *PlayerMovementSettings) {
-	r.Varint32(&x.RewindHistorySize)
-	r.Bool(&x.ServerAuthoritativeBlockBreaking)
+	if r.Protocol() >= Protocol1v16v210 {
+		movementType := uint32(x.MovementType)
+		r.Varuint32(&movementType)
+		x.MovementType = int32(movementType)
+		r.Varint32(&x.RewindHistorySize)
+		r.Bool(&x.ServerAuthoritativeBlockBreaking)
+	} else {
+		r.Varint32(&x.MovementType)
+	}
 }
 
 // PlayerBlockAction represents a block-related action initiated by the player.
