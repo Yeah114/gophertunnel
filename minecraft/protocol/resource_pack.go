@@ -119,7 +119,9 @@ type StackResourcePack struct {
 func (x *StackResourcePack) Marshal(r IO) {
 	r.String(&x.UUID)
 	r.String(&x.Version)
-	r.String(&x.SubPackName)
+	if r.Protocol() >= Protocol1v8v0 {
+		r.String(&x.SubPackName)
+	}
 }
 
 // PackURL represents a resource pack that is being served from a HTTP server rather than being sent over

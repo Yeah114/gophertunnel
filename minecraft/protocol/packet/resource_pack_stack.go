@@ -65,10 +65,11 @@ func (pk *ResourcePackStack) Marshal(io protocol.IO) {
 		protocol.Slice(io, &pk.BehaviourPacks)
 	}
 	protocol.Slice(io, &pk.TexturePacks)
+	if io.Protocol() >= protocol.Protocol1v8v0 && io.Protocol() < protocol.Protocol1v16v100 {
+		io.Bool(&pk.Experimental)
+	}
 	if io.Protocol() >= protocol.Protocol1v13v0 {
 		io.String(&pk.BaseGameVersion)
-	} else if io.Protocol() >= protocol.Protocol1v8v0 {
-		io.Bool(&pk.Experimental)
 	}
 	if io.Protocol() >= protocol.Protocol1v16v100 {
 		protocol.SliceUint32Length(io, &pk.Experiments)
