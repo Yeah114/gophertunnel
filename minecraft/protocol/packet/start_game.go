@@ -507,7 +507,9 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Int32(&pk.LimitedWorldWidth)
 	io.Int32(&pk.LimitedWorldDepth)
 	io.Bool(&pk.NewNether)
-	protocol.Single(io, &pk.EducationSharedResourceURI)
+	if io.Protocol() >= protocol.Protocol1v17v30 {
+		protocol.Single(io, &pk.EducationSharedResourceURI)
+	}
 	if io.Protocol() >= protocol.Protocol1v21v130v28 {
 		protocol.OptionalFunc(io, &pk.ForceExperimentalGameplay, io.Bool)
 	} else {

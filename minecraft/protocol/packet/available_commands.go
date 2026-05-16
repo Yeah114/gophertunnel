@@ -73,7 +73,10 @@ func (pk *AvailableCommands) Marshal(io protocol.IO) {
 	if io.Protocol() >= protocol.Protocol1v20v10 {
 		protocol.Slice(io, &pk.ChainedSubcommands)
 	}
-	protocol.FuncIOSlice(io, &pk.Commands, protocol.CommandContext{ChainedSubcommands: io.Protocol() >= protocol.Protocol1v20v10}.Marshal)
+	protocol.FuncIOSlice(io, &pk.Commands, protocol.CommandContext{
+		ChainedSubcommands: io.Protocol() >= protocol.Protocol1v20v10,
+		ShortFlags:         io.Protocol() >= protocol.Protocol1v17v10,
+	}.Marshal)
 	protocol.Slice(io, &pk.DynamicEnums)
 	protocol.Slice(io, &pk.Constraints)
 }

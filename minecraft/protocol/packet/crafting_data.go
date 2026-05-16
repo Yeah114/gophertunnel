@@ -45,6 +45,8 @@ func (pk *CraftingData) Marshal(io protocol.IO) {
 	protocol.FuncSlice(io, &pk.Recipes, io.Recipe)
 	protocol.Slice(io, &pk.PotionRecipes)
 	protocol.Slice(io, &pk.PotionContainerChangeRecipes)
-	protocol.FuncSlice(io, &pk.MaterialReducers, io.MaterialReducer)
+	if io.Protocol() >= protocol.Protocol1v17v30 {
+		protocol.FuncSlice(io, &pk.MaterialReducers, io.MaterialReducer)
+	}
 	io.Bool(&pk.ClearRecipes)
 }

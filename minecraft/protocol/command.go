@@ -67,6 +67,10 @@ type CommandContext struct {
 	//
 	// Added: v1.20.10
 	ChainedSubcommands bool
+	// ShortFlags specifies if Flags is encoded as a little-endian uint16 instead of the legacy single byte.
+	//
+	// Added: v1.17.10
+	ShortFlags bool
 }
 
 // Marshal encodes/decodes a Command.
@@ -74,7 +78,13 @@ func (ctx CommandContext) Marshal(r IO, c *Command) {
 	permissionStr := commandPermissionToString(c.PermissionLevel)
 	r.String(&c.Name)
 	r.String(&c.Description)
-	r.Uint16(&c.Flags)
+	if ctx.ShortFlags {
+		r.Uint16(&c.Flags)
+	} else {
+		flags := byte(c.Flags)
+		r.Uint8(&flags)
+		c.Flags = uint16(flags)
+	}
 	r.String(&permissionStr)
 	commandPermissionFromString(r, &c.PermissionLevel, permissionStr)
 	r.Uint32(&c.AliasesOffset)

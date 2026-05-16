@@ -26,6 +26,10 @@ type ResourcePacksInfo struct {
 	//
 	// Added: v1.11.1
 	HasScripts bool
+	// ForcingServerPacks specifies if the client should be forced to use the server resource packs.
+	//
+	// Added: v1.17.10
+	ForcingServerPacks bool
 	// ForceDisableVibrantVisuals specifies if the vibrant visuals feature should be forcibly disabled on the server.
 	// If set to true, the server will ensure that vibrant visuals are not enabled, regardless of the client's settings.
 	//
@@ -61,6 +65,9 @@ func (pk *ResourcePacksInfo) Marshal(io protocol.IO) {
 		io.Bool(&pk.HasAddons)
 	}
 	io.Bool(&pk.HasScripts)
+	if io.Protocol() >= protocol.Protocol1v17v10 {
+		io.Bool(&pk.ForcingServerPacks)
+	}
 	if io.Protocol() >= protocol.Protocol1v21v90 {
 		io.Bool(&pk.ForceDisableVibrantVisuals)
 	}

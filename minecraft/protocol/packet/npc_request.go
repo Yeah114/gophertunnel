@@ -54,5 +54,7 @@ func (pk *NPCRequest) Marshal(io protocol.IO) {
 	io.Uint8(&pk.RequestType)
 	io.String(&pk.CommandString)
 	io.Uint8(&pk.ActionType)
-	io.String(&pk.SceneName)
+	if io.Protocol() >= protocol.Protocol1v17v10 {
+		io.String(&pk.SceneName)
+	}
 }
