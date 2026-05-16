@@ -145,7 +145,7 @@ type PlayerMovementSettings struct {
 	// MovementType specifies the way the server handles player movement. Available options are
 	// PlayerMovementModeClient, PlayerMovementModeServer and PlayerMovementModeServerWithRewind.
 	//
-	// Added: v1.16.100
+	// Added: v1.16.0, Changed: v1.16.100, encoded as a movement mode instead of a legacy bool.
 	MovementType int32
 	// RewindHistorySize is the amount of history to keep at maximum if MovementType is
 	// PlayerMovementModeServerWithRewind.
@@ -167,8 +167,16 @@ func PlayerMoveSettings(r IO, x *PlayerMovementSettings) {
 		x.MovementType = int32(movementType)
 		r.Varint32(&x.RewindHistorySize)
 		r.Bool(&x.ServerAuthoritativeBlockBreaking)
-	} else {
+	} else if r.Protocol() >= Protocol1v16v100 {
 		r.Varint32(&x.MovementType)
+	} else {
+		serverAuthoritativeMovement := x.MovementType != PlayerMovementModeClient
+		r.Bool(&serverAuthoritativeMovement)
+		if serverAuthoritativeMovement {
+			x.MovementType = PlayerMovementModeServer
+		} else {
+			x.MovementType = PlayerMovementModeClient
+		}
 	}
 }
 

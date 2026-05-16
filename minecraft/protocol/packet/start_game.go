@@ -158,7 +158,7 @@ type StartGame struct {
 	// EducationProductID is a UUID used to identify the education edition server instance. It is generally
 	// unique for education edition servers.
 	//
-	// Added: v1.16.100
+	// Added: v1.16.0
 	EducationProductID string
 	// RainLevel is the level specifying the intensity of the rain falling. When set to 0, no rain falls at
 	// all.
@@ -336,7 +336,8 @@ type StartGame struct {
 	Trial bool
 	// PlayerMovementSettings ...
 	//
-	// Added: v1.16.210
+	// Added: v1.16.0, Changed: v1.16.100, encoded as a varint movement mode.
+	// Changed: v1.16.210, added rewind history size and server authoritative block breaking.
 	PlayerMovementSettings protocol.PlayerMovementSettings
 	// Time is the total time that has elapsed since the start of the world.
 	//
@@ -451,8 +452,10 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 		io.Varint32(&worldSeed)
 		pk.WorldSeed = int64(worldSeed)
 	}
-	io.Int16(&pk.SpawnBiomeType)
-	io.String(&pk.UserDefinedBiomeName)
+	if io.Protocol() >= protocol.Protocol1v16v0 {
+		io.Int16(&pk.SpawnBiomeType)
+		io.String(&pk.UserDefinedBiomeName)
+	}
 	io.Varint32(&pk.Dimension)
 	io.Varint32(&pk.Generator)
 	io.Varint32(&pk.WorldGameMode)
@@ -472,7 +475,9 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Varint32(&pk.DayCycleLockTime)
 	io.Varint32(&pk.EducationEditionOffer)
 	io.Bool(&pk.EducationFeaturesEnabled)
-	io.String(&pk.EducationProductID)
+	if io.Protocol() >= protocol.Protocol1v16v0 {
+		io.String(&pk.EducationProductID)
+	}
 	io.Float32(&pk.RainLevel)
 	io.Float32(&pk.LightningLevel)
 	io.Bool(&pk.ConfirmedPlatformLockedContent)
@@ -483,8 +488,10 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Bool(&pk.CommandsEnabled)
 	io.Bool(&pk.TexturePackRequired)
 	protocol.FuncSlice(io, &pk.GameRules, io.GameRuleLegacy)
-	protocol.SliceUint32Length(io, &pk.Experiments)
-	io.Bool(&pk.ExperimentsPreviouslyToggled)
+	if io.Protocol() >= protocol.Protocol1v16v100 {
+		protocol.SliceUint32Length(io, &pk.Experiments)
+		io.Bool(&pk.ExperimentsPreviouslyToggled)
+	}
 	io.Bool(&pk.BonusChestEnabled)
 	io.Bool(&pk.StartWithMapEnabled)
 	io.Varint32(&pk.PlayerPermissions)
@@ -504,9 +511,11 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 		}
 	}
 	io.String(&pk.BaseGameVersion)
-	io.Int32(&pk.LimitedWorldWidth)
-	io.Int32(&pk.LimitedWorldDepth)
-	io.Bool(&pk.NewNether)
+	if io.Protocol() >= protocol.Protocol1v16v0 {
+		io.Int32(&pk.LimitedWorldWidth)
+		io.Int32(&pk.LimitedWorldDepth)
+		io.Bool(&pk.NewNether)
+	}
 	if io.Protocol() >= protocol.Protocol1v17v30 {
 		protocol.Single(io, &pk.EducationSharedResourceURI)
 	}
@@ -533,14 +542,18 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.String(&pk.WorldName)
 	io.String(&pk.TemplateContentIdentity)
 	io.Bool(&pk.Trial)
-	if io.Protocol() >= protocol.Protocol1v16v100 {
+	if io.Protocol() >= protocol.Protocol1v16v0 {
 		protocol.PlayerMoveSettings(io, &pk.PlayerMovementSettings)
 	}
 	io.Int64(&pk.Time)
 	io.Varint32(&pk.EnchantmentSeed)
-	protocol.Slice(io, &pk.Blocks)
+	if io.Protocol() >= protocol.Protocol1v16v100 {
+		protocol.Slice(io, &pk.Blocks)
+	}
 	io.String(&pk.MultiPlayerCorrelationID)
-	io.Bool(&pk.ServerAuthoritativeInventory)
+	if io.Protocol() >= protocol.Protocol1v16v0 {
+		io.Bool(&pk.ServerAuthoritativeInventory)
+	}
 	if io.Protocol() >= protocol.Protocol1v16v230v50 {
 		io.String(&pk.GameVersion)
 	}

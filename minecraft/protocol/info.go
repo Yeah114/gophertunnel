@@ -721,3 +721,25 @@ const (
 	// Version1v16v100 is the Minecraft version string for protocol 419.
 	Version1v16v100 = "1.16.100"
 )
+
+// Minecraft 1.16.20
+// Info1v16v20 is the protocol info for Minecraft 1.16.20.
+var Info1v16v20 = NewInfo(Protocol1v16v20, Version1v16v20)
+
+const (
+	// Protocol1v16v20 is the protocol version for Minecraft 1.16.20.
+	Protocol1v16v20 int32 = 408
+	// Version1v16v20 is the Minecraft version string for protocol 408.
+	Version1v16v20 = "1.16.20"
+)
+
+// Minecraft 1.16.0
+// Info1v16v0 is the protocol info for Minecraft 1.16.0.
+var Info1v16v0 = NewInfo(Protocol1v16v0, Version1v16v0)
+
+const (
+	// Protocol1v16v0 is the protocol version for Minecraft 1.16.0.
+	Protocol1v16v0 int32 = 407
+	// Version1v16v0 is the Minecraft version string for protocol 407.
+	Version1v16v0 = "1.16.0"
+)

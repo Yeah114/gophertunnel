@@ -37,7 +37,7 @@ type EntityLink struct {
 	// RiderInitiated specifies if the link was created by the rider, for example the player starting to ride
 	// a horse by itself. This is generally true in vanilla environment for players.
 	//
-	// Added: v1.16
+	// Added: v1.16.0
 	RiderInitiated bool
 	// VehicleAngularVelocity is the angular velocity of the vehicle that the rider is riding.
 	//
@@ -51,7 +51,9 @@ func (x *EntityLink) Marshal(r IO) {
 	r.Varint64(&x.RiderEntityUniqueID)
 	r.Uint8(&x.Type)
 	r.Bool(&x.Immediate)
-	r.Bool(&x.RiderInitiated)
+	if r.Protocol() >= Protocol1v16v0 {
+		r.Bool(&x.RiderInitiated)
+	}
 	if r.Protocol() >= Protocol1v21v20 {
 		r.Float32(&x.VehicleAngularVelocity)
 	}

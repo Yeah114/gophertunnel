@@ -34,5 +34,7 @@ func (*UpdateAttributes) ID() uint32 {
 func (pk *UpdateAttributes) Marshal(io protocol.IO) {
 	io.Varuint64(&pk.EntityRuntimeID)
 	protocol.Slice(io, &pk.Attributes)
-	io.Varuint64(&pk.Tick)
+	if io.Protocol() >= protocol.Protocol1v16v100 {
+		io.Varuint64(&pk.Tick)
+	}
 }
