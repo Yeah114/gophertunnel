@@ -50,6 +50,9 @@ func (x *EntityLink) Marshal(r IO) {
 	r.Varint64(&x.RiddenEntityUniqueID)
 	r.Varint64(&x.RiderEntityUniqueID)
 	r.Uint8(&x.Type)
+	if r.Protocol() < Protocol1v2v0 {
+		return
+	}
 	r.Bool(&x.Immediate)
 	if r.Protocol() >= Protocol1v16v0 {
 		r.Bool(&x.RiderInitiated)
