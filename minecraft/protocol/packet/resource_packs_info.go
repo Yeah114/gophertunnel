@@ -46,6 +46,11 @@ type ResourcePacksInfo struct {
 	//
 	// Added: v1.20.30
 	WorldTemplateVersion string
+	// BehaviourPacks is a list of behaviour packs that the client needs to download before joining the server.
+	// The order of these packs is not relevant in this packet. It is however important in the ResourcePackStack packet.
+	//
+	// Added: v1.1.0
+	BehaviourPacks []protocol.TexturePackInfo
 	// TexturePacks is a list of texture packs that the client needs to download before joining the server.
 	// The order of these texture packs is not relevant in this packet. It is however important in the
 	// ResourcePackStack packet.
@@ -76,4 +81,5 @@ func (pk *ResourcePacksInfo) Marshal(io protocol.IO) {
 		io.String(&pk.WorldTemplateVersion)
 	}
 	protocol.SliceUint16Length(io, &pk.TexturePacks)
+	protocol.SliceUint16Length(io, &pk.BehaviourPacks)
 }

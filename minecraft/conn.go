@@ -920,7 +920,7 @@ func (conn *Conn) handleClientCacheStatus(pk *packet.ClientCacheStatus) error {
 func (conn *Conn) handleResourcePacksInfo(pk *packet.ResourcePacksInfo) error {
 	// First create a new resource pack queue with the information in the packet so we can download them
 	// properly later.
-	totalPacks := len(pk.TexturePacks)
+	totalPacks := len(pk.TexturePacks) + len(pk.BehaviourPacks)
 	conn.packQueue = &resourcePackQueue{
 		packAmount:       totalPacks,
 		downloadingPacks: make(map[string]downloadingPack),
@@ -928,7 +928,8 @@ func (conn *Conn) handleResourcePacksInfo(pk *packet.ResourcePacksInfo) error {
 	}
 	packsToDownload := make([]string, 0, totalPacks)
 
-	for index, pack := range pk.TexturePacks {
+	allPacks := append(pk.TexturePacks, pk.BehaviourPacks...)
+	for index, pack := range allPacks {
 		id := pack.UUID.String()
 		if _, ok := conn.packQueue.downloadingPacks[id]; ok {
 			conn.log.Warn("handle ResourcePacksInfo: duplicate texture pack", "UUID", pack.UUID)
