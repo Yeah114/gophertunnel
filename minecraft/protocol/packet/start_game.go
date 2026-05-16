@@ -490,7 +490,9 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	}
 	io.Varint32(&pk.DayCycleLockTime)
 	io.Varint32(&pk.EducationEditionOffer)
-	io.Bool(&pk.EducationFeaturesEnabled)
+	if io.Protocol() > protocol.Protocol1v2v13v11 {
+		io.Bool(&pk.EducationFeaturesEnabled)
+	}
 	if io.Protocol() >= protocol.Protocol1v16v0 {
 		io.String(&pk.EducationProductID)
 	}
@@ -521,7 +523,9 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 		io.Bool(&pk.ExperimentsPreviouslyToggled)
 	}
 	io.Bool(&pk.BonusChestEnabled)
-	io.Bool(&pk.StartWithMapEnabled)
+	if io.Protocol() > protocol.Protocol1v2v10 {
+		io.Bool(&pk.StartWithMapEnabled)
+	}
 	if io.Protocol() < protocol.Protocol1v9v0 {
 		io.Bool(&pk.TrustPlayers)
 	}
@@ -529,18 +533,26 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	if io.Protocol() < protocol.Protocol1v9v0 {
 		io.Varint32(&pk.GamePublish)
 	}
-	io.Int32(&pk.ServerChunkTickRadius)
-	if io.Protocol() < protocol.Protocol1v9v0 {
+	if io.Protocol() >= protocol.Protocol1v2v10 {
+		io.Int32(&pk.ServerChunkTickRadius)
+	}
+	if io.Protocol() >= protocol.Protocol1v2v13 && io.Protocol() < protocol.Protocol1v9v0 {
 		io.Bool(&pk.PlatformBroadcast)
 		io.Varint32(&pk.PlatformBroadcastMode)
 		io.Bool(&pk.XBLBroadcastIntent)
 	}
-	io.Bool(&pk.HasLockedBehaviourPack)
-	io.Bool(&pk.HasLockedTexturePack)
-	io.Bool(&pk.FromLockedWorldTemplate)
-	io.Bool(&pk.MSAGamerTagsOnly)
-	io.Bool(&pk.FromWorldTemplate)
-	io.Bool(&pk.WorldTemplateSettingsLocked)
+	if io.Protocol() > protocol.Protocol1v2v13v11 {
+		io.Bool(&pk.HasLockedBehaviourPack)
+		io.Bool(&pk.HasLockedTexturePack)
+		io.Bool(&pk.FromLockedWorldTemplate)
+	}
+	if io.Protocol() >= protocol.Protocol1v7v0 {
+		io.Bool(&pk.MSAGamerTagsOnly)
+		if io.Protocol() >= protocol.Protocol1v8v0 {
+			io.Bool(&pk.FromWorldTemplate)
+			io.Bool(&pk.WorldTemplateSettingsLocked)
+		}
+	}
 	if io.Protocol() >= protocol.Protocol1v12v0 {
 		io.Bool(&pk.OnlySpawnV1Villagers)
 	}
@@ -573,7 +585,7 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 		io.Uint8(&pk.ChatRestrictionLevel)
 		io.Bool(&pk.DisablePlayerInteractions)
 	}
-	if io.Protocol() < protocol.Protocol1v26v0 {
+	if io.Protocol() >= protocol.Protocol1v21v130 && io.Protocol() < protocol.Protocol1v26v0 {
 		io.String(&pk.ServerID)
 		io.String(&pk.WorldID)
 		io.String(&pk.ScenarioID)
@@ -593,7 +605,9 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	if io.Protocol() >= protocol.Protocol1v16v100 {
 		protocol.Slice(io, &pk.Blocks)
 	}
-	io.String(&pk.MultiPlayerCorrelationID)
+	if io.Protocol() > protocol.Protocol1v5v0 {
+		io.String(&pk.MultiPlayerCorrelationID)
+	}
 	if io.Protocol() >= protocol.Protocol1v16v0 {
 		io.Bool(&pk.ServerAuthoritativeInventory)
 	}

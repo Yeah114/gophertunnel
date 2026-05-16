@@ -60,13 +60,13 @@ type Text struct {
 	// TextTypeChat. When sent to a player, the player will only be shown the chat message if a player with
 	// this XUID is present in the player list and not muted, or if the XUID is empty.
 	//
-	// Added: v1.12
+	// Added: v1.12.0
 	XUID string
 	// PlatformChatID is an identifier only set for particular platforms when chatting (presumably only for
 	// Nintendo Switch). It is otherwise an empty string, and is used to decide which players are able to
 	// chat with each other.
 	//
-	// Added: v1.19.50
+	// Added: v1.2.13, Changed: v1.19.50
 	PlatformChatID string
 	// FilteredMessage is a filtered version of Message with all the profanity removed. The client will use
 	// this over Message if this field is not empty and they have the "Filter Profanity" setting enabled.
@@ -108,8 +108,12 @@ func (pk *Text) Marshal(io protocol.IO) {
 	if len(pk.Message) == 0 {
 		io.InvalidValue(pk.Message, "message", "string cannot be empty")
 	}
-	io.String(&pk.XUID)
-	io.String(&pk.PlatformChatID)
+	if io.Protocol() >= protocol.Protocol1v12v0 {
+		io.String(&pk.XUID)
+	}
+	if io.Protocol() >= protocol.Protocol1v2v13 {
+		io.String(&pk.PlatformChatID)
+	}
 	if io.Protocol() >= protocol.Protocol1v21v0 {
 		protocol.OptionalFunc(io, &pk.FilteredMessage, io.String)
 	}

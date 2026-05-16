@@ -38,7 +38,7 @@ type AddPlayer struct {
 	// Nintendo Switch). It is otherwise an empty string, and is used to decide which players are able to
 	// chat with each other.
 	//
-	// Added: v1.16
+	// Added: v1.2.13
 	PlatformChatID string
 	// Position is the position to spawn the player on. If the player is on a distance that the viewer cannot
 	// see it, the player will still show up if the viewer moves closer.
@@ -147,7 +147,9 @@ func (pk *AddPlayer) Marshal(io protocol.IO) {
 		io.Varint64(&pk.EntityUniqueID)
 	}
 	io.Varuint64(&pk.EntityRuntimeID)
-	io.String(&pk.PlatformChatID)
+	if io.Protocol() >= protocol.Protocol1v2v13 {
+		io.String(&pk.PlatformChatID)
+	}
 	io.Vec3(&pk.Position)
 	io.Vec3(&pk.Velocity)
 	io.Float32(&pk.Pitch)
