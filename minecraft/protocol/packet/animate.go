@@ -13,6 +13,11 @@ const (
 )
 
 const (
+	AnimateActionRowRight = 128
+	AnimateActionRowLeft  = 129
+)
+
+const (
 	AnimateSwingSourceNone = iota + 1
 	AnimateSwingSourceBuild
 	AnimateSwingSourceMine
@@ -33,6 +38,7 @@ type Animate struct {
 	// may be found above.
 	//
 	// Added: v1.12
+	// Changed: v1.21.130.28, encoded as a byte instead of a varint32.
 	ActionType uint8
 	// EntityRuntimeID is the runtime ID of the player that the animation should be played upon. The runtime
 	// ID is unique for each world session, and entities are generally identified in packets using this
@@ -42,12 +48,17 @@ type Animate struct {
 	EntityRuntimeID uint64
 	// Data ...
 	//
-	// Added: v1.21.111
+	// Added: v1.21.120
 	Data float32
+	// RowingTime is the rowing animation time for the row left and row right actions.
+	//
+	// Added: v1.12
+	// Removed: v1.21.130.28
+	RowingTime float32
 	// SwingSource is the source for swing actions. It is one of the action type constants that
 	// may be found above.
 	//
-	// Added: v1.21.111
+	// Added: v1.21.130.28
 	SwingSource uint8
 }
 
@@ -57,16 +68,29 @@ func (*Animate) ID() uint32 {
 }
 
 func (pk *Animate) Marshal(io protocol.IO) {
-	var swingSource protocol.Optional[string]
-	if pk.SwingSource != 0 {
-		swingSource = protocol.Option(swingSourceToString(pk.SwingSource))
+	if io.Protocol() >= protocol.Protocol1v21v130v28 {
+		io.Uint8(&pk.ActionType)
+	} else {
+		actionType := int32(pk.ActionType)
+		io.Varint32(&actionType)
+		pk.ActionType = uint8(actionType)
 	}
-	io.Uint8(&pk.ActionType)
 	io.Varuint64(&pk.EntityRuntimeID)
-	io.Float32(&pk.Data)
-	protocol.OptionalFunc(io, &swingSource, io.String)
-	if val, ok := swingSource.Value(); ok {
-		swingSourceFromString(io, &pk.SwingSource, val)
+	if io.Protocol() >= protocol.Protocol1v21v120 {
+		io.Float32(&pk.Data)
+	}
+	if io.Protocol() < protocol.Protocol1v21v130v28 && (pk.ActionType == AnimateActionRowRight || pk.ActionType == AnimateActionRowLeft) {
+		io.Float32(&pk.RowingTime)
+	}
+	if io.Protocol() >= protocol.Protocol1v21v130v28 {
+		var swingSource protocol.Optional[string]
+		if pk.SwingSource != 0 {
+			swingSource = protocol.Option(swingSourceToString(pk.SwingSource))
+		}
+		protocol.OptionalFunc(io, &swingSource, io.String)
+		if val, ok := swingSource.Value(); ok {
+			swingSourceFromString(io, &pk.SwingSource, val)
+		}
 	}
 }
 
