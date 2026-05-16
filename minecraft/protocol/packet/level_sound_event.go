@@ -610,6 +610,18 @@ const (
 	SoundEventBounce
 )
 
+const (
+	SoundEventLunge1                = SoundEventItemEnchantLunge1
+	SoundEventLunge2                = SoundEventItemEnchantLunge2
+	SoundEventLunge3                = SoundEventItemEnchantLunge3
+	SoundEventSpearAttackHit        = SoundEventItemSpearAttackHit
+	SoundEventSpearAttackMiss       = SoundEventItemSpearAttackMiss
+	SoundEventWoodenSpearAttackHit  = SoundEventItemWoodenSpearAttackHit
+	SoundEventWoodenSpearAttackMiss = SoundEventItemWoodenSpearAttackMiss
+	SoundEventSpearUse              = SoundEventItemSpearUse
+	SoundEventWoodenSpearUse        = SoundEventItemWoodenSpearUse
+)
+
 // LevelSoundEvent is sent by the server to make any kind of built-in sound heard to a player. It is sent to,
 // for example, play a stepping sound or a shear sound. The packet is also sent by the client, in which case
 // it could be forwarded by the server to the other players online. If possible, the packets from the client
