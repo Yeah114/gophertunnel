@@ -22,10 +22,16 @@ type InventorySlot struct {
 	Slot uint32
 	// Container is the protocol.FullContainerName that describes the container that the content is for.
 	//
-	// Added: v1.21.30
+	// Added: v1.21.20
+	// Changed: v1.21.30, expanded from a dynamic container ID to a full container name.
 	// Changed: v1.26.20, encoded as an optional full container name instead of a plain full container name.
 	// Changed: v1.26.20.26, encoded as an optional full container name in the reworked container attachment layout.
 	Container protocol.Optional[protocol.FullContainerName]
+	// NetworkID is the legacy stack network ID written before the item instance.
+	//
+	// Added: v1.16.0
+	// Removed: v1.16.220
+	NetworkID int32
 	// StorageItem is the item that is acting as the storage container for the inventory. If the inventory is
 	// not a dynamic container then this field should be left empty. When set, only the item type is used by
 	// the client and none of the other stack info.
@@ -53,15 +59,38 @@ func (pk *InventorySlot) Marshal(io protocol.IO) {
 		protocol.OptionalMarshaler(io, &pk.Container)
 		protocol.OptionalFunc(io, &pk.StorageItem, io.ItemInstanceNew)
 		io.ItemInstanceNew(&pk.NewItem)
-	} else {
+		return
+	}
+
+	if io.Protocol() >= protocol.Protocol1v21v30 {
 		var container protocol.FullContainerName
+		if v, ok := pk.Container.Value(); ok {
+			container = v
+		}
 		protocol.Single(io, &container)
 		pk.Container = protocol.Option(container)
 
-		var storageItem protocol.ItemInstance
-		io.ItemInstance(&storageItem)
-		pk.StorageItem = protocol.Option(storageItem)
-
-		io.ItemInstance(&pk.NewItem)
+		if io.Protocol() >= protocol.Protocol1v21v40 {
+			var storageItem protocol.ItemInstance
+			if v, ok := pk.StorageItem.Value(); ok {
+				storageItem = v
+			}
+			io.ItemInstance(&storageItem)
+			pk.StorageItem = protocol.Option(storageItem)
+		} else {
+			dynamicContainerSize := uint32(0)
+			io.Varuint32(&dynamicContainerSize)
+		}
+	} else if io.Protocol() >= protocol.Protocol1v21v20 {
+		var dynamicContainerID uint32
+		if container, ok := pk.Container.Value(); ok {
+			dynamicContainerID, _ = container.DynamicContainerID.Value()
+		}
+		io.Varuint32(&dynamicContainerID)
+		pk.Container = protocol.Option(protocol.FullContainerName{DynamicContainerID: protocol.Option(dynamicContainerID)})
 	}
+	if io.Protocol() >= protocol.Protocol1v16v0 && io.Protocol() < protocol.Protocol1v16v220 {
+		io.Varint32(&pk.NetworkID)
+	}
+	io.ItemInstance(&pk.NewItem)
 }
