@@ -18,7 +18,7 @@ const (
 )
 
 const (
-	AnimateSwingSourceNone = iota + 1
+	AnimateSwingSourceNone = iota
 	AnimateSwingSourceBuild
 	AnimateSwingSourceMine
 	AnimateSwingSourceInteract
@@ -84,7 +84,7 @@ func (pk *Animate) Marshal(io protocol.IO) {
 	}
 	if io.Protocol() >= protocol.Protocol1v21v130v28 {
 		var swingSource protocol.Optional[string]
-		if pk.SwingSource != 0 {
+		if pk.SwingSource != AnimateSwingSourceNone {
 			swingSource = protocol.Option(swingSourceToString(pk.SwingSource))
 		}
 		protocol.OptionalFunc(io, &swingSource, io.String)
