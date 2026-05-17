@@ -21,21 +21,25 @@ type BookEdit struct {
 	// check if this slot matches the held item slot of the player.
 	//
 	// Added: v1.12
+	// Changed: v1.26.0, moved before ActionType and encoded as a varint instead of a byte.
 	InventorySlot int32
 	// ActionType is the type of the book edit action. The data obtained depends on what type this is. The
 	// action type is one of the constants above.
 	//
 	// Added: v1.12
+	// Changed: v1.26.0, encoded as a varuint32 after InventorySlot instead of a leading byte.
 	ActionType uint32
 	// PageNumber is the number of the page that the book edit action concerns. It applies for all actions
 	// but the BookActionSign. In BookActionSwapPages, it is one of the pages that was swapped.
 	//
 	// Added: v1.12
+	// Changed: v1.26.0, encoded as a varint instead of a byte.
 	PageNumber int32
 	// SecondaryPageNumber is the page number of the second page that the action concerned. It is only set for
 	// the BookActionSwapPages action, in which case it is the other page that is swapped.
 	//
 	// Added: v1.12
+	// Changed: v1.26.0, encoded as a varint instead of a byte.
 	SecondaryPageNumber int32
 	// Text is the text that was written in a particular page of the book. It applies for the
 	// BookActionAddPage and BookActionReplacePage only.
@@ -72,18 +76,27 @@ func (*BookEdit) ID() uint32 {
 }
 
 func (pk *BookEdit) Marshal(io protocol.IO) {
-	io.Varint32(&pk.InventorySlot)
-	io.Varuint32(&pk.ActionType)
+	if io.Protocol() >= protocol.Protocol1v26v0 {
+		io.Varint32(&pk.InventorySlot)
+		io.Varuint32(&pk.ActionType)
+	} else {
+		actionType := byte(pk.ActionType)
+		io.Uint8(&actionType)
+		pk.ActionType = uint32(actionType)
+		inventorySlot := byte(pk.InventorySlot)
+		io.Uint8(&inventorySlot)
+		pk.InventorySlot = int32(inventorySlot)
+	}
 	switch pk.ActionType {
 	case BookActionReplacePage, BookActionAddPage:
-		io.Varint32(&pk.PageNumber)
+		pk.pageNumber(io, &pk.PageNumber)
 		io.String(&pk.Text)
 		io.String(&pk.PhotoName)
 	case BookActionDeletePage:
-		io.Varint32(&pk.PageNumber)
+		pk.pageNumber(io, &pk.PageNumber)
 	case BookActionSwapPages:
-		io.Varint32(&pk.PageNumber)
-		io.Varint32(&pk.SecondaryPageNumber)
+		pk.pageNumber(io, &pk.PageNumber)
+		pk.pageNumber(io, &pk.SecondaryPageNumber)
 	case BookActionSign:
 		io.String(&pk.Title)
 		io.String(&pk.Author)
@@ -91,4 +104,14 @@ func (pk *BookEdit) Marshal(io protocol.IO) {
 	default:
 		io.UnknownEnumOption(pk.ActionType, "book edit action type")
 	}
+}
+
+func (pk *BookEdit) pageNumber(io protocol.IO, x *int32) {
+	if io.Protocol() >= protocol.Protocol1v26v0 {
+		io.Varint32(x)
+		return
+	}
+	page := byte(*x)
+	io.Uint8(&page)
+	*x = int32(page)
 }
