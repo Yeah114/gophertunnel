@@ -16,7 +16,7 @@ const (
 type CameraAimAssist struct {
 	// Preset is the ID of the preset that has previously been defined in the CameraAimAssistPresets packet.
 	//
-	// Added: v1.21.30
+	// Added: v1.21.50
 	Preset string
 	// Angle is the maximum angle around the playes's cursor that the aim assist should check for a target,
 	// if TargetMode is set to protocol.AimAssistTargetModeAngle.
@@ -49,7 +49,9 @@ func (*CameraAimAssist) ID() uint32 {
 }
 
 func (pk *CameraAimAssist) Marshal(io protocol.IO) {
-	io.String(&pk.Preset)
+	if io.Protocol() >= protocol.Protocol1v21v50 {
+		io.String(&pk.Preset)
+	}
 	io.Vec2(&pk.Angle)
 	io.Float32(&pk.Distance)
 	io.Uint8(&pk.TargetMode)
