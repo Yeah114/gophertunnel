@@ -98,7 +98,7 @@ type DataStoreUpdate struct {
 	PropertyUpdateCount uint32
 	// PathUpdateCount is the update count for the path.
 	//
-	// Added: v1.26.10
+	// Added: v1.26.0
 	PathUpdateCount uint32
 }
 
@@ -119,7 +119,9 @@ func (x *DataStoreUpdate) Marshal(r IO) {
 		r.UnknownEnumOption(x.ControlType, "data store control type")
 	}
 	r.Uint32(&x.PropertyUpdateCount)
-	r.Uint32(&x.PathUpdateCount)
+	if r.Protocol() >= Protocol1v26v0 {
+		r.Uint32(&x.PathUpdateCount)
+	}
 }
 
 // DataStorePropertyValue represents a typed property value in a data store.
