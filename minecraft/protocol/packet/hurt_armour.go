@@ -12,7 +12,7 @@ import (
 type HurtArmour struct {
 	// Cause is the cause of the damage dealt to the armour.
 	//
-	// Added: v1.11.1
+	// Added: v1.16.0
 	Cause int32
 	// Damage is the amount of damage points that was dealt to the player. The damage to the armour will be
 	// calculated by the client based upon this damage, and will also be based upon any enchantments like
@@ -32,7 +32,9 @@ func (*HurtArmour) ID() uint32 {
 }
 
 func (pk *HurtArmour) Marshal(io protocol.IO) {
-	io.Varint32(&pk.Cause)
+	if io.Protocol() >= protocol.Protocol1v16v0 {
+		io.Varint32(&pk.Cause)
+	}
 	io.Varint32(&pk.Damage)
 	if io.Protocol() >= protocol.Protocol1v17v30 {
 		io.Varint64(&pk.ArmourSlots)

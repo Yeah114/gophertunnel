@@ -39,8 +39,10 @@ func (*SetActorData) ID() uint32 {
 func (pk *SetActorData) Marshal(io protocol.IO) {
 	io.Varuint64(&pk.EntityRuntimeID)
 	io.EntityMetadata(&pk.EntityMetadata)
-	if io.Protocol() >= protocol.Protocol1v19v40 {
-		protocol.Single(io, &pk.EntityProperties)
+	if io.Protocol() >= protocol.Protocol1v16v100 {
+		if io.Protocol() >= protocol.Protocol1v19v40 {
+			protocol.Single(io, &pk.EntityProperties)
+		}
+		io.Varuint64(&pk.Tick)
 	}
-	io.Varuint64(&pk.Tick)
 }
