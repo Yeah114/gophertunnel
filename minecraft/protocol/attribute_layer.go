@@ -43,6 +43,11 @@ const (
 )
 
 const (
+	AttributeColourValueTypeString = iota
+	AttributeColourValueTypeArray
+)
+
+const (
 	AttributeLayerWeightTypeFloat = iota
 	AttributeLayerWeightTypeString
 )
@@ -81,8 +86,21 @@ type AttributeData struct {
 	FloatConstraintMax Optional[float32]
 	// ColourValue is the colour value if Type is AttributeDataTypeColour.
 	//
-	// Added: v1.26.10
+	// Deprecated: Use ColourType, ColourString and ColourValues for the protocol union representation.
 	ColourValue int32
+	// ColourType is the colour value type if Type is AttributeDataTypeColour. It is one of the
+	// AttributeColourValueType constants.
+	//
+	// Added: v1.26.10
+	ColourType uint32
+	// ColourString is the colour value if ColourType is AttributeColourValueTypeString.
+	//
+	// Added: v1.26.10
+	ColourString string
+	// ColourValues is the RGBA colour value if ColourType is AttributeColourValueTypeArray.
+	//
+	// Added: v1.26.10
+	ColourValues [4]int32
 	// ColourOperation is the optional operation for colour attributes.
 	//
 	// Added: v1.26.10
@@ -95,18 +113,70 @@ func (x *AttributeData) Marshal(r IO) {
 	switch x.Type {
 	case AttributeDataTypeBool:
 		r.Bool(&x.BoolValue)
-		OptionalFunc(r, &x.BoolOperation, r.Int32)
+		operation := attributeOperationToString(r, x.BoolOperation, attributeBoolOperations, "bool attribute operation")
+		r.String(&operation)
+		attributeOperationFromString(r, &x.BoolOperation, operation, attributeBoolOperations, "bool attribute operation")
 	case AttributeDataTypeFloat:
 		r.Float32(&x.FloatValue)
-		OptionalFunc(r, &x.FloatOperation, r.Int32)
+		operation := attributeOperationToString(r, x.FloatOperation, attributeFloatOperations, "float attribute operation")
+		r.String(&operation)
+		attributeOperationFromString(r, &x.FloatOperation, operation, attributeFloatOperations, "float attribute operation")
 		OptionalFunc(r, &x.FloatConstraintMin, r.Float32)
 		OptionalFunc(r, &x.FloatConstraintMax, r.Float32)
 	case AttributeDataTypeColour:
-		r.Int32(&x.ColourValue)
-		OptionalFunc(r, &x.ColourOperation, r.Int32)
+		colourType := x.ColourType
+		if colourType == AttributeColourValueTypeString && x.ColourValue != 0 {
+			colourType = AttributeColourValueTypeArray
+		}
+		r.Varuint32(&colourType)
+		x.ColourType = colourType
+		switch x.ColourType {
+		case AttributeColourValueTypeString:
+			r.String(&x.ColourString)
+		case AttributeColourValueTypeArray:
+			if x.ColourValues == [4]int32{} && x.ColourValue != 0 {
+				x.ColourValues = [4]int32{x.ColourValue}
+			}
+			for i := range x.ColourValues {
+				r.Int32(&x.ColourValues[i])
+			}
+			if x.ColourValue == 0 {
+				x.ColourValue = x.ColourValues[0]
+			}
+		default:
+			r.UnknownEnumOption(x.ColourType, "attribute colour value type")
+		}
+		operation := attributeOperationToString(r, x.ColourOperation, attributeColourOperations, "colour attribute operation")
+		r.String(&operation)
+		attributeOperationFromString(r, &x.ColourOperation, operation, attributeColourOperations, "colour attribute operation")
 	default:
 		r.UnknownEnumOption(x.Type, "attribute data type")
 	}
+}
+
+var (
+	attributeBoolOperations   = []string{"override", "alpha_blend", "and", "nand", "or", "nor", "xor", "xnor"}
+	attributeFloatOperations  = []string{"override", "alpha_blend", "add", "subtract", "multiply", "minimum", "maximum"}
+	attributeColourOperations = []string{"override", "alpha_blend", "add", "subtract", "multiply"}
+)
+
+func attributeOperationToString(r IO, x Optional[int32], values []string, field string) string {
+	operation, _ := x.Value()
+	if operation < 0 || int(operation) >= len(values) {
+		r.InvalidValue(operation, field, "unknown attribute operation")
+		return values[0]
+	}
+	return values[operation]
+}
+
+func attributeOperationFromString(r IO, x *Optional[int32], value string, values []string, field string) {
+	for operation, name := range values {
+		if name == value {
+			*x = Option(int32(operation))
+			return
+		}
+	}
+	r.InvalidValue(value, field, "unknown attribute operation")
 }
 
 // EnvironmentAttributeData represents an environment attribute with optional transition data.
