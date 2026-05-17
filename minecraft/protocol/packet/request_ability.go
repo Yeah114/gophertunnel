@@ -49,6 +49,12 @@ func (*RequestAbility) ID() uint32 {
 }
 
 func (pk *RequestAbility) Marshal(io protocol.IO) {
-	io.Varint32(&pk.Ability)
+	if io.Protocol() >= protocol.Protocol1v20v10 {
+		ability := uint8(pk.Ability)
+		io.Uint8(&ability)
+		pk.Ability = int32(ability)
+	} else {
+		io.Varint32(&pk.Ability)
+	}
 	io.AbilityValue(&pk.Value)
 }
