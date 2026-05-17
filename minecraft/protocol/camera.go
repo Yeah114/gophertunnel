@@ -623,6 +623,27 @@ func (x *CameraAimAssistCategory) Marshal(r IO) {
 	Single(r, &x.Priorities)
 }
 
+// CameraAimAssistCategoryGroup is a named group of aim assist categories used by the legacy presets layout.
+//
+// Added: v1.21.50
+// Removed: v1.21.80
+type CameraAimAssistCategoryGroup struct {
+	// Identifier is the group identifier.
+	//
+	// Added: v1.21.50
+	Identifier string
+	// Categories is a list of categories in the group.
+	//
+	// Added: v1.21.50
+	Categories []CameraAimAssistCategory
+}
+
+// Marshal encodes/decodes a CameraAimAssistCategoryGroup.
+func (x *CameraAimAssistCategoryGroup) Marshal(r IO) {
+	r.String(&x.Identifier)
+	Slice(r, &x.Categories)
+}
+
 // CameraAimAssistPriorities represents the block and entity specific priorities for targetting. The aim
 // assist will select the block or entity with the highest priority within the specified thresholds.
 //
@@ -664,8 +685,10 @@ func (x *CameraAimAssistPriorities) Marshal(r IO) {
 	if r.Protocol() >= Protocol1v26v0 {
 		Slice(r, &x.EntityTypeFamilies)
 	}
-	OptionalFunc(r, &x.EntityDefault, r.Int32)
-	OptionalFunc(r, &x.BlockDefault, r.Int32)
+	if r.Protocol() >= Protocol1v21v50 {
+		OptionalFunc(r, &x.EntityDefault, r.Int32)
+		OptionalFunc(r, &x.BlockDefault, r.Int32)
+	}
 }
 
 // CameraAimAssistPriority represents a non-default priority for a specific target.
@@ -696,6 +719,11 @@ type CameraAimAssistPreset struct {
 	//
 	// Added: v1.21.50
 	Identifier string
+	// Category is the legacy category group identifier used by the preset.
+	//
+	// Added: v1.21.50
+	// Removed: v1.21.60
+	Category string
 	// BlockExclusions is a list of block identifiers that should be ignored by the aim assist.
 	//
 	// Added: v1.21.50
@@ -736,10 +764,15 @@ type CameraAimAssistPreset struct {
 // Marshal encodes/decodes a CameraAimAssistPreset.
 func (x *CameraAimAssistPreset) Marshal(r IO) {
 	r.String(&x.Identifier)
-	FuncSlice(r, &x.BlockExclusions, r.String)
 	if r.Protocol() >= Protocol1v21v130v28 {
+		FuncSlice(r, &x.BlockExclusions, r.String)
 		FuncSlice(r, &x.EntityExclusions, r.String)
 		FuncSlice(r, &x.BlockTagExclusions, r.String)
+	} else {
+		if r.Protocol() < Protocol1v21v60 {
+			r.String(&x.Category)
+		}
+		FuncSlice(r, &x.BlockExclusions, r.String)
 	}
 	if r.Protocol() >= Protocol1v26v0 {
 		FuncSlice(r, &x.EntityTypeFamilyExclusions, r.String)
