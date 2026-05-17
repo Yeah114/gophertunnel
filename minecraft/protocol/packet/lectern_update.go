@@ -22,6 +22,10 @@ type LecternUpdate struct {
 	//
 	// Added: v1.11.1
 	Position protocol.BlockPos
+	// DropBook specifies if the book should be dropped from the lectern.
+	//
+	// Removed: v1.20.70
+	DropBook bool
 }
 
 // ID ...
@@ -31,6 +35,11 @@ func (*LecternUpdate) ID() uint32 {
 
 func (pk *LecternUpdate) Marshal(io protocol.IO) {
 	io.Uint8(&pk.Page)
-	io.Uint8(&pk.PageCount)
+	if io.Protocol() >= protocol.Protocol1v11v0 {
+		io.Uint8(&pk.PageCount)
+	}
 	io.UBlockPos(&pk.Position)
+	if io.Protocol() < protocol.Protocol1v20v70 {
+		io.Bool(&pk.DropBook)
+	}
 }

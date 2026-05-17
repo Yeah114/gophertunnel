@@ -35,6 +35,8 @@ func (pk *UpdateAttributes) Marshal(io protocol.IO) {
 	io.Varuint64(&pk.EntityRuntimeID)
 	protocol.Slice(io, &pk.Attributes)
 	if io.Protocol() >= protocol.Protocol1v16v100 {
-		io.Varuint64(&pk.Tick)
+		tick := uint32(pk.Tick)
+		io.Varuint32(&tick)
+		pk.Tick = uint64(tick)
 	}
 }

@@ -84,7 +84,9 @@ func (x *Attribute) Marshal(r IO) {
 	}
 	r.Float32(&x.Default)
 	r.String(&x.Name)
-	Slice(r, &x.Modifiers)
+	if r.Protocol() >= Protocol1v19v20 {
+		Slice(r, &x.Modifiers)
+	}
 }
 
 // AttributeModifier temporarily buffs/debuffs a given attribute until the modifier is used. In vanilla, these are
