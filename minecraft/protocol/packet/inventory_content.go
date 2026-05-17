@@ -42,6 +42,17 @@ func (*InventoryContent) ID() uint32 {
 func (pk *InventoryContent) Marshal(io protocol.IO) {
 	io.Varuint32(&pk.WindowID)
 	protocol.FuncSlice(io, &pk.Content, io.ItemInstance)
-	protocol.Single(io, &pk.Container)
-	io.ItemInstance(&pk.StorageItem)
+	if io.Protocol() >= protocol.Protocol1v21v30 {
+		protocol.Single(io, &pk.Container)
+		if io.Protocol() >= protocol.Protocol1v21v40 {
+			io.ItemInstance(&pk.StorageItem)
+		} else {
+			dynamicContainerSize := uint32(0)
+			io.Varuint32(&dynamicContainerSize)
+		}
+	} else if io.Protocol() >= protocol.Protocol1v21v20 {
+		dynamicContainerID, _ := pk.Container.DynamicContainerID.Value()
+		io.Varuint32(&dynamicContainerID)
+		pk.Container.DynamicContainerID = protocol.Option(dynamicContainerID)
+	}
 }
