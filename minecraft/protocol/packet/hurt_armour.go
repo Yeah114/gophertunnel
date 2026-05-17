@@ -23,7 +23,7 @@ type HurtArmour struct {
 	// ArmourSlots is a bitset of all armour slots affected.
 	//
 	// Added: v1.17.30
-	ArmourSlots int64
+	ArmourSlots uint64
 }
 
 // ID ...
@@ -37,6 +37,6 @@ func (pk *HurtArmour) Marshal(io protocol.IO) {
 	}
 	io.Varint32(&pk.Damage)
 	if io.Protocol() >= protocol.Protocol1v17v30 {
-		io.Varint64(&pk.ArmourSlots)
+		io.Varuint64(&pk.ArmourSlots)
 	}
 }
