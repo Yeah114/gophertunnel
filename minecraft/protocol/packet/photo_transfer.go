@@ -26,6 +26,7 @@ type PhotoTransfer struct {
 	// PNG work, as long as PhotoName has the correct extension.
 	//
 	// Added: v1.12
+	// Changed: v1.17.30, followed by photo metadata fields.
 	PhotoData []byte
 	// BookID is the ID of the book that the photo is associated with. If the PhotoName in a book with this ID
 	// is set to PhotoName, it will display the photo (provided Education Edition is used).
@@ -35,15 +36,15 @@ type PhotoTransfer struct {
 	BookID string
 	// PhotoType is one of the three photo types above.
 	//
-	// Added: v1.12
+	// Added: v1.17.30
 	PhotoType byte
 	// SourceType is the source photo type. It is one of the three photo types above.
 	//
-	// Added: v1.12
+	// Added: v1.17.30
 	SourceType byte
 	// OwnerEntityUniqueID is the entity unique ID of the photo's owner.
 	//
-	// Added: v1.12
+	// Added: v1.17.30
 	OwnerEntityUniqueID int64
 	// NewPhotoName is the new name of the photo.
 	//
@@ -58,10 +59,14 @@ func (*PhotoTransfer) ID() uint32 {
 
 func (pk *PhotoTransfer) Marshal(io protocol.IO) {
 	io.String(&pk.PhotoName)
-	io.ByteSlice(&pk.PhotoData)
+	photoData := string(pk.PhotoData)
+	io.String(&photoData)
+	pk.PhotoData = []byte(photoData)
 	io.String(&pk.BookID)
-	io.Uint8(&pk.PhotoType)
-	io.Uint8(&pk.SourceType)
-	io.Int64(&pk.OwnerEntityUniqueID)
-	io.String(&pk.NewPhotoName)
+	if io.Protocol() >= protocol.Protocol1v17v30 {
+		io.Uint8(&pk.PhotoType)
+		io.Uint8(&pk.SourceType)
+		io.Int64(&pk.OwnerEntityUniqueID)
+		io.String(&pk.NewPhotoName)
+	}
 }
