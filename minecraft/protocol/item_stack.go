@@ -919,7 +919,11 @@ type StackRequestSlotInfo struct {
 
 // StackReqSlotInfo reads/writes a StackRequestSlotInfo x using IO r.
 func StackReqSlotInfo(r IO, x *StackRequestSlotInfo) {
-	Single(r, &x.Container)
+	if r.Protocol() >= Protocol1v21v20 {
+		Single(r, &x.Container)
+	} else {
+		r.Uint8(&x.Container.ContainerID)
+	}
 	r.Uint8(&x.Slot)
 	r.Varint32(&x.StackNetworkID)
 }
