@@ -14,8 +14,8 @@ const (
 	TextTypeSystem
 	TextTypeWhisper
 	TextTypeAnnouncement
-	TextTypeObjectWhisper
 	TextTypeObject
+	TextTypeObjectWhisper
 	TextTypeObjectAnnouncement
 )
 
