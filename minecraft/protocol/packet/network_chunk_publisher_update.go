@@ -40,5 +40,7 @@ func (*NetworkChunkPublisherUpdate) ID() uint32 {
 func (pk *NetworkChunkPublisherUpdate) Marshal(io protocol.IO) {
 	io.BlockPos(&pk.Position)
 	io.Varuint32(&pk.Radius)
-	protocol.FuncSliceUint32Length(io, &pk.SavedChunks, io.ChunkPos)
+	if io.Protocol() >= protocol.Protocol1v19v20 {
+		protocol.FuncSliceUint32Length(io, &pk.SavedChunks, io.ChunkPos)
+	}
 }
