@@ -519,7 +519,7 @@ func (w *Writer) Item(x *ItemStack) {
 // StackRequestAction writes a StackRequestAction to the writer.
 func (w *Writer) StackRequestAction(x *StackRequestAction) {
 	var id byte
-	if !lookupStackRequestActionType(*x, &id) {
+	if !lookupStackRequestActionType(*x, &id, w.Protocol()) {
 		w.UnknownEnumOption(fmt.Sprintf("%T", *x), "stack request action type")
 	}
 	w.Uint8(&id)

@@ -638,7 +638,7 @@ func (r *Reader) Item(x *ItemStack) {
 func (r *Reader) StackRequestAction(x *StackRequestAction) {
 	var id uint8
 	r.Uint8(&id)
-	if !lookupStackRequestAction(id, x) {
+	if !lookupStackRequestAction(id, x, r.Protocol()) {
 		r.UnknownEnumOption(id, "stack request action type")
 		return
 	}

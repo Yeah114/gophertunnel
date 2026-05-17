@@ -53,7 +53,7 @@ func (x *ItemStackRequest) Marshal(r IO) {
 }
 
 // lookupStackRequestActionType looks up the ID of a StackRequestAction.
-func lookupStackRequestActionType(x StackRequestAction, id *uint8) bool {
+func lookupStackRequestActionType(x StackRequestAction, id *uint8, protocol int32) bool {
 	switch x.(type) {
 	case *TakeStackRequestAction:
 		*id = StackRequestActionTake
@@ -69,6 +69,10 @@ func lookupStackRequestActionType(x StackRequestAction, id *uint8) bool {
 		*id = StackRequestActionConsume
 	case *CreateStackRequestAction:
 		*id = StackRequestActionCreate
+	case *PlaceInContainerStackRequestAction:
+		*id = StackRequestActionPlaceInContainer
+	case *TakeOutContainerStackRequestAction:
+		*id = StackRequestActionTakeOutContainer
 	case *LabTableCombineStackRequestAction:
 		*id = StackRequestActionLabTableCombine
 	case *BeaconPaymentStackRequestAction:
@@ -94,11 +98,21 @@ func lookupStackRequestActionType(x StackRequestAction, id *uint8) bool {
 	default:
 		return false
 	}
+	var ok bool
+	*id, ok = stackRequestActionIDForProtocol(*id, protocol)
+	if !ok {
+		return false
+	}
 	return true
 }
 
 // lookupStackRequestAction looks up the StackRequestAction matching an ID.
-func lookupStackRequestAction(id uint8, x *StackRequestAction) bool {
+func lookupStackRequestAction(id uint8, x *StackRequestAction, protocol int32) bool {
+	var ok bool
+	id, ok = stackRequestActionIDFromProtocol(id, protocol)
+	if !ok {
+		return false
+	}
 	switch id {
 	case StackRequestActionTake:
 		*x = &TakeStackRequestAction{}
@@ -144,6 +158,134 @@ func lookupStackRequestAction(id uint8, x *StackRequestAction) bool {
 		return false
 	}
 	return true
+}
+
+func stackRequestActionIDForProtocol(id uint8, protocol int32) (uint8, bool) {
+	if protocol >= Protocol1v21v20 && (id == StackRequestActionPlaceInContainer || id == StackRequestActionTakeOutContainer) {
+		return 0, false
+	}
+	if protocol >= Protocol1v18v10v26 {
+		return id, true
+	}
+	switch id {
+	case StackRequestActionTake, StackRequestActionPlace, StackRequestActionSwap, StackRequestActionDrop, StackRequestActionDestroy, StackRequestActionConsume, StackRequestActionCreate:
+		return id, true
+	case StackRequestActionLabTableCombine, StackRequestActionBeaconPayment:
+		return id - 2, true
+	case StackRequestActionMineBlock:
+		return 9, protocol >= Protocol1v16v210
+	case StackRequestActionCraftRecipe, StackRequestActionCraftRecipeAuto, StackRequestActionCraftCreative:
+		if protocol >= Protocol1v16v210 {
+			return id - 2, true
+		}
+		return id - 3, true
+	case StackRequestActionCraftRecipeOptional:
+		if protocol >= Protocol1v16v210 {
+			return 13, true
+		}
+		return 12, protocol >= Protocol1v16v200
+	case StackRequestActionCraftGrindstone:
+		return 14, protocol >= Protocol1v17v40
+	case StackRequestActionCraftLoom:
+		return 15, protocol >= Protocol1v17v40
+	case StackRequestActionCraftNonImplementedDeprecated:
+		if protocol >= Protocol1v17v40 {
+			return 16, true
+		}
+		if protocol >= Protocol1v16v210 {
+			return 14, true
+		}
+		if protocol >= Protocol1v16v200 {
+			return 13, true
+		}
+		return 12, true
+	case StackRequestActionCraftResultsDeprecated:
+		if protocol >= Protocol1v17v40 {
+			return 17, true
+		}
+		if protocol >= Protocol1v16v210 {
+			return 15, true
+		}
+		if protocol >= Protocol1v16v200 {
+			return 14, true
+		}
+		return 13, true
+	}
+	return 0, false
+}
+
+func stackRequestActionIDFromProtocol(id uint8, protocol int32) (uint8, bool) {
+	if protocol >= Protocol1v21v20 && (id == StackRequestActionPlaceInContainer || id == StackRequestActionTakeOutContainer) {
+		return 0, false
+	}
+	if protocol >= Protocol1v18v10v26 {
+		return id, true
+	}
+	switch id {
+	case 0, 1, 2, 3, 4, 5, 6:
+		return id, true
+	case 7:
+		return StackRequestActionLabTableCombine, true
+	case 8:
+		return StackRequestActionBeaconPayment, true
+	case 9:
+		if protocol >= Protocol1v16v210 {
+			return StackRequestActionMineBlock, true
+		}
+		return StackRequestActionCraftRecipe, true
+	case 10:
+		if protocol >= Protocol1v16v210 {
+			return StackRequestActionCraftRecipe, true
+		}
+		return StackRequestActionCraftRecipeAuto, true
+	case 11:
+		if protocol >= Protocol1v16v210 {
+			return StackRequestActionCraftRecipeAuto, true
+		}
+		return StackRequestActionCraftCreative, true
+	case 12:
+		if protocol >= Protocol1v16v210 {
+			return StackRequestActionCraftCreative, true
+		}
+		if protocol >= Protocol1v16v200 {
+			return StackRequestActionCraftRecipeOptional, true
+		}
+		return StackRequestActionCraftNonImplementedDeprecated, true
+	case 13:
+		if protocol >= Protocol1v16v210 {
+			return StackRequestActionCraftRecipeOptional, true
+		}
+		if protocol >= Protocol1v16v200 {
+			return StackRequestActionCraftNonImplementedDeprecated, true
+		}
+		return StackRequestActionCraftResultsDeprecated, true
+	case 14:
+		if protocol >= Protocol1v17v40 {
+			return StackRequestActionCraftGrindstone, true
+		}
+		if protocol >= Protocol1v16v210 {
+			return StackRequestActionCraftNonImplementedDeprecated, true
+		}
+		if protocol >= Protocol1v16v200 {
+			return StackRequestActionCraftResultsDeprecated, true
+		}
+	case 15:
+		if protocol >= Protocol1v17v40 {
+			return StackRequestActionCraftLoom, true
+		}
+		if protocol >= Protocol1v16v210 {
+			return StackRequestActionCraftResultsDeprecated, true
+		}
+	case 16:
+		if protocol >= Protocol1v17v40 {
+			return StackRequestActionCraftNonImplementedDeprecated, true
+		}
+	case 17:
+		if protocol >= Protocol1v17v40 {
+			return StackRequestActionCraftResultsDeprecated, true
+		}
+	}
+	return 0, false
 }
 
 const (
