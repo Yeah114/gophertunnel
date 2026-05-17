@@ -54,5 +54,7 @@ func (pk *ChangeDimension) Marshal(io protocol.IO) {
 	io.Varint32(&pk.Dimension)
 	io.Vec3(&pk.Position)
 	io.Bool(&pk.Respawn)
-	protocol.OptionalFunc(io, &pk.LoadingScreenID, io.Uint32)
+	if io.Protocol() >= protocol.Protocol1v21v20 {
+		protocol.OptionalFunc(io, &pk.LoadingScreenID, io.Uint32)
+	}
 }
