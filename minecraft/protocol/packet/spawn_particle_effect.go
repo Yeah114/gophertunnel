@@ -20,7 +20,7 @@ type SpawnParticleEffect struct {
 	// is not -1, the Position below will be interpreted as relative to the position of the entity associated
 	// with this unique ID.
 	//
-	// Added: v1.12
+	// Added: v1.9.0
 	EntityUniqueID int64
 	// Position is the position that the particle should be spawned at. If the position is too far away from
 	// the player, it will not show up.
@@ -47,7 +47,9 @@ func (*SpawnParticleEffect) ID() uint32 {
 
 func (pk *SpawnParticleEffect) Marshal(io protocol.IO) {
 	io.Uint8(&pk.Dimension)
-	io.Varint64(&pk.EntityUniqueID)
+	if io.Protocol() >= protocol.Protocol1v9v0 {
+		io.Varint64(&pk.EntityUniqueID)
+	}
 	io.Vec3(&pk.Position)
 	io.String(&pk.ParticleName)
 	if io.Protocol() >= protocol.Protocol1v18v30 {

@@ -28,5 +28,7 @@ func (*MapInfoRequest) ID() uint32 {
 
 func (pk *MapInfoRequest) Marshal(io protocol.IO) {
 	io.Varint64(&pk.MapID)
-	protocol.SliceUint32Length(io, &pk.ClientPixels)
+	if io.Protocol() >= protocol.Protocol1v19v20 {
+		protocol.SliceUint32Length(io, &pk.ClientPixels)
+	}
 }

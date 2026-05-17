@@ -19,6 +19,7 @@ type ContainerClose struct {
 	// the client side whether or not the server's close request is valid.
 	//
 	// Added: v1.21.0
+	// Changed: v1.21.0, encoded in the server-side close field group added in v1.16.100.
 	ContainerType byte
 	// ServerSide determines whether or not the container was force-closed by the server. If this value is
 	// not set correctly, the client may ignore the packet and respond with a PacketViolationWarning.
@@ -34,10 +35,10 @@ func (*ContainerClose) ID() uint32 {
 
 func (pk *ContainerClose) Marshal(io protocol.IO) {
 	io.Uint8(&pk.WindowID)
-	if io.Protocol() >= protocol.Protocol1v21v0 {
-		io.Uint8(&pk.ContainerType)
-	}
 	if io.Protocol() >= protocol.Protocol1v16v100 {
+		if io.Protocol() >= protocol.Protocol1v21v0 {
+			io.Uint8(&pk.ContainerType)
+		}
 		io.Bool(&pk.ServerSide)
 	}
 }
