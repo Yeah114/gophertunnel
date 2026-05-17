@@ -307,15 +307,21 @@ func (r *Reader) PlayerInventoryAction(x *UseItemTransactionData) {
 	}
 	Slice(r, &x.Actions)
 	r.Varuint32(&x.ActionType)
-	r.Varuint32(&x.TriggerType)
+	if r.Protocol() >= Protocol1v21v20 {
+		r.Varuint32(&x.TriggerType)
+	}
 	r.UBlockPos(&x.BlockPosition)
 	r.Varint32(&x.BlockFace)
 	r.Varint32(&x.HotBarSlot)
 	r.ItemInstance(&x.HeldItem)
 	r.Vec3(&x.Position)
 	r.Vec3(&x.ClickedPosition)
-	r.Varuint32(&x.BlockRuntimeID)
-	r.Varuint32(&x.ClientPrediction)
+	if r.Protocol() >= Protocol1v16v210 {
+		r.Varuint32(&x.BlockRuntimeID)
+		if r.Protocol() >= Protocol1v21v20 {
+			r.Varuint32(&x.ClientPrediction)
+		}
+	}
 	if r.Protocol() >= Protocol1v26v10 {
 		r.Uint8(&x.ClientCooldownState)
 	}

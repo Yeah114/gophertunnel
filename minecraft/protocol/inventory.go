@@ -341,15 +341,21 @@ type ReleaseItemTransactionData struct {
 // Marshal ...
 func (data *UseItemTransactionData) Marshal(r IO) {
 	r.Varuint32(&data.ActionType)
-	r.Varuint32(&data.TriggerType)
+	if r.Protocol() >= Protocol1v21v20 {
+		r.Varuint32(&data.TriggerType)
+	}
 	r.UBlockPos(&data.BlockPosition)
 	r.Varint32(&data.BlockFace)
 	r.Varint32(&data.HotBarSlot)
 	r.ItemInstance(&data.HeldItem)
 	r.Vec3(&data.Position)
 	r.Vec3(&data.ClickedPosition)
-	r.Varuint32(&data.BlockRuntimeID)
-	r.Varuint32(&data.ClientPrediction)
+	if r.Protocol() >= Protocol1v16v210 {
+		r.Varuint32(&data.BlockRuntimeID)
+		if r.Protocol() >= Protocol1v21v20 {
+			r.Varuint32(&data.ClientPrediction)
+		}
+	}
 	if r.Protocol() >= Protocol1v26v10 {
 		r.Uint8(&data.ClientCooldownState)
 	}
