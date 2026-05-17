@@ -264,7 +264,12 @@ func (w *Writer) GameRuleLegacy(x *GameRule) {
 	case uint32:
 		id := uint32(2)
 		w.Varuint32(&id)
-		w.Varuint32(&v)
+		if w.Protocol() >= Protocol1v21v110v26 {
+			value := int32(v)
+			w.Varint32(&value)
+		} else {
+			w.Varuint32(&v)
+		}
 	case float32:
 		id := uint32(3)
 		w.Varuint32(&id)

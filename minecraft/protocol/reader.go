@@ -365,9 +365,15 @@ func (r *Reader) GameRuleLegacy(x *GameRule) {
 		r.Bool(&v)
 		x.Value = v
 	case 2:
-		var v uint32
-		r.Varuint32(&v)
-		x.Value = v
+		if r.Protocol() >= Protocol1v21v110v26 {
+			var v int32
+			r.Varint32(&v)
+			x.Value = uint32(v)
+		} else {
+			var v uint32
+			r.Varuint32(&v)
+			x.Value = v
+		}
 	case 3:
 		var v float32
 		r.Float32(&v)
