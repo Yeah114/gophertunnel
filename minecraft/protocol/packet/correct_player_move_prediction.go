@@ -18,7 +18,8 @@ const (
 type CorrectPlayerMovePrediction struct {
 	// PredictionType is the type of prediction that was corrected. It is one of the constants above.
 	//
-	// Added: v1.20.70
+	// Added: v1.20.60
+	// Changed: v1.20.80, moved before the position fields.
 	PredictionType byte
 	// Position is the position that the player is supposed to be at the tick written in the field below.
 	// The client will change its current position based on movement after that tick starting from the
@@ -32,7 +33,7 @@ type CorrectPlayerMovePrediction struct {
 	Delta mgl32.Vec3
 	// Rotation is the rotation of the player at the tick written in the field below.
 	//
-	// Added: v1.20.70
+	// Added: v1.20.80
 	// Changed: v1.21.100, encoded for all prediction types instead of only PredictionTypeVehicle.
 	Rotation mgl32.Vec2
 	// VehicleAngularVelocity is the angular velocity of the vehicle that the rider is riding.
@@ -56,13 +57,22 @@ func (*CorrectPlayerMovePrediction) ID() uint32 {
 }
 
 func (pk *CorrectPlayerMovePrediction) Marshal(io protocol.IO) {
-	io.Uint8(&pk.PredictionType)
+	if io.Protocol() >= protocol.Protocol1v20v80 {
+		io.Uint8(&pk.PredictionType)
+	}
 	io.Vec3(&pk.Position)
 	io.Vec3(&pk.Delta)
-	if pk.PredictionType == PredictionTypeVehicle || io.Protocol() >= protocol.Protocol1v21v100 {
-		io.Vec2(&pk.Rotation)
-		protocol.OptionalFunc(io, &pk.VehicleAngularVelocity, io.Float32)
+	if io.Protocol() >= protocol.Protocol1v20v80 {
+		if pk.PredictionType == PredictionTypeVehicle || io.Protocol() >= protocol.Protocol1v21v100 {
+			io.Vec2(&pk.Rotation)
+			if io.Protocol() >= protocol.Protocol1v21v20 {
+				protocol.OptionalFunc(io, &pk.VehicleAngularVelocity, io.Float32)
+			}
+		}
 	}
 	io.Bool(&pk.OnGround)
 	io.Varuint64(&pk.Tick)
+	if io.Protocol() >= protocol.Protocol1v20v60 && io.Protocol() < protocol.Protocol1v20v80 {
+		io.Uint8(&pk.PredictionType)
+	}
 }
