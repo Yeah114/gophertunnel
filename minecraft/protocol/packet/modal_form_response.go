@@ -41,6 +41,13 @@ func (*ModalFormResponse) ID() uint32 {
 
 func (pk *ModalFormResponse) Marshal(io protocol.IO) {
 	io.Varuint32(&pk.FormID)
+	if io.Protocol() < protocol.Protocol1v19v20 {
+		responseData, _ := pk.ResponseData.Value()
+		response := string(responseData)
+		io.String(&response)
+		pk.ResponseData = protocol.Option([]byte(response))
+		return
+	}
 	protocol.OptionalFunc(io, &pk.ResponseData, io.ByteSlice)
 	protocol.OptionalFunc(io, &pk.CancelReason, io.Uint8)
 }
