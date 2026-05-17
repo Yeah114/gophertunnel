@@ -27,7 +27,7 @@ type PlayerAction struct {
 	// ResultPosition is the position of the action's result. When a UseItemOn action is sent, this is the position of
 	// the block clicked, but when a block is placed, this is the position at which the block will be placed.
 	//
-	// Added: v1.18.30
+	// Added: v1.19.0.29
 	ResultPosition protocol.BlockPos
 	// BlockFace is the face of the target block that was touched. If the action with the ActionType set
 	// concerned a block. If not, the face is always 0.
@@ -45,6 +45,8 @@ func (pk *PlayerAction) Marshal(io protocol.IO) {
 	io.Varuint64(&pk.EntityRuntimeID)
 	io.Varint32(&pk.ActionType)
 	io.UBlockPos(&pk.BlockPosition)
-	io.UBlockPos(&pk.ResultPosition)
+	if io.Protocol() >= protocol.Protocol1v19v0v29 {
+		io.UBlockPos(&pk.ResultPosition)
+	}
 	io.Varint32(&pk.BlockFace)
 }
