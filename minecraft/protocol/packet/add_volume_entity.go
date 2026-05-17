@@ -22,20 +22,20 @@ type AddVolumeEntity struct {
 	// EncodingIdentifier is the unique identifier for the volume. It must be of the form 'namespace:name', where
 	// namespace cannot be 'minecraft'.
 	//
-	// Added: v1.17.30
+	// Added: v1.18.10
 	EncodingIdentifier string
 	// InstanceIdentifier is the identifier of a fog definition.
 	//
-	// Added: v1.17.30
+	// Added: v1.18.10
 	InstanceIdentifier string
 	// Bounds represent the volume's bounds. The first value is the minimum bounds, and the second value is the
 	// maximum bounds.
 	//
-	// Added: v1.17.30
+	// Added: v1.18.30
 	Bounds [2]protocol.BlockPos
 	// Dimension is the dimension in which the volume exists.
 	//
-	// Added: v1.17.30
+	// Added: v1.18.30
 	Dimension int32
 	// EngineVersion is the engine version the entity is using, for example, '1.17.0'.
 	//
@@ -51,10 +51,16 @@ func (*AddVolumeEntity) ID() uint32 {
 func (pk *AddVolumeEntity) Marshal(io protocol.IO) {
 	io.Varuint32(&pk.EntityRuntimeID)
 	io.NBT(&pk.EntityMetadata, nbt.NetworkLittleEndian)
-	io.String(&pk.EncodingIdentifier)
-	io.String(&pk.InstanceIdentifier)
-	io.UBlockPos(&pk.Bounds[0])
-	io.UBlockPos(&pk.Bounds[1])
-	io.Varint32(&pk.Dimension)
-	io.String(&pk.EngineVersion)
+	if io.Protocol() >= protocol.Protocol1v18v10 {
+		io.String(&pk.EncodingIdentifier)
+		io.String(&pk.InstanceIdentifier)
+		if io.Protocol() >= protocol.Protocol1v18v30 {
+			io.UBlockPos(&pk.Bounds[0])
+			io.UBlockPos(&pk.Bounds[1])
+			io.Varint32(&pk.Dimension)
+		}
+	}
+	if io.Protocol() >= protocol.Protocol1v17v30 {
+		io.String(&pk.EngineVersion)
+	}
 }
