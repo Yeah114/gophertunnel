@@ -183,7 +183,7 @@ type PlayerAuthInput struct {
 	// AnalogueMoveVector is a Vec2 that specifies the direction in which the player moved, as a combination
 	// of X/Z values which are created using an analogue input.
 	//
-	// Added: v1.20.60
+	// Added: v1.19.70.24
 	AnalogueMoveVector mgl32.Vec2
 	// CameraOrientation is the vector that represents the camera's forward direction which can be used to
 	// transform movement to be camera relative.
@@ -242,7 +242,7 @@ func (pk *PlayerAuthInput) Marshal(io protocol.IO) {
 		io.Varint64(&pk.ClientPredictedVehicle)
 	}
 
-	if io.Protocol() >= protocol.Protocol1v20v60 {
+	if io.Protocol() >= protocol.Protocol1v19v70v24 {
 		io.Vec2(&pk.AnalogueMoveVector)
 	}
 	if io.Protocol() >= protocol.Protocol1v21v40 {
