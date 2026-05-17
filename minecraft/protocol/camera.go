@@ -932,53 +932,77 @@ type CameraSplineDefinition struct {
 	//
 	// Added: v1.26.10
 	RotationKeyFrames []CameraRotationOption
+	// SplineIdentifier is the identifier for referencing the spline by name.
+	//
+	// Added: v1.26.10
+	SplineIdentifier Optional[string]
+	// LoadFromJson determines whether the spline should be loaded from a JSON definition.
+	//
+	// Added: v1.26.10
+	LoadFromJson Optional[bool]
 }
 
 // Marshal encodes/decodes a CameraSplineDefinition.
 func (x *CameraSplineDefinition) Marshal(r IO) {
 	r.String(&x.Name)
+	if x.Instruction.TotalTime != 0 || x.Instruction.SplineType.set || len(x.Instruction.Curve) != 0 ||
+		len(x.Instruction.ProgressKeyFrames) != 0 || len(x.Instruction.RotationOptions) != 0 ||
+		x.Instruction.SplineIdentifier.set || x.Instruction.LoadFromJson.set {
+		x.TotalTime = x.Instruction.TotalTime
+		x.SplineType = x.Instruction.SplineType
+		x.ControlPoints = x.Instruction.Curve
+		x.ProgressKeyFrames = x.Instruction.ProgressKeyFrames
+		x.RotationKeyFrames = x.Instruction.RotationOptions
+		x.SplineIdentifier = x.Instruction.SplineIdentifier
+		x.LoadFromJson = x.Instruction.LoadFromJson
+	}
+	r.Float32(&x.TotalTime)
+	splineType := SplineTypeCatmullRom
+	if value, ok := x.SplineType.Value(); ok {
+		splineType = value
+	}
+	r.String(&splineType)
+	x.SplineType = Option(splineType)
+	FuncSlice(r, &x.ControlPoints, r.Vec3)
+	FuncSlice(r, &x.ProgressKeyFrames, func(option *CameraProgressOption) {
+		cameraSplineProgressOption(r, option)
+	})
+	FuncSlice(r, &x.RotationKeyFrames, func(option *CameraRotationOption) {
+		cameraSplineRotationOption(r, option)
+	})
 	if r.Protocol() >= Protocol1v26v10 {
-		if x.Instruction.TotalTime != 0 || x.Instruction.SplineType.set || len(x.Instruction.Curve) != 0 ||
-			len(x.Instruction.ProgressKeyFrames) != 0 || len(x.Instruction.RotationOptions) != 0 {
-			x.TotalTime = x.Instruction.TotalTime
-			x.SplineType = x.Instruction.SplineType
-			x.ControlPoints = x.Instruction.Curve
-			x.ProgressKeyFrames = x.Instruction.ProgressKeyFrames
-			x.RotationKeyFrames = x.Instruction.RotationOptions
-		}
-		r.Float32(&x.TotalTime)
-		OptionalFunc(r, &x.SplineType, r.String)
-		FuncSlice(r, &x.ControlPoints, r.Vec3)
-		Slice(r, &x.ProgressKeyFrames)
-		Slice(r, &x.RotationKeyFrames)
-		x.Instruction = CameraSplineInstruction{
-			TotalTime:         x.TotalTime,
-			SplineType:        x.SplineType,
-			Curve:             x.ControlPoints,
-			ProgressKeyFrames: x.ProgressKeyFrames,
-			RotationOptions:   x.RotationKeyFrames,
-		}
-		return
+		splineIdentifier, _ := x.SplineIdentifier.Value()
+		r.String(&splineIdentifier)
+		x.SplineIdentifier = Option(splineIdentifier)
+		loadFromJson, _ := x.LoadFromJson.Value()
+		r.Bool(&loadFromJson)
+		x.LoadFromJson = Option(loadFromJson)
 	}
+	x.Instruction = CameraSplineInstruction{
+		TotalTime:         x.TotalTime,
+		SplineType:        x.SplineType,
+		Curve:             x.ControlPoints,
+		ProgressKeyFrames: x.ProgressKeyFrames,
+		RotationOptions:   x.RotationKeyFrames,
+		SplineIdentifier:  x.SplineIdentifier,
+		LoadFromJson:      x.LoadFromJson,
+	}
+}
 
-	instruction := x.Instruction
-	if instruction.TotalTime == 0 && !instruction.SplineType.set && len(instruction.Curve) == 0 &&
-		len(instruction.ProgressKeyFrames) == 0 && len(instruction.RotationOptions) == 0 {
-		instruction = CameraSplineInstruction{
-			TotalTime:         x.TotalTime,
-			SplineType:        x.SplineType,
-			Curve:             x.ControlPoints,
-			ProgressKeyFrames: x.ProgressKeyFrames,
-			RotationOptions:   x.RotationKeyFrames,
-		}
-	}
-	Single(r, &instruction)
-	x.Instruction = instruction
-	x.TotalTime = instruction.TotalTime
-	x.SplineType = instruction.SplineType
-	x.ControlPoints = instruction.Curve
-	x.ProgressKeyFrames = instruction.ProgressKeyFrames
-	x.RotationKeyFrames = instruction.RotationOptions
+func cameraSplineProgressOption(r IO, x *CameraProgressOption) {
+	r.Float32(&x.Value)
+	r.Float32(&x.Time)
+	easingType := easingTypeToString(x.EaseType)
+	r.String(&easingType)
+	easingTypeFromString(r, &x.EaseType, easingType)
+}
+
+func cameraSplineRotationOption(r IO, x *CameraRotationOption) {
+	r.Vec3(&x.Value)
+	r.Float32(&x.Time)
+	easingType := easingTypeToString(x.EaseType)
+	r.String(&easingType)
+	easingTypeFromString(r, &x.EaseType, easingType)
 }
 
 // CameraAimAssistActorPriorityData represents priority data for aim assist actor targeting.
