@@ -848,7 +848,7 @@ type CameraSplineInstruction struct {
 	TotalTime float32
 	// SplineType is the optional spline interpolation type used for the spline curve.
 	//
-	// Changed: v1.26.10, encoded as an optional string identifier instead of an optional uint8 enum value.
+	// Added: v1.21.120
 	SplineType Optional[string]
 	// Curve is a list of points that define the spline curve.
 	//
@@ -875,29 +875,38 @@ type CameraSplineInstruction struct {
 // Marshal encodes/decodes a CameraSplineInstruction.
 func (x *CameraSplineInstruction) Marshal(r IO) {
 	r.Float32(&x.TotalTime)
-	if r.Protocol() >= Protocol1v26v10 {
-		OptionalFunc(r, &x.SplineType, r.String)
-	} else {
-		var splineType Optional[uint8]
-		if value, ok := x.SplineType.Value(); ok {
-			splineType = Option(splineTypeToUint8(r, value))
-		}
-		OptionalFunc(r, &splineType, r.Uint8)
-		if value, ok := splineType.Value(); ok {
-			x.SplineType = Option("")
-			splineTypeFromUint8(r, &x.SplineType.val, value)
-			x.SplineType.set = true
-		} else {
-			x.SplineType = Optional[string]{}
-		}
+	splineTypeName := SplineTypeCatmullRom
+	if value, ok := x.SplineType.Value(); ok {
+		splineTypeName = value
 	}
+	splineType := splineTypeToUint8(r, splineTypeName)
+	r.Uint8(&splineType)
+	splineTypeFromUint8(r, &splineTypeName, splineType)
+	x.SplineType = Option(splineTypeName)
 	FuncSlice(r, &x.Curve, r.Vec3)
-	Slice(r, &x.ProgressKeyFrames)
-	Slice(r, &x.RotationOptions)
-	if r.Protocol() >= Protocol1v26v10 {
-		OptionalFunc(r, &x.SplineIdentifier, r.String)
-		OptionalFunc(r, &x.LoadFromJson, r.Bool)
+	FuncSlice(r, &x.ProgressKeyFrames, func(option *CameraProgressOption) {
+		cameraInstructionSplineProgressOption(r, option)
+	})
+	FuncSlice(r, &x.RotationOptions, func(option *CameraRotationOption) {
+		cameraInstructionSplineRotationOption(r, option)
+	})
+}
+
+func cameraInstructionSplineProgressOption(r IO, x *CameraProgressOption) {
+	if r.Protocol() >= Protocol1v26v0 {
+		r.Float32(&x.Value)
+		r.Float32(&x.Time)
+		r.Int32(&x.EaseType)
+		return
 	}
+	progress := mgl32.Vec2{x.Value, x.Time}
+	r.Vec2(&progress)
+	x.Value, x.Time = progress[0], progress[1]
+}
+
+func cameraInstructionSplineRotationOption(r IO, x *CameraRotationOption) {
+	r.Vec3(&x.Value)
+	r.Float32(&x.Time)
 }
 
 // CameraSplineDefinition represents a named camera spline definition.
