@@ -57,6 +57,11 @@ type ResourcePacksInfo struct {
 	//
 	// Added: v1.11.1
 	TexturePacks []protocol.TexturePackInfo
+	// CDNEntries is a list of remote URLs that the client can use to download resource packs instead of the
+	// server sending them in chunks.
+	//
+	// Added: v1.20.30.24, Removed: v1.21.40
+	CDNEntries []protocol.PackURL
 }
 
 // ID ...
@@ -86,4 +91,29 @@ func (pk *ResourcePacksInfo) Marshal(io protocol.IO) {
 		protocol.SliceUint16Length(io, &pk.BehaviourPacks)
 	}
 	protocol.SliceUint16Length(io, &pk.TexturePacks)
+	if io.Protocol() >= protocol.Protocol1v20v30v24 && io.Protocol() < protocol.Protocol1v21v40 {
+		cdnEntries := pk.resourcePackCDNEntries()
+		protocol.Slice(io, &cdnEntries)
+		pk.CDNEntries = cdnEntries
+	}
+}
+
+func (pk *ResourcePacksInfo) resourcePackCDNEntries() []protocol.PackURL {
+	entries := append([]protocol.PackURL(nil), pk.CDNEntries...)
+	seen := make(map[string]struct{}, len(entries)+len(pk.TexturePacks))
+	for _, entry := range entries {
+		seen[entry.UUIDVersion] = struct{}{}
+	}
+	for _, pack := range pk.TexturePacks {
+		if pack.DownloadURL == "" {
+			continue
+		}
+		id := pack.UUID.String()
+		if _, ok := seen[id]; ok {
+			continue
+		}
+		seen[id] = struct{}{}
+		entries = append(entries, protocol.PackURL{UUIDVersion: id, URL: pack.DownloadURL})
+	}
+	return entries
 }
