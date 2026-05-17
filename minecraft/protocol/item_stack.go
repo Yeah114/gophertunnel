@@ -267,7 +267,11 @@ type StackResponseContainerInfo struct {
 
 // Marshal encodes/decodes a StackResponseContainerInfo.
 func (x *StackResponseContainerInfo) Marshal(r IO) {
-	Single(r, &x.Container)
+	if r.Protocol() >= Protocol1v21v20 {
+		Single(r, &x.Container)
+	} else {
+		r.Uint8(&x.Container.ContainerID)
+	}
 	Slice(r, &x.SlotInfo)
 }
 
@@ -314,11 +318,15 @@ func (x *StackResponseSlotInfo) Marshal(r IO) {
 	if x.Slot != x.HotbarSlot {
 		r.InvalidValue(x.HotbarSlot, "hotbar slot", "hot bar slot must be equal to normal slot")
 	}
-	r.String(&x.CustomName)
+	if r.Protocol() >= Protocol1v16v200 {
+		r.String(&x.CustomName)
+	}
 	if r.Protocol() >= Protocol1v21v50 {
 		r.String(&x.FilteredCustomName)
 	}
-	r.Varint32(&x.DurabilityCorrection)
+	if r.Protocol() >= Protocol1v16v210 {
+		r.Varint32(&x.DurabilityCorrection)
+	}
 }
 
 // StackRequestAction represents a single action related to the inventory present in an ItemStackRequest.
