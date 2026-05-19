@@ -91,6 +91,23 @@ func (p BedrockProtocol) ConvertFromLatest(pk packet.Packet, conn *Conn) []packe
 	return []packet.Packet{pk}
 }
 
+type BedrockProtocolPool map[int32]BedrockProtocol
+
+var bedrockProtocolPool = make(BedrockProtocolPool)
+
+func RegisterBedrockProtocol(bedrockProtocol BedrockProtocol) {
+	bedrockProtocolPool[bedrockProtocol.ID()] = bedrockProtocol
+}
+
+func NewBedrockProtocolPool() BedrockProtocolPool {
+	pool := make(BedrockProtocolPool)
+	for protocol, info := range bedrockProtocolPool {
+		pool[protocol] = info
+	}
+
+	return pool
+}
+
 // proto is the default Protocol implementation. It returns the current protocol, version and packet pool and does not
 // convert any packets, as they are already of the right type.
 type proto struct{}
@@ -117,3 +134,9 @@ func (p proto) ConvertFromLatest(pk packet.Packet, _ *Conn) []packet.Packet {
 // DefaultProtocol is the Protocol implementation using as default, In default it is current protocol, version and packet
 // pool and does not convert any packets, as they are already of the right type.
 var DefaultProtocol = proto{}
+
+func init() {
+	for p := range protocol.ProtocolToVersion {
+		RegisterBedrockProtocol(NewBedrockProtocol(protocol.NewInfoByProtocol(p)))
+	}
+}

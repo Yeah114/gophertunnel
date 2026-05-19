@@ -27,6 +27,8 @@ func (i Info) Ver() string {
 }
 
 // Current Protocol and Version
+var CurrentInfo = NewInfo(CurrentProtocol, CurrentVersion)
+
 const (
 	// CurrentProtocol is the current protocol version for the version below.
 	CurrentProtocol = Protocol1v26v20
