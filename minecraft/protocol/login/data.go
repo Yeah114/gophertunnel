@@ -28,7 +28,7 @@ type IdentityData struct {
 	// logged in with the XBOX Live account. It is empty if the user is not logged into its XBL account.
 	//
 	// Added: v1.11.1
-	XUID string
+	XUID string `json:"XUID"`
 	// Identity is the UUID of the player, which will also remain consistent for as long as the user is logged
 	// into its XBOX Live account.
 	//
@@ -122,12 +122,12 @@ type ClientData struct {
 	// image data of a single frame of the animation.
 	//
 	// Added: v1.13.0
-	AnimatedImageData []SkinAnimation
+	AnimatedImageData []SkinAnimation `json:"AnimatedImageData"`
 	// CapeData is a base64 encoded string of cape data. This is usually an empty string, as skins typically
 	// don't carry capes themselves.
 	//
 	// Added: v1.11.1
-	CapeData string
+	CapeData string `json:"CapeData"`
 	// CapeID is an ID which, like the SkinID, identifies a skin. Usually this is either empty for no skin or
 	// some ID containing a UUID in it.
 	//
@@ -136,12 +136,13 @@ type ClientData struct {
 	// CapeImageHeight and CapeImageWidth are the dimensions of the cape's image.
 	//
 	// Added: v1.13.0
-	CapeImageHeight, CapeImageWidth int
+	CapeImageHeight int `json:"CapeImageHeight"`
+	CapeImageWidth  int `json:"CapeImageWidth"`
 	// CapeOnClassicSkin specifies if the cape that the player has equipped is part of a classic skin, which
 	// usually points to one of the older MineCon capes.
 	//
 	// Added: v1.13.0
-	CapeOnClassicSkin bool
+	CapeOnClassicSkin bool `json:"CapeOnClassicSkin"`
 	// ClientRandomID is a random client ID number generated for the client. It usually remains consistent
 	// through sessions and through game restarts.
 	//
@@ -151,20 +152,20 @@ type ClientData struct {
 	// for console input.
 	//
 	// Added: v1.11.1
-	CurrentInputMode int
+	CurrentInputMode int `json:"CurrentInputMode"`
 	// DefaultInputMode is the default input mode used by the device.
 	//
 	// Added: v1.11.1
-	DefaultInputMode int
+	DefaultInputMode int `json:"DefaultInputMode"`
 	// DeviceModel is a string indicating the device model used by the player. At the moment, it appears that
 	// this name is always '(Standard system devices) System devices'.
 	//
 	// Added: v1.11.1
-	DeviceModel string
+	DeviceModel string `json:"DeviceModel"`
 	// DeviceOS is a numerical ID indicating the OS of the device.
 	//
 	// Added: v1.11.1
-	DeviceOS protocol.DeviceOS
+	DeviceOS protocol.DeviceOS `json:"DeviceOS"`
 	// DeviceID is usually a UUID specific to the device. A different user will have the same UUID for this.
 	// DeviceID is not guaranteed to always be a UUID. It is a base64 encoded string under some circumstances.
 	// This field is not automatically verified by default, because the format is different for each OS and
@@ -175,7 +176,7 @@ type ClientData struct {
 	// GameVersion is the game version of the player that attempted to join, for example '1.11.0'.
 	//
 	// Added: v1.11.1
-	GameVersion string
+	GameVersion string `json:"GameVersion"`
 	// GUIScale is the GUI scale of the player. It is by default 0, and is otherwise -1 or -2 for a smaller
 	// GUI scale than usual.
 	//
@@ -184,17 +185,17 @@ type ClientData struct {
 	// IsEditorMode is a value to dictate if the player is in editor mode.
 	//
 	// Added: v1.19.40
-	IsEditorMode bool
+	IsEditorMode bool `json:"IsEditorMode"`
 	// LanguageCode is the language code of the player. It looks like 'en_UK'. It follows the ISO language
 	// codes, but hyphens ('-') are replaced with underscores. ('_')
 	//
 	// Added: v1.11.1
-	LanguageCode string
+	LanguageCode string `json:"LanguageCode"`
 	// PersonaSkin specifies if the skin was a persona skin, meaning that it was created through the in-game
 	// skin creator.
 	//
 	// Added: v1.13.0
-	PersonaSkin bool
+	PersonaSkin bool `json:"PersonaSkin"`
 	// PlatformOfflineID is either a UUID or an empty string ...
 	//
 	// Added: v1.11.1
@@ -212,7 +213,7 @@ type ClientData struct {
 	// payment.
 	//
 	// Added: v1.11.1
-	PremiumSkin bool
+	PremiumSkin bool `json:"PremiumSkin"`
 	// SelfSignedID is a UUID that remains consistent through restarts of the game and new game sessions.
 	//
 	// Added: v1.11.1
@@ -222,16 +223,16 @@ type ClientData struct {
 	// 'address:port`.
 	//
 	// Added: v1.11.1
-	ServerAddress string
+	ServerAddress string `json:"ServerAddress"`
 	// TODO: Find out what value SkinAnimationData holds and when it does hold something.
 	//
 	// Added: v1.13.0
-	SkinAnimationData string
+	SkinAnimationData string `json:"SkinAnimationData"`
 	// SkinData is a base64 encoded byte slice of 64*32*4, 64*64*4 or 128*128*4 bytes. It is a RGBA ordered
 	// byte representation of the skin colours.
 	//
 	// Added: v1.11.1
-	SkinData string
+	SkinData string `json:"SkinData"`
 	// SkinGeometry is a base64 JSON encoded structure of the geometry data of a skin, containing properties
 	// such as bones, uv, pivot etc.
 	//
@@ -258,7 +259,8 @@ type ClientData struct {
 	// SkinImageHeight and SkinImageWidth are the dimensions of the skin's image data.
 	//
 	// Added: v1.13.0
-	SkinImageHeight, SkinImageWidth int
+	SkinImageHeight int `json:"SkinImageHeight"`
+	SkinImageWidth  int `json:"SkinImageWidth"`
 	// SkinResourcePatch is a base64 encoded string which holds JSON data. The content of the JSON data points
 	// to the assets that should be used to shape the skin. An example with a head animation can be found
 	// below.
@@ -272,7 +274,7 @@ type ClientData struct {
 	// is {"geometry": {"default": "geometry.persona_d1625e47f4c9399f_0_1"}}
 	//
 	// Added: v1.13.0
-	SkinResourcePatch string
+	SkinResourcePatch string `json:"SkinResourcePatch"`
 	// SkinColour is a hex representation (including #) of the base colour of the skin. An example of the
 	// colour sent here is '#b37b62'.
 	//
@@ -282,11 +284,11 @@ type ClientData struct {
 	// or 'slim' (generally for female skins).
 	//
 	// Added: v1.14.60
-	ArmSize string
+	ArmSize string `json:"ArmSize"`
 	// PersonaPieces is a list of all persona pieces that the skin is composed of.
 	//
 	// Added: v1.14.60
-	PersonaPieces []PersonaPiece
+	PersonaPieces []PersonaPiece `json:"PersonaPieces"`
 	// PieceTintColours is a list of specific tint colours for (some of) the persona pieces found in the list
 	// above.
 	//
@@ -296,7 +298,7 @@ type ClientData struct {
 	// sent in the IdentityData should be preferred over this.
 	//
 	// Added: v1.11.1
-	ThirdPartyName string
+	ThirdPartyName string `json:"ThirdPartyName"`
 	// ThirdPartyNameOnly specifies if the user only has a third party name. It should always be assumed to be
 	// false, because the third party name is not XBOX Live Auth protected, meaning it can be tempered with
 	// and the username changed.
@@ -308,24 +310,24 @@ type ClientData struct {
 	// UIProfile is the UI profile used. For the 'Pocket' UI, this is 1. For the 'Classic' UI, this is 0.
 	//
 	// Added: v1.11.1
-	UIProfile int
+	UIProfile int `json:"UIProfile"`
 	// TrustedSkin is a boolean indicating if the skin the client is using is trusted.
 	//
 	// Added: v1.19.70
-	TrustedSkin bool
+	TrustedSkin bool `json:"TrustedSkin"`
 	// OverrideSkin is a boolean that does not make sense to be here. The current usage of this field is unknown.
 	//
 	// Added: v1.19.80
-	OverrideSkin bool
+	OverrideSkin bool `json:"OverrideSkin"`
 	// CompatibleWithClientSideChunkGen is a boolean indicating if the client's hardware is capable of using the client
 	// side chunk generation system.
 	//
 	// Added: v1.19.80
-	CompatibleWithClientSideChunkGen bool
+	CompatibleWithClientSideChunkGen bool `json:"CompatibleWithClientSideChunkGen"`
 	// MaxViewDistance is the highest render distance that the client's hardware can handle.
 	//
 	// Added: v1.21.40
-	MaxViewDistance int
+	MaxViewDistance int `json:"MaxViewDistance"`
 	// MemoryTier is the tier of memory that the client's hardware has. This is a number between 0 and 4. The
 	// full calculation of this tier is currently unknown but the following is a rough estimate from a
 	// developer at Mojang:
@@ -336,15 +338,15 @@ type ClientData struct {
 	// 4 - Super High, more than ~8GB of memory
 	//
 	// Added: v1.21.40
-	MemoryTier int
+	MemoryTier int `json:"MemoryTier"`
 	// PlatformType is the type of platform the client is running.
 	//
 	// Added: v1.21.40
-	PlatformType int
+	PlatformType int `json:"PlatformType"`
 	// GraphicsMode is the graphics mode the client is running.
 	//
 	// Added: v1.21.70
-	GraphicsMode int
+	GraphicsMode int `json:"GraphicsMode"`
 	// PartyID is the identifier of the client's party, or empty if they are not in a party.
 	//
 	// Added: v1.26.20
@@ -385,7 +387,7 @@ type PersonaPiece struct {
 	// - persona_facial_hair
 	//
 	// Added: v1.14.60
-	PieceType string
+	PieceType string `json:"PieceType"`
 	// ProductID is a UUID that identifies the piece when it comes to purchases. It is empty for pieces that
 	// have the 'IsDefault' field set to true.
 	//
@@ -415,7 +417,7 @@ type PersonaPieceTintColour struct {
 	// - persona_hair
 	//
 	// Added: v1.14.60
-	PieceType string
+	PieceType string `json:"PieceType"`
 }
 
 // SkinAnimation is an animation that may be present. It is applied on top of the skin default and is cycled
@@ -427,7 +429,7 @@ type SkinAnimation struct {
 	// frames may be found in the Image data.
 	//
 	// Added: v1.13.0
-	Frames float64
+	Frames float64 `json:"Frames"`
 	// Image is a base64 encoded byte slice of ImageWidth * ImageHeight bytes. It is an RGBA ordered byte
 	// representation of the animation image pixels. The ImageData contains FrameCount images in it, which
 	// each represent one stage of the animation. The actual part of the skin that this field holds
@@ -435,12 +437,13 @@ type SkinAnimation struct {
 	// animations hold the entire body of the skin.
 	//
 	// Added: v1.13.0
-	Image string
+	Image string `json:"Image"`
 	// ImageHeight and ImageWidth are the dimensions of the animated image. Note that the size of this
 	// image is not always 32/64/128.
 	//
 	// Added: v1.13.0
-	ImageHeight, ImageWidth int
+	ImageHeight int `json:"ImageHeight"`
+	ImageWidth  int `json:"ImageWidth"`
 	// Type is the type of the animation, which defines what part of the body the Image data holds. It is
 	// one of the following:
 	// 0 -> 'None', doesn't typically occur.
@@ -449,13 +452,13 @@ type SkinAnimation struct {
 	// 3 -> 128x128 Body animation.
 	//
 	// Added: v1.13.0
-	Type int
+	Type int `json:"Type"`
 	// ExpressionType is the type of expression made by the skin, which is one of the following:
 	// 0 -> Linear.
 	// 1 -> Blinking.
 	//
 	// Added: v1.16.200
-	AnimationExpression int
+	AnimationExpression int `json:"AnimationExpression"`
 }
 
 // checkVersion is used to check if a version is an actual valid version. It must only contain numbers and
