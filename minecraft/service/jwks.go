@@ -12,8 +12,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Yeah114/gophertunnel/minecraft/service/internal"
 	"github.com/go-jose/go-jose/v4"
-	"github.com/sandertv/gophertunnel/minecraft/service/internal"
 )
 
 // refreshingKeySet implements an OIDC KeySet backed by a cached JWKS fetch with a refresh interval.

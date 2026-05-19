@@ -3,8 +3,9 @@ package minecraft
 import (
 	"bytes"
 	"fmt"
-	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
-	"github.com/sandertv/gophertunnel/minecraft/resource"
+
+	"github.com/Yeah114/gophertunnel/minecraft/protocol/packet"
+	"github.com/Yeah114/gophertunnel/minecraft/resource"
 )
 
 // resourcePackQueue is used to aid in the handling of resource pack queueing and downloading. Only one

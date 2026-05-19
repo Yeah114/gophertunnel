@@ -1,8 +1,8 @@
 package packet
 
 import (
+	"github.com/Yeah114/gophertunnel/minecraft/protocol"
 	"github.com/google/uuid"
-	"github.com/sandertv/gophertunnel/minecraft/protocol"
 )
 
 // ServerBoundPackSettingChange is sent by the client to the server when it changes a setting

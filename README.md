@@ -1,7 +1,7 @@
 # gophertunnel
 > Swiss army knife for Minecraft (Bedrock Edition) software written in Go
 
-[![PkgGoDev](https://pkg.go.dev/badge/github.com/sandertv/gophertunnel)](https://pkg.go.dev/github.com/sandertv/gophertunnel)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/Yeah114/gophertunnel)](https://pkg.go.dev/github.com/Yeah114/gophertunnel)
 
 ![telescope gopher](https://raw.githubusercontent.com/Sandertv/gophertunnel/master/gophertunnel_telescope_coloured.png)
 
@@ -9,11 +9,11 @@
 
 gophertunnel is composed of several packages that may be of use for creating Minecraft related tools.
 As of version v1.47.5, Gophertunnel requires at least Go 1.24.
-A brief overview of all packages may be found [here](https://pkg.go.dev/mod/github.com/sandertv/gophertunnel?tab=packages).
+A brief overview of all packages may be found [here](https://pkg.go.dev/mod/github.com/Yeah114/gophertunnel?tab=packages).
 
 ## Examples
-Examples on how to dial a connection or start a server can be found in the [minecraft package](https://github.com/Sandertv/gophertunnel/tree/master/minecraft).
-Additionally, a MITM proxy is implemented in the [main.go file](https://github.com/Sandertv/gophertunnel/blob/master/main.go).
+Examples on how to dial a connection or start a server can be found in the [minecraft package](https://github.com/Yeah114/gophertunnel/tree/master/minecraft).
+Additionally, a MITM proxy is implemented in the [main.go file](https://github.com/Yeah114/gophertunnel/blob/master/main.go).
 
 ## Versions
 Gophertunnel supports only one version at a time (generally the latest official Minecraft release), but multiple protocols can be supported with the API. Generally, a new

@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Yeah114/gophertunnel/minecraft/auth"
 	"github.com/df-mc/go-playfab"
 	"github.com/df-mc/go-playfab/title"
 	"github.com/df-mc/go-xsapi"
-	"github.com/sandertv/gophertunnel/minecraft/auth"
 	"golang.org/x/oauth2"
 )
 

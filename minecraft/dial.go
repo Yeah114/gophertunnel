@@ -21,15 +21,15 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Yeah114/gophertunnel/minecraft/auth"
+	"github.com/Yeah114/gophertunnel/minecraft/internal"
+	"github.com/Yeah114/gophertunnel/minecraft/protocol"
+	"github.com/Yeah114/gophertunnel/minecraft/protocol/login"
+	"github.com/Yeah114/gophertunnel/minecraft/protocol/packet"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-jose/go-jose/v4"
 	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/google/uuid"
-	"github.com/sandertv/gophertunnel/minecraft/auth"
-	"github.com/sandertv/gophertunnel/minecraft/internal"
-	"github.com/sandertv/gophertunnel/minecraft/protocol"
-	"github.com/sandertv/gophertunnel/minecraft/protocol/login"
-	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 	"golang.org/x/oauth2"
 )
 

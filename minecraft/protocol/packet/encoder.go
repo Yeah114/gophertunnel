@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/sandertv/gophertunnel/minecraft/internal"
+	"github.com/Yeah114/gophertunnel/minecraft/internal"
 )
 
 // Encoder handles the encoding of Minecraft packets that are sent to an io.Writer. The packets are compressed

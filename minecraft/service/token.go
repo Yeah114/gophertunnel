@@ -15,10 +15,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Yeah114/gophertunnel/minecraft/protocol"
+	"github.com/Yeah114/gophertunnel/minecraft/service/internal"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/google/uuid"
-	"github.com/sandertv/gophertunnel/minecraft/protocol"
-	"github.com/sandertv/gophertunnel/minecraft/service/internal"
 	"golang.org/x/text/language"
 )
 

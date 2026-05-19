@@ -1,7 +1,7 @@
 package packet
 
 import (
-	"github.com/sandertv/gophertunnel/minecraft/protocol"
+	"github.com/Yeah114/gophertunnel/minecraft/protocol"
 )
 
 // ServerToClientHandshake is sent by the server to the client to complete the key exchange in order to
