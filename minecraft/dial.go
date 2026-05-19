@@ -18,7 +18,6 @@ import (
 	"net"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/Yeah114/gophertunnel/minecraft/auth"
@@ -299,7 +298,13 @@ func (d Dialer) DialContext(ctx context.Context, network, address string) (conn 
 	var pong []byte
 	var netConn net.Conn
 	if pong, err = n.PingContext(ctx, address); err == nil {
-		netConn, err = n.DialContext(ctx, addressWithPongPort(pong, address))
+		pongData := ParsePongFullData(pong)
+		if d.AutoProtocol {
+			if detected, ok := bedrockProtocolPool[pongData.Protocol]; ok {
+				d.Protocol = detected
+			}
+		}
+		netConn, err = n.DialContext(ctx, addressWithPongPort(pongData, address))
 	} else {
 		netConn, err = n.DialContext(ctx, address)
 	}
@@ -319,7 +324,11 @@ func (d Dialer) DialContext(ctx context.Context, network, address string) (conn 
 	conn.maxDecompressedLen = math.MaxInt
 
 	defaultIdentityData(&conn.identityData)
+	customGameVersion := conn.clientData.GameVersion != ""
 	defaultClientData(address, conn.identityData.DisplayName, &conn.clientData)
+	if !customGameVersion {
+		conn.clientData.GameVersion = conn.proto.Ver()
+	}
 
 	var request []byte
 	if d.TokenSource == nil && (d.XBLToken == nil || !d.XBLToken.Valid()) {
@@ -595,20 +604,15 @@ func splitPong(s string) []string {
 
 // addressWithPongPort parses the redirect IPv4 port from the pong and returns the address passed with the port
 // found if present, or the original address if not.
-func addressWithPongPort(pong []byte, address string) string {
-	frag := splitPong(string(pong))
-	if len(frag) > 10 {
-		portStr := frag[10]
-		port, err := strconv.Atoi(portStr)
-		// Vanilla (realms, in particular) will sometimes send port 19132 when you ping a port that isn't 19132 already,
-		// but we should ignore that.
-		if err != nil || port == 19132 {
-			return address
-		}
-		// Remove the port from the address.
-		addressParts := strings.Split(address, ":")
-		address = strings.Join(strings.Split(address, ":")[:len(addressParts)-1], ":")
-		return address + ":" + portStr
+func addressWithPongPort(data PongData, address string) string {
+	// Vanilla (realms, in particular) will sometimes send port 19132 when you ping a port that isn't 19132 already,
+	// but we should ignore that.
+	if data.IPv4Port == 0 || data.IPv4Port == 19132 {
+		return address
 	}
-	return address
+	host, _, err := net.SplitHostPort(address)
+	if err != nil {
+		return address
+	}
+	return net.JoinHostPort(host, strconv.Itoa(data.IPv4Port))
 }
