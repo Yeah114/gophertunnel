@@ -144,6 +144,15 @@ func DialWithProtocol(network, address string, protocol Protocol) (*Conn, error)
 	return d.Dial(network, address)
 }
 
+// DialWithAutoProtocol dials a Minecraft connection to the address passed over the network passed, automatically detecting the protocol version of the server. The network is typically "raknet". A Conn is returned which may be used to receive packets from and send packets to. If the protocol version of the server cannot be detected, a connection is attempted using the Protocol field of the Dialer as a fallback.
+//
+// A zero value of a Dialer struct is used to initiate the connection, except that the AutoProtocol field is set to true. A custom Dialer may be used to specify additional behaviour.
+func DialWithAutoProtocol(network, address string) (*Conn, error) {
+	var d Dialer
+	d.AutoProtocol = true
+	return d.Dial(network, address)
+}
+
 // DialTimeout dials a Minecraft connection to the address passed over the network passed. The network is
 // typically "raknet". A Conn is returned which may be used to receive packets from and send packets to.
 // If a connection is not established before the timeout ends, DialTimeout returns an error.
@@ -164,6 +173,15 @@ func DialTimeoutWithProtocol(network, address string, timeout time.Duration, pro
 	return d.DialTimeout(network, address, timeout)
 }
 
+// DialTimeoutWithAutoProtocol dials a Minecraft connection to the address passed over the network passed, automatically detecting the protocol version of the server. The network is typically "raknet". A Conn is returned which may be used to receive packets from and send packets to. If the protocol version of the server cannot be detected, a connection is attempted using the Protocol field of the Dialer as a fallback. If a connection is not established before the timeout ends, DialTimeoutWithAutoProtocol returns an error.
+//
+// A zero value of a Dialer struct is used to initiate the connection, except that the AutoProtocol field is set to true. A custom Dialer may be used to specify additional behaviour.
+func DialTimeoutWithAutoProtocol(network, address string, timeout time.Duration) (*Conn, error) {
+	var d Dialer
+	d.AutoProtocol = true
+	return d.DialTimeout(network, address, timeout)
+}
+
 // DialContext dials a Minecraft connection to the address passed over the network passed. The network is
 // typically "raknet". A Conn is returned which may be used to receive packets from and send packets to.
 // If a connection is not established before the context passed is cancelled, DialContext returns an error.
@@ -180,6 +198,15 @@ func DialContext(ctx context.Context, network, address string) (*Conn, error) {
 func DialContextWithProtocol(ctx context.Context, network, address string, protocol Protocol) (*Conn, error) {
 	var d Dialer
 	d.Protocol = protocol
+	return d.DialContext(ctx, network, address)
+}
+
+// DialContextWithAutoProtocol dials a Minecraft connection to the address passed over the network passed, automatically detecting the protocol version of the server. The network is typically "raknet". A Conn is returned which may be used to receive packets from and send packets to. If the protocol version of the server cannot be detected, a connection is attempted using the Protocol field of the Dialer as a fallback. If a connection is not established before the context passed is cancelled, DialContextWithAutoProtocol returns an error.
+//
+// A zero value of a Dialer struct is used to initiate the connection, except that the AutoProtocol field is set to true. A custom Dialer may be used to specify additional behaviour.
+func DialContextWithAutoProtocol(ctx context.Context, network, address string) (*Conn, error) {
+	var d Dialer
+	d.AutoProtocol = true
 	return d.DialContext(ctx, network, address)
 }
 
