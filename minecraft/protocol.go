@@ -50,6 +50,47 @@ type ByteWriter interface {
 	io.ByteWriter
 }
 
+// Proto is a Protocol implementation that uses a protocol.Info to determine the Minecraft version and packet pool to use, and does not convert any packets, as they are already of the right type.
+type Proto struct {
+	protocol.Info
+}
+
+// NewProto creates a new Protocol with the given protocol.Info. The returned Protocol will use the Minecraft version and packet pool registered for the given protocol.Info, and will not convert any packets, as they are already of the right type.
+func NewProto(info protocol.Info) Proto {
+	return Proto{Info: info}
+}
+
+// Packets returns a packet.Pool with all packets registered for this Protocol. It is used to lookup packets by a packet ID. If listener is set to true, the pool should be created for a Listener. This means that only packets that may be sent by a client should be allowed.
+func (p Proto) Packets(listener bool) packet.Pool {
+	return packet.NewPool()
+}
+
+// NewReader returns a protocol.IO that implements reading operations for reading types
+func (p Proto) NewReader(r ByteReader, shieldID int32, enableLimits bool) protocol.IO {
+	return protocol.NewReaderWithProtocol(r, shieldID, enableLimits, p.ID())
+}
+
+// NewWriter returns a protocol.IO that implements writing operations for writing types
+func (p Proto) NewWriter(w ByteWriter, shieldID int32) protocol.IO {
+	return protocol.NewWriterWithProtocol(w, shieldID, p.ID())
+}
+
+// ConvertToLatest converts a packet.Packet obtained from the other end of a Conn to a slice of packet.Packets from
+// the latest protocol. Any packet.Packet implementation in the packet.Pool obtained through a call to Packets that
+// is not identical to the most recent version of that packet.Packet must be converted to the most recent version of
+// that packet adequately in this function. ConvertToLatest returns pk if the packet.Packet was unchanged in this
+// version compared to the latest. Note that packets must also be converted if only their ID changes.
+func (p Proto) ConvertToLatest(pk packet.Packet, conn *Conn) []packet.Packet {
+	return []packet.Packet{pk}
+}
+
+// ConvertFromLatest converts a packet.Packet of the most recent Protocol to a slice of packet.Packets of this specific Protocol. ConvertFromLatest must be synonymous to ConvertToLatest, in that it should convert any
+// packet.Packet to the correct one from the packet.Pool returned through a call to Packets if its payload or ID was
+// changed in this Protocol compared to the latest one.
+func (p Proto) ConvertFromLatest(pk packet.Packet, conn *Conn) []packet.Packet {
+	return []packet.Packet{pk}
+}
+
 // proto is the default Protocol implementation. It returns the current protocol, version and packet pool and does not
 // convert any packets, as they are already of the right type.
 type proto struct{}
