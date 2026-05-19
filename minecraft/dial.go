@@ -93,6 +93,10 @@ type Dialer struct {
 	// are converted from and to this Protocol.
 	Protocol Protocol
 
+	// AutoProtocol, if set to true, automatically detects the protocol version of the server and uses it for the connection.
+	// If AutoProtocol is set to true, the Protocol field is ignored and the protocol version is automatically detected by pinging the server and using the protocol version found in the pong response. If the pong response does not contain a protocol version, the Protocol field is used as a fallback. Note that AutoProtocol should not be used if you need to use a specific Protocol, as it may cause unexpected behaviour.
+	AutoProtocol bool
+
 	// FlushRate is the rate at which packets sent are flushed. Packets are buffered for a duration up to
 	// FlushRate and are compressed/encrypted together to improve compression ratios. The lower this
 	// time.Duration, the lower the latency but the less efficient both network and cpu wise.
@@ -128,6 +132,18 @@ func Dial(network, address string) (*Conn, error) {
 	return d.Dial(network, address)
 }
 
+// DialWithProtocol dials a Minecraft connection to the address passed over the network passed using
+// the Protocol passed. The network is typically "raknet". A Conn is returned which may be used to
+// receive packets from and send packets to.
+//
+// A zero value of a Dialer struct is used to initiate the connection, except that the Protocol field is set to
+// the Protocol passed. A custom Dialer may be used to specify additional behaviour.
+func DialWithProtocol(network, address string, protocol Protocol) (*Conn, error) {
+	var d Dialer
+	d.Protocol = protocol
+	return d.Dial(network, address)
+}
+
 // DialTimeout dials a Minecraft connection to the address passed over the network passed. The network is
 // typically "raknet". A Conn is returned which may be used to receive packets from and send packets to.
 // If a connection is not established before the timeout ends, DialTimeout returns an error.
@@ -137,12 +153,33 @@ func DialTimeout(network, address string, timeout time.Duration) (*Conn, error) 
 	return d.DialTimeout(network, address, timeout)
 }
 
+// DialTimeoutWithProtocol dials a Minecraft connection to the address passed over the network passed using
+// the Protocol passed. The network is typically "raknet". A Conn is returned which may be used to
+// receive packets from and send packets to. If a connection is not established before the timeout ends,
+// DialTimeoutWithProtocol returns an error. DialTimeoutWithProtocol uses a zero value of Dialer to initiate the connection,
+// except that the Protocol field is set to the Protocol passed. A custom Dialer may be used to specify additional behaviour.
+func DialTimeoutWithProtocol(network, address string, timeout time.Duration, protocol Protocol) (*Conn, error) {
+	var d Dialer
+	d.Protocol = protocol
+	return d.DialTimeout(network, address, timeout)
+}
+
 // DialContext dials a Minecraft connection to the address passed over the network passed. The network is
 // typically "raknet". A Conn is returned which may be used to receive packets from and send packets to.
 // If a connection is not established before the context passed is cancelled, DialContext returns an error.
 // DialContext uses a zero value of Dialer to initiate the connection.
 func DialContext(ctx context.Context, network, address string) (*Conn, error) {
 	var d Dialer
+	return d.DialContext(ctx, network, address)
+}
+
+// DialContextWithProtocol dials a Minecraft connection to the address passed over the network passed using
+// the Protocol passed. The network is typically "raknet". A Conn is returned which may be used to
+// receive packets from and send packets to. If a connection is not established before the context passed is cancelled, DialContextWithProtocol returns an error.
+// DialContextWithProtocol uses a zero value of Dialer to initiate the connection, except that the Protocol field is set to the Protocol passed. A custom Dialer may be used to specify additional behaviour.
+func DialContextWithProtocol(ctx context.Context, network, address string, protocol Protocol) (*Conn, error) {
+	var d Dialer
+	d.Protocol = protocol
 	return d.DialContext(ctx, network, address)
 }
 
