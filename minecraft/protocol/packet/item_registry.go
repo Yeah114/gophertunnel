@@ -1,8 +1,8 @@
 package packet
 
 import (
-	"github.com/sandertv/gophertunnel/minecraft/nbt"
-	"github.com/sandertv/gophertunnel/minecraft/protocol"
+	"github.com/Yeah114/gophertunnel/minecraft/nbt"
+	"github.com/Yeah114/gophertunnel/minecraft/protocol"
 )
 
 // ItemRegistry is sent by the server to send the client a list of available items and attach client-side

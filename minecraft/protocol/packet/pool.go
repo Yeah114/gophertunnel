@@ -5,6 +5,7 @@ package packet
 // the packet returned by the function passed. noinspection
 func RegisterPacketFromClient(id uint32, pk func() Packet) {
 	packetsFromClient[id] = pk
+	RegisterPacket(id, pk)
 }
 
 // RegisterPacketFromServer registers a function that returns a packet for a
@@ -12,6 +13,14 @@ func RegisterPacketFromClient(id uint32, pk func() Packet) {
 // the packet returned by the function passed. noinspection
 func RegisterPacketFromServer(id uint32, pk func() Packet) {
 	packetsFromServer[id] = pk
+	RegisterPacket(id, pk)
+}
+
+// RegisterPacket registers a function that returns a packet for a specific ID.
+// Packets with this ID coming in from connections will resolve to the packet
+// returned by the function passed. noinspection
+func RegisterPacket(id uint32, pk func() Packet) {
+	packets[id] = pk
 }
 
 // packetsFromClient holds packets that could be sent by the client.
@@ -19,6 +28,9 @@ var packetsFromClient = map[uint32]func() Packet{}
 
 // packetsFromServer holds packets that could be sent by the server.
 var packetsFromServer = map[uint32]func() Packet{}
+
+// packets holds all packets.
+var packets = map[uint32]func() Packet{}
 
 // Pool is a map holding packets indexed by a packet ID.
 type Pool map[uint32]func() Packet
@@ -38,6 +50,14 @@ func NewClientPool() Pool {
 func NewServerPool() Pool {
 	p := Pool{}
 	for id, pk := range packetsFromServer {
+		p[id] = pk
+	}
+	return p
+}
+
+func NewPool() Pool {
+	p := Pool{}
+	for id, pk := range packets {
 		p[id] = pk
 	}
 	return p

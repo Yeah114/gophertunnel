@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
+
+	"github.com/Yeah114/gophertunnel/minecraft/protocol/packet"
 )
 
 // packetData holds the data of a Minecraft packet.

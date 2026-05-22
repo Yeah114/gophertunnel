@@ -1,8 +1,8 @@
 package packet
 
 import (
+	"github.com/Yeah114/gophertunnel/minecraft/protocol"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/sandertv/gophertunnel/minecraft/protocol"
 )
 
 // ServerPostMovePosition is sent by the server to update the client's post-move position.

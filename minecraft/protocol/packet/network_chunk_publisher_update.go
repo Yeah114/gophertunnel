@@ -1,7 +1,7 @@
 package packet
 
 import (
-	"github.com/sandertv/gophertunnel/minecraft/protocol"
+	"github.com/Yeah114/gophertunnel/minecraft/protocol"
 )
 
 // NetworkChunkPublisherUpdate is sent by the server to change the point around which chunks are and remain

@@ -1,8 +1,8 @@
 package packet
 
 import (
+	"github.com/Yeah114/gophertunnel/minecraft/protocol"
 	"github.com/google/uuid"
-	"github.com/sandertv/gophertunnel/minecraft/protocol"
 )
 
 // ResourcePacksInfo is sent by the server to inform the client on what resource packs the server has. It

@@ -1,6 +1,6 @@
 package packet
 
-import "github.com/sandertv/gophertunnel/minecraft/protocol"
+import "github.com/Yeah114/gophertunnel/minecraft/protocol"
 
 // EducationResourceURI is a packet that transmits education resource settings to all clients.
 //

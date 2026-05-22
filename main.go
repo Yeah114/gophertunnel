@@ -6,9 +6,9 @@ import (
 	"os"
 	"sync"
 
+	"github.com/Yeah114/gophertunnel/minecraft"
+	"github.com/Yeah114/gophertunnel/minecraft/auth"
 	"github.com/pelletier/go-toml"
-	"github.com/sandertv/gophertunnel/minecraft"
-	"github.com/sandertv/gophertunnel/minecraft/auth"
 	"golang.org/x/oauth2"
 )
 

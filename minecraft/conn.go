@@ -18,16 +18,16 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/Yeah114/gophertunnel/minecraft/internal"
+	"github.com/Yeah114/gophertunnel/minecraft/protocol"
+	"github.com/Yeah114/gophertunnel/minecraft/protocol/login"
+	"github.com/Yeah114/gophertunnel/minecraft/protocol/packet"
+	"github.com/Yeah114/gophertunnel/minecraft/resource"
+	"github.com/Yeah114/gophertunnel/minecraft/text"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-jose/go-jose/v4"
 	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/google/uuid"
-	"github.com/sandertv/gophertunnel/minecraft/internal"
-	"github.com/sandertv/gophertunnel/minecraft/protocol"
-	"github.com/sandertv/gophertunnel/minecraft/protocol/login"
-	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
-	"github.com/sandertv/gophertunnel/minecraft/resource"
-	"github.com/sandertv/gophertunnel/minecraft/text"
 )
 
 // exemptedResourcePack is a resource pack that is exempted from being downloaded. These packs may be directly
@@ -558,7 +558,7 @@ func (conn *Conn) SetDeadline(t time.Time) error {
 // Passing an empty time.Time to the method (time.Time{}) results in the read deadline being cleared.
 func (conn *Conn) SetReadDeadline(t time.Time) error {
 	empty := time.Time{}
-	if t == empty {
+	if t.Equal(empty) {
 		conn.readDeadline = make(chan time.Time)
 	} else if t.Before(time.Now()) {
 		panic(fmt.Errorf("error setting read deadline: time passed is before time.Now()"))
@@ -1346,7 +1346,7 @@ func (conn *Conn) handleRequestChunkRadius(pk *packet.RequestChunkRadius) error 
 	conn.gameData.ChunkRadius = pk.ChunkRadius
 	// Clients pre-1.21.80 crash when not sending all biomes, due to achievements assuming all biomes are present.
 	// To maintain backwards compatibility, we send empty biomes so the protocol can handle legacy biome data
-	// for older clients (see: https://github.com/Sandertv/gophertunnel/blob/a61732e9cb7bc04e5e7dd961ad4fea597f1229dc/minecraft/conn.go#L1274-L1278).
+	// for older clients (see: https://github.com/Yeah114/gophertunnel/blob/a61732e9cb7bc04e5e7dd961ad4fea597f1229dc/minecraft/conn.go#L1274-L1278).
 	_ = conn.WritePacket(&packet.BiomeDefinitionList{})
 	_ = conn.WritePacket(&packet.PlayStatus{Status: packet.PlayStatusPlayerSpawn})
 	_ = conn.WritePacket(&packet.CreativeContent{})

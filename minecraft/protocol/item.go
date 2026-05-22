@@ -1,6 +1,6 @@
 package protocol
 
-import "github.com/sandertv/gophertunnel/minecraft/nbt"
+import "github.com/Yeah114/gophertunnel/minecraft/nbt"
 
 const (
 	ItemEntryVersionLegacy = iota

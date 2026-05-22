@@ -1,9 +1,9 @@
 package packet
 
 import (
+	"github.com/Yeah114/gophertunnel/minecraft/protocol"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/google/uuid"
-	"github.com/sandertv/gophertunnel/minecraft/protocol"
 )
 
 // AddPlayer is sent by the server to the client to make a player entity show up client-side. It is one of the

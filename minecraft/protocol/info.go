@@ -13,8 +13,13 @@ func NewInfo(protocol int32, version string) Info {
 	return info
 }
 
-// Version returns the Minecraft version string registered for the protocol version.
-func (i Info) Version() string {
+// ID returns the protocol version as an int32.
+func (i Info) ID() int32 {
+	return int32(i)
+}
+
+// Ver returns the Minecraft version string registered for the protocol version.
+func (i Info) Ver() string {
 	if name, ok := Pool[i]; ok {
 		return name
 	}
@@ -22,6 +27,8 @@ func (i Info) Version() string {
 }
 
 // Current Protocol and Version
+var CurrentInfo = NewInfo(CurrentProtocol, CurrentVersion)
+
 const (
 	// CurrentProtocol is the current protocol version for the version below.
 	CurrentProtocol = Protocol1v26v20

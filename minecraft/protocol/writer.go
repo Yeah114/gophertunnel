@@ -10,10 +10,10 @@ import (
 	"sort"
 	"unsafe"
 
+	"github.com/Yeah114/gophertunnel/minecraft/internal"
+	"github.com/Yeah114/gophertunnel/minecraft/nbt"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/google/uuid"
-	"github.com/sandertv/gophertunnel/minecraft/internal"
-	"github.com/sandertv/gophertunnel/minecraft/nbt"
 )
 
 // Writer implements writing methods for data types from Minecraft packets. Each Packet implementation has one

@@ -1,7 +1,7 @@
 package packet
 
 import (
-	"github.com/sandertv/gophertunnel/minecraft/protocol"
+	"github.com/Yeah114/gophertunnel/minecraft/protocol"
 )
 
 const (
@@ -50,9 +50,10 @@ func (pk *PlayerUpdateEntityOverrides) Marshal(io protocol.IO) {
 	io.Varint64(&pk.EntityUniqueID)
 	io.Varuint32(&pk.PropertyIndex)
 	io.Uint8(&pk.Type)
-	if pk.Type == PlayerUpdateEntityOverridesTypeInt {
+	switch pk.Type {
+	case PlayerUpdateEntityOverridesTypeInt:
 		io.Int32(&pk.IntValue)
-	} else if pk.Type == PlayerUpdateEntityOverridesTypeFloat {
+	case PlayerUpdateEntityOverridesTypeFloat:
 		io.Float32(&pk.FloatValue)
 	}
 }

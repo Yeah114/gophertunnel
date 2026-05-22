@@ -18,18 +18,17 @@ import (
 	"net"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
+	"github.com/Yeah114/gophertunnel/minecraft/auth"
+	"github.com/Yeah114/gophertunnel/minecraft/internal"
+	"github.com/Yeah114/gophertunnel/minecraft/protocol"
+	"github.com/Yeah114/gophertunnel/minecraft/protocol/login"
+	"github.com/Yeah114/gophertunnel/minecraft/protocol/packet"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-jose/go-jose/v4"
 	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/google/uuid"
-	"github.com/sandertv/gophertunnel/minecraft/auth"
-	"github.com/sandertv/gophertunnel/minecraft/internal"
-	"github.com/sandertv/gophertunnel/minecraft/protocol"
-	"github.com/sandertv/gophertunnel/minecraft/protocol/login"
-	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 	"golang.org/x/oauth2"
 )
 
@@ -93,6 +92,10 @@ type Dialer struct {
 	// are converted from and to this Protocol.
 	Protocol Protocol
 
+	// AutoProtocol, if set to true, automatically detects the protocol version of the server and uses it for the connection.
+	// If AutoProtocol is set to true, the Protocol field is ignored and the protocol version is automatically detected by pinging the server and using the protocol version found in the pong response. If the pong response does not contain a protocol version, the Protocol field is used as a fallback. Note that AutoProtocol should not be used if you need to use a specific Protocol, as it may cause unexpected behaviour.
+	AutoProtocol bool
+
 	// FlushRate is the rate at which packets sent are flushed. Packets are buffered for a duration up to
 	// FlushRate and are compressed/encrypted together to improve compression ratios. The lower this
 	// time.Duration, the lower the latency but the less efficient both network and cpu wise.
@@ -128,6 +131,27 @@ func Dial(network, address string) (*Conn, error) {
 	return d.Dial(network, address)
 }
 
+// DialWithProtocol dials a Minecraft connection to the address passed over the network passed using
+// the Protocol passed. The network is typically "raknet". A Conn is returned which may be used to
+// receive packets from and send packets to.
+//
+// A zero value of a Dialer struct is used to initiate the connection, except that the Protocol field is set to
+// the Protocol passed. A custom Dialer may be used to specify additional behaviour.
+func DialWithProtocol(network, address string, protocol Protocol) (*Conn, error) {
+	var d Dialer
+	d.Protocol = protocol
+	return d.Dial(network, address)
+}
+
+// DialWithAutoProtocol dials a Minecraft connection to the address passed over the network passed, automatically detecting the protocol version of the server. The network is typically "raknet". A Conn is returned which may be used to receive packets from and send packets to. If the protocol version of the server cannot be detected, a connection is attempted using the Protocol field of the Dialer as a fallback.
+//
+// A zero value of a Dialer struct is used to initiate the connection, except that the AutoProtocol field is set to true. A custom Dialer may be used to specify additional behaviour.
+func DialWithAutoProtocol(network, address string) (*Conn, error) {
+	var d Dialer
+	d.AutoProtocol = true
+	return d.Dial(network, address)
+}
+
 // DialTimeout dials a Minecraft connection to the address passed over the network passed. The network is
 // typically "raknet". A Conn is returned which may be used to receive packets from and send packets to.
 // If a connection is not established before the timeout ends, DialTimeout returns an error.
@@ -137,12 +161,51 @@ func DialTimeout(network, address string, timeout time.Duration) (*Conn, error) 
 	return d.DialTimeout(network, address, timeout)
 }
 
+// DialTimeoutWithProtocol dials a Minecraft connection to the address passed over the network passed using
+// the Protocol passed. The network is typically "raknet". A Conn is returned which may be used to
+// receive packets from and send packets to. If a connection is not established before the timeout ends,
+// DialTimeoutWithProtocol returns an error. DialTimeoutWithProtocol uses a zero value of Dialer to initiate the connection,
+// except that the Protocol field is set to the Protocol passed. A custom Dialer may be used to specify additional behaviour.
+func DialTimeoutWithProtocol(network, address string, timeout time.Duration, protocol Protocol) (*Conn, error) {
+	var d Dialer
+	d.Protocol = protocol
+	return d.DialTimeout(network, address, timeout)
+}
+
+// DialTimeoutWithAutoProtocol dials a Minecraft connection to the address passed over the network passed, automatically detecting the protocol version of the server. The network is typically "raknet". A Conn is returned which may be used to receive packets from and send packets to. If the protocol version of the server cannot be detected, a connection is attempted using the Protocol field of the Dialer as a fallback. If a connection is not established before the timeout ends, DialTimeoutWithAutoProtocol returns an error.
+//
+// A zero value of a Dialer struct is used to initiate the connection, except that the AutoProtocol field is set to true. A custom Dialer may be used to specify additional behaviour.
+func DialTimeoutWithAutoProtocol(network, address string, timeout time.Duration) (*Conn, error) {
+	var d Dialer
+	d.AutoProtocol = true
+	return d.DialTimeout(network, address, timeout)
+}
+
 // DialContext dials a Minecraft connection to the address passed over the network passed. The network is
 // typically "raknet". A Conn is returned which may be used to receive packets from and send packets to.
 // If a connection is not established before the context passed is cancelled, DialContext returns an error.
 // DialContext uses a zero value of Dialer to initiate the connection.
 func DialContext(ctx context.Context, network, address string) (*Conn, error) {
 	var d Dialer
+	return d.DialContext(ctx, network, address)
+}
+
+// DialContextWithProtocol dials a Minecraft connection to the address passed over the network passed using
+// the Protocol passed. The network is typically "raknet". A Conn is returned which may be used to
+// receive packets from and send packets to. If a connection is not established before the context passed is cancelled, DialContextWithProtocol returns an error.
+// DialContextWithProtocol uses a zero value of Dialer to initiate the connection, except that the Protocol field is set to the Protocol passed. A custom Dialer may be used to specify additional behaviour.
+func DialContextWithProtocol(ctx context.Context, network, address string, protocol Protocol) (*Conn, error) {
+	var d Dialer
+	d.Protocol = protocol
+	return d.DialContext(ctx, network, address)
+}
+
+// DialContextWithAutoProtocol dials a Minecraft connection to the address passed over the network passed, automatically detecting the protocol version of the server. The network is typically "raknet". A Conn is returned which may be used to receive packets from and send packets to. If the protocol version of the server cannot be detected, a connection is attempted using the Protocol field of the Dialer as a fallback. If a connection is not established before the context passed is cancelled, DialContextWithAutoProtocol returns an error.
+//
+// A zero value of a Dialer struct is used to initiate the connection, except that the AutoProtocol field is set to true. A custom Dialer may be used to specify additional behaviour.
+func DialContextWithAutoProtocol(ctx context.Context, network, address string) (*Conn, error) {
+	var d Dialer
+	d.AutoProtocol = true
 	return d.DialContext(ctx, network, address)
 }
 
@@ -235,7 +298,13 @@ func (d Dialer) DialContext(ctx context.Context, network, address string) (conn 
 	var pong []byte
 	var netConn net.Conn
 	if pong, err = n.PingContext(ctx, address); err == nil {
-		netConn, err = n.DialContext(ctx, addressWithPongPort(pong, address))
+		pongData := ParsePongFullData(pong)
+		if d.AutoProtocol {
+			if detected, ok := bedrockProtocolPool[pongData.Protocol]; ok {
+				d.Protocol = detected
+			}
+		}
+		netConn, err = n.DialContext(ctx, addressWithPongPort(pongData, address))
 	} else {
 		netConn, err = n.DialContext(ctx, address)
 	}
@@ -255,7 +324,11 @@ func (d Dialer) DialContext(ctx context.Context, network, address string) (conn 
 	conn.maxDecompressedLen = math.MaxInt
 
 	defaultIdentityData(&conn.identityData)
+	customGameVersion := conn.clientData.GameVersion != ""
 	defaultClientData(address, conn.identityData.DisplayName, &conn.clientData)
+	if !customGameVersion {
+		conn.clientData.GameVersion = conn.proto.Ver()
+	}
 
 	var request []byte
 	if d.TokenSource == nil && (d.XBLToken == nil || !d.XBLToken.Valid()) {
@@ -531,20 +604,15 @@ func splitPong(s string) []string {
 
 // addressWithPongPort parses the redirect IPv4 port from the pong and returns the address passed with the port
 // found if present, or the original address if not.
-func addressWithPongPort(pong []byte, address string) string {
-	frag := splitPong(string(pong))
-	if len(frag) > 10 {
-		portStr := frag[10]
-		port, err := strconv.Atoi(portStr)
-		// Vanilla (realms, in particular) will sometimes send port 19132 when you ping a port that isn't 19132 already,
-		// but we should ignore that.
-		if err != nil || port == 19132 {
-			return address
-		}
-		// Remove the port from the address.
-		addressParts := strings.Split(address, ":")
-		address = strings.Join(strings.Split(address, ":")[:len(addressParts)-1], ":")
-		return address + ":" + portStr
+func addressWithPongPort(data PongData, address string) string {
+	// Vanilla (realms, in particular) will sometimes send port 19132 when you ping a port that isn't 19132 already,
+	// but we should ignore that.
+	if data.IPv4Port == 0 || data.IPv4Port == 19132 {
+		return address
 	}
-	return address
+	host, _, err := net.SplitHostPort(address)
+	if err != nil {
+		return address
+	}
+	return net.JoinHostPort(host, strconv.Itoa(data.IPv4Port))
 }
