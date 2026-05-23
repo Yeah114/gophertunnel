@@ -178,10 +178,13 @@ type PlayerMovementSettings struct {
 
 // PlayerMoveSettings reads/writes PlayerMovementSettings x to/from IO r.
 func PlayerMoveSettings(r IO, x *PlayerMovementSettings) {
-	if r.Protocol() >= Protocol1v16v210 {
+	if r.Protocol() >= Protocol1v26v20v26 {
 		movementType := uint32(x.MovementType)
 		r.Varuint32(&movementType)
 		x.MovementType = int32(movementType)
+		r.Varint32(&x.RewindHistorySize)
+		r.Bool(&x.ServerAuthoritativeBlockBreaking)
+	} else if r.Protocol() >= Protocol1v16v210 {
 		r.Varint32(&x.RewindHistorySize)
 		r.Bool(&x.ServerAuthoritativeBlockBreaking)
 	} else if r.Protocol() >= Protocol1v16v100 {

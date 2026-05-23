@@ -369,6 +369,11 @@ type StartGame struct {
 	//
 	// Added: v1.16.100
 	Blocks []protocol.BlockEntry
+	// Items is a list of all item entries registered on the server. Before v1.21.60, this list is encoded in
+	// StartGame. Newer versions send these definitions through ItemRegistry instead.
+	//
+	// Added: v1.12.0, Removed: v1.21.60
+	Items []protocol.ItemEntry
 	// MultiPlayerCorrelationID is a unique ID specifying the multi-player session of the player. A random
 	// UUID should be filled out for this field.
 	//
@@ -612,6 +617,9 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Varint32(&pk.EnchantmentSeed)
 	if io.Protocol() >= protocol.Protocol1v16v100 {
 		protocol.Slice(io, &pk.Blocks)
+	}
+	if io.Protocol() >= protocol.Protocol1v12v0 && io.Protocol() < protocol.Protocol1v21v60 {
+		protocol.Slice(io, &pk.Items)
 	}
 	if io.Protocol() > protocol.Protocol1v5v0 {
 		io.String(&pk.MultiPlayerCorrelationID)

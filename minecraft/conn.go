@@ -1089,6 +1089,7 @@ func (conn *Conn) startGame() {
 		GameRules:                    data.GameRules,
 		Time:                         data.Time,
 		Blocks:                       data.CustomBlocks,
+		Items:                        data.Items,
 		AchievementsDisabled:         true,
 		Generator:                    1,
 		EducationFeaturesEnabled:     true,
@@ -1311,6 +1312,7 @@ func (conn *Conn) handleStartGame(pk *packet.StartGame) error {
 		UseBlockNetworkIDHashes:      pk.UseBlockNetworkIDHashes,
 		PropertyData:                 pk.PropertyData,
 		Dimensions:                   conn.gameData.Dimensions,
+		Items:                        pk.Items,
 	}
 	conn.expect(packet.IDItemRegistry)
 	return nil
