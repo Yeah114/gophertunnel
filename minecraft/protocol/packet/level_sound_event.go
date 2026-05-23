@@ -608,6 +608,7 @@ const (
 	SoundEventResetGrowth
 	SoundEventPushedByPlayer
 	SoundEventBounce
+	SoundEventUndefined
 )
 
 const (

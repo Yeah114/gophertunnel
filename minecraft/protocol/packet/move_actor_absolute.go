@@ -8,7 +8,7 @@ import (
 const (
 	MoveFlagOnGround = 1 << iota
 	MoveFlagTeleport
-	MoveFlagForceMoveLocalActor
+	MoveFlagForceMove
 	MoveFlagForceCompletion
 )
 

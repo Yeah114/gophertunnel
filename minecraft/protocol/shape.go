@@ -218,7 +218,7 @@ type PrimitiveShape struct {
 	//
 	// Added: v1.26.20
 	DimensionID Optional[int32]
-	// AttachedToEntityID is the optional runtime ID of the entity the shape is attached to.
+	// AttachedToEntityID is the optional unique ID of the entity the shape is attached to.
 	//
 	// Added: v1.26.20
 	AttachedToEntityID Optional[int64]
