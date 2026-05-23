@@ -610,7 +610,7 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.String(&pk.WorldName)
 	io.String(&pk.TemplateContentIdentity)
 	io.Bool(&pk.Trial)
-	if io.Protocol() >= protocol.Protocol1v16v0 {
+	if io.Protocol() >= protocol.Protocol1v13v0 {
 		protocol.PlayerMoveSettings(io, &pk.PlayerMovementSettings)
 	}
 	io.Int64(&pk.Time)

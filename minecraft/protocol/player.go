@@ -157,12 +157,14 @@ func PlayerListRemoveEntry(r IO, x *PlayerListEntry) {
 // PlayerMovementSettings represents the different server authoritative movement settings. These control how
 // the client will provide input to the server.
 //
-// Added: v1.16
+// Added: v1.13.0
 type PlayerMovementSettings struct {
 	// MovementType specifies the way the server handles player movement. Available options are
 	// PlayerMovementModeClient, PlayerMovementModeServer and PlayerMovementModeServerWithRewind.
 	//
-	// Added: v1.16.0, Changed: v1.16.100, encoded as a movement mode instead of a legacy bool.
+	// Added: v1.13.0,
+	// Changed: v1.16.100, encoded as a movement mode instead of a legacy bool,
+	// Removed: v1.21.90.
 	MovementType int32
 	// RewindHistorySize is the amount of history to keep at maximum if MovementType is
 	// PlayerMovementModeServerWithRewind.
@@ -178,17 +180,16 @@ type PlayerMovementSettings struct {
 
 // PlayerMoveSettings reads/writes PlayerMovementSettings x to/from IO r.
 func PlayerMoveSettings(r IO, x *PlayerMovementSettings) {
-	if r.Protocol() >= Protocol1v26v20v26 {
-		movementType := uint32(x.MovementType)
-		r.Varuint32(&movementType)
-		x.MovementType = int32(movementType)
-		r.Varint32(&x.RewindHistorySize)
-		r.Bool(&x.ServerAuthoritativeBlockBreaking)
-	} else if r.Protocol() >= Protocol1v16v210 {
-		r.Varint32(&x.RewindHistorySize)
-		r.Bool(&x.ServerAuthoritativeBlockBreaking)
-	} else if r.Protocol() >= Protocol1v16v100 {
-		r.Varint32(&x.MovementType)
+	if r.Protocol() >= Protocol1v16v100 {
+		if r.Protocol() >= Protocol1v16v210 {
+			if r.Protocol() < Protocol1v21v90 {
+				r.Varint32(&x.MovementType)
+			}
+			r.Varint32(&x.RewindHistorySize)
+			r.Bool(&x.ServerAuthoritativeBlockBreaking)
+		} else {
+			r.Varint32(&x.MovementType)
+		}
 	} else {
 		serverAuthoritativeMovement := x.MovementType != PlayerMovementModeClient
 		r.Bool(&serverAuthoritativeMovement)

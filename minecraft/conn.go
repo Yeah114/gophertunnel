@@ -1110,8 +1110,8 @@ func (conn *Conn) startGame() {
 		ClientSideGeneration:         data.ClientSideGeneration,
 		ChatRestrictionLevel:         data.ChatRestrictionLevel,
 		DisablePlayerInteractions:    data.DisablePlayerInteractions,
-		BaseGameVersion:              data.BaseGameVersion,
-		GameVersion:                  protocol.CurrentVersion,
+		BaseGameVersion:              conn.Proto().Ver(),//data.BaseGameVersion,
+		GameVersion:                  conn.Proto().Ver(),//protocol.CurrentVersion,
 		UseBlockNetworkIDHashes:      data.UseBlockNetworkIDHashes,
 		PropertyData:                 data.PropertyData,
 	})
