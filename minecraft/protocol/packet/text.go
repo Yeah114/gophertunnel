@@ -82,15 +82,21 @@ func (*Text) ID() uint32 {
 
 func (pk *Text) Marshal(io protocol.IO) {
 	if io.Protocol() >= protocol.Protocol1v26v0 {
-		pk.marshalCategorised(io, false)
-	} else if io.Protocol() >= protocol.Protocol1v21v130v28 {
-		pk.marshalCategorised(io, true)
-	} else {
-		pk.marshalLegacy(io)
+		pk.Marshal1v26v0(io)
+		return
 	}
+	if io.Protocol() >= protocol.Protocol1v21v130 {
+		pk.Marshal1v21v130(io)
+		return
+	}
+	if io.Protocol() >= protocol.Protocol1v21v50 {
+		pk.Marshal1v21v50(io)
+		return
+	}
+	// panic("Marshal: Unsupport Text packet")
 }
 
-func (pk *Text) marshalCategorised(io protocol.IO, writeCategoryNames bool) {
+func (pk *Text) Marshal1v26v0(io protocol.IO) {
 	io.Bool(&pk.NeedsTranslation)
 
 	var categoryType uint8
@@ -103,32 +109,7 @@ func (pk *Text) marshalCategorised(io protocol.IO, writeCategoryNames bool) {
 		categoryType = TextCategoryMessageWithParameters
 	}
 	io.Uint8(&categoryType)
-	if writeCategoryNames {
-		pk.marshalCategoryNames(io, categoryType)
-	}
 	io.Uint8(&pk.TextType)
-	pk.marshalPayload(io)
-	pk.marshalModernMetadata(io)
-}
-
-func (pk *Text) marshalCategoryNames(io protocol.IO, categoryType uint8) {
-	switch categoryType {
-	case TextCategoryMessageOnly:
-		for _, name := range []string{"raw", "tip", "systemMessage", "textObjectWhisper", "textObjectAnnouncement", "textObject"} {
-			io.String(&name)
-		}
-	case TextCategoryAuthoredMessage:
-		for _, name := range []string{"chat", "whisper", "announcement"} {
-			io.String(&name)
-		}
-	case TextCategoryMessageWithParameters:
-		for _, name := range []string{"translate", "popup", "jukeboxPopup"} {
-			io.String(&name)
-		}
-	}
-}
-
-func (pk *Text) marshalPayload(io protocol.IO) {
 	switch pk.TextType {
 	case TextTypeChat, TextTypeWhisper, TextTypeAnnouncement:
 		io.String(&pk.SourceName)
@@ -139,32 +120,51 @@ func (pk *Text) marshalPayload(io protocol.IO) {
 		io.String(&pk.Message)
 		protocol.FuncSlice(io, &pk.Parameters, io.String)
 	}
+
 	if len(pk.Message) == 0 {
 		io.InvalidValue(pk.Message, "message", "string cannot be empty")
 	}
-}
-
-func (pk *Text) marshalModernMetadata(io protocol.IO) {
 	io.String(&pk.XUID)
 	io.String(&pk.PlatformChatID)
 	protocol.OptionalFunc(io, &pk.FilteredMessage, io.String)
 }
 
-func (pk *Text) marshalLegacy(io protocol.IO) {
-	io.Uint8(&pk.TextType)
-	if io.Protocol() >= protocol.Protocol1v2v0 {
-		io.Bool(&pk.NeedsTranslation)
+func (pk *Text) Marshal1v21v130(io protocol.IO) {
+	io.Bool(&pk.NeedsTranslation)
+
+	var categoryType uint8
+	switch pk.TextType {
+	case TextTypeRaw, TextTypeTip, TextTypeSystem, TextTypeObjectWhisper, TextTypeObjectAnnouncement, TextTypeObject:
+		categoryType = TextCategoryMessageOnly
+	case TextTypeChat, TextTypeWhisper, TextTypeAnnouncement:
+		categoryType = TextCategoryAuthoredMessage
+	default:
+		categoryType = TextCategoryMessageWithParameters
+	}
+	io.Uint8(&categoryType)
+
+	switch categoryType {
+	case TextCategoryMessageOnly:
+		io.StringConst("raw")
+		io.StringConst("tip")
+		io.StringConst("systemMessage")
+		io.StringConst("textObjectWhisper")
+		io.StringConst("textObjectAnnouncement")
+		io.StringConst("textObject")
+	case TextCategoryAuthoredMessage:
+		io.StringConst("chat")
+		io.StringConst("whisper")
+		io.StringConst("announcement")
+	default:
+		io.StringConst("translate")
+		io.StringConst("popup")
+		io.StringConst("jukeboxPopup")
 	}
 
+	io.Uint8(&pk.TextType)
 	switch pk.TextType {
 	case TextTypeChat, TextTypeWhisper, TextTypeAnnouncement:
 		io.String(&pk.SourceName)
-		if io.Protocol() > protocol.Protocol1v2v10 && io.Protocol() <= protocol.Protocol1v6v0 {
-			thirdPartyName := ""
-			thirdPartyID := int32(0)
-			io.String(&thirdPartyName)
-			io.Varint32(&thirdPartyID)
-		}
 		io.String(&pk.Message)
 	case TextTypeRaw, TextTypeTip, TextTypeSystem, TextTypeObject, TextTypeObjectWhisper, TextTypeObjectAnnouncement:
 		io.String(&pk.Message)
@@ -172,17 +172,31 @@ func (pk *Text) marshalLegacy(io protocol.IO) {
 		io.String(&pk.Message)
 		protocol.FuncSlice(io, &pk.Parameters, io.String)
 	}
+
 	if len(pk.Message) == 0 {
 		io.InvalidValue(pk.Message, "message", "string cannot be empty")
 	}
+	io.String(&pk.XUID)
+	io.String(&pk.PlatformChatID)
+	protocol.OptionalFunc(io, &pk.FilteredMessage, io.String)
+}
 
-	if io.Protocol() >= protocol.Protocol1v2v13 {
-		io.String(&pk.XUID)
-		io.String(&pk.PlatformChatID)
+func (pk *Text) Marshal1v21v50(io protocol.IO) {
+	io.Uint8(&pk.TextType)
+	io.Bool(&pk.NeedsTranslation)
+	switch pk.TextType {
+	case TextTypeChat, TextTypeWhisper, TextTypeAnnouncement:
+		io.String(&pk.SourceName)
+		io.String(&pk.Message)
+	case TextTypeRaw, TextTypeTip, TextTypeSystem, TextTypeObject, TextTypeObjectWhisper, TextTypeObjectAnnouncement:
+		io.String(&pk.Message)
+	case TextTypeTranslation, TextTypePopup, TextTypeJukeboxPopup:
+		io.String(&pk.Message)
+		protocol.FuncSlice(io, &pk.Parameters, io.String)
 	}
-	if io.Protocol() >= protocol.Protocol1v21v0 {
-		filteredMessage, _ := pk.FilteredMessage.Value()
-		io.String(&filteredMessage)
-		pk.FilteredMessage = protocol.Option(filteredMessage)
-	}
+	io.String(&pk.XUID)
+	io.String(&pk.PlatformChatID)
+	filteredMessage, _ := pk.FilteredMessage.Value()
+	io.String(&filteredMessage)
+	pk.FilteredMessage = protocol.Option(filteredMessage)
 }

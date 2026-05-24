@@ -75,7 +75,6 @@ type CommandContext struct {
 
 // Marshal encodes/decodes a Command.
 func (ctx CommandContext) Marshal(r IO, c *Command) {
-	permissionStr := commandPermissionToString(c.PermissionLevel)
 	r.String(&c.Name)
 	r.String(&c.Description)
 	if ctx.ShortFlags {
@@ -85,13 +84,29 @@ func (ctx CommandContext) Marshal(r IO, c *Command) {
 		r.Uint8(&flags)
 		c.Flags = uint16(flags)
 	}
-	r.String(&permissionStr)
-	commandPermissionFromString(r, &c.PermissionLevel, permissionStr)
+	if r.Protocol() >= Protocol1v21v130v28 {
+		permissionStr := commandPermissionToString(c.PermissionLevel)
+		r.String(&permissionStr)
+		commandPermissionFromString(r, &c.PermissionLevel, permissionStr)
+	} else {
+		r.Uint8(&c.PermissionLevel)
+	}
 	r.Uint32(&c.AliasesOffset)
 	if ctx.ChainedSubcommands {
-		FuncSlice(r, &c.ChainedSubcommandOffsets, r.Uint32)
+		FuncSlice(r, &c.ChainedSubcommandOffsets, commandChainedSubcommandOffset(r))
 	}
 	FuncIOSlice(r, &c.Overloads, CommandOverloadContext{Chaining: ctx.ChainedSubcommands}.Marshal)
+}
+
+func commandChainedSubcommandOffset(r IO) func(*uint32) {
+	if r.Protocol() >= Protocol1v21v130v28 {
+		return r.Uint32
+	}
+	return func(x *uint32) {
+		value := uint16(*x)
+		r.Uint16(&value)
+		*x = uint32(value)
+	}
 }
 
 // CommandOverload represents an overload of a command. This overload can be compared to function overloading
@@ -317,7 +332,25 @@ type CommandEnumContext struct {
 // Marshal encodes/decodes a CommandEnum.
 func (ctx CommandEnumContext) Marshal(r IO, x *CommandEnum) {
 	r.String(&x.Type)
-	FuncSlice(r, &x.ValueIndices, r.Uint32)
+	FuncSlice(r, &x.ValueIndices, commandEnumValueIndex(r, len(ctx.EnumValues)))
+}
+
+func commandEnumValueIndex(r IO, enumValueCount int) func(*uint32) {
+	if r.Protocol() >= Protocol1v21v130v28 || enumValueCount >= 65536 {
+		return r.Uint32
+	}
+	if enumValueCount >= 256 {
+		return func(x *uint32) {
+			value := uint16(*x)
+			r.Uint16(&value)
+			*x = uint32(value)
+		}
+	}
+	return func(x *uint32) {
+		value := uint8(*x)
+		r.Uint8(&value)
+		*x = uint32(value)
+	}
 }
 
 // ChainedSubcommand represents a subcommand that can have chained commands, such as /execute which allows you to run
@@ -357,8 +390,17 @@ type ChainedSubcommandValue struct {
 }
 
 func (x *ChainedSubcommandValue) Marshal(r IO) {
-	r.Varuint32(&x.Index)
-	r.Varuint32(&x.Value)
+	if r.Protocol() >= Protocol1v21v130v28 {
+		r.Varuint32(&x.Index)
+		r.Varuint32(&x.Value)
+	} else {
+		index := uint16(x.Index)
+		value := uint16(x.Value)
+		r.Uint16(&index)
+		r.Uint16(&value)
+		x.Index = uint32(index)
+		x.Value = uint32(value)
+	}
 }
 
 // DynamicEnum is an enum variant that can have its options changed during runtime,
