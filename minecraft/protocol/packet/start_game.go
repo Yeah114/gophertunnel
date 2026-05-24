@@ -600,7 +600,7 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 		io.Uint8(&pk.ChatRestrictionLevel)
 		io.Bool(&pk.DisablePlayerInteractions)
 	}
-	if io.Protocol() >= protocol.Protocol1v21v110 && io.Protocol() < protocol.Protocol1v26v0 {
+	if io.Protocol() >= protocol.Protocol1v21v0 && io.Protocol() < protocol.Protocol1v26v0 {
 		io.String(&pk.ServerID)
 		io.String(&pk.WorldID)
 		io.String(&pk.ScenarioID)

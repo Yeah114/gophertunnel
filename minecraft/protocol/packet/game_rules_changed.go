@@ -25,5 +25,9 @@ func (*GameRulesChanged) ID() uint32 {
 }
 
 func (pk *GameRulesChanged) Marshal(io protocol.IO) {
+	if io.Protocol() < protocol.Protocol1v21v110v26 {
+		protocol.FuncSlice(io, &pk.GameRules, io.GameRuleLegacy)
+		return
+	}
 	protocol.FuncSlice(io, &pk.GameRules, io.GameRule)
 }

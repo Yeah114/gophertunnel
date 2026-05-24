@@ -317,7 +317,9 @@ func (x *BiomeChunkGeneration) Marshal(r IO) {
 	})
 	if r.Protocol() <= Protocol1v26v10 {
 		OptionalMarshaler(r, &x.SurfaceMaterials)
-		r.Bool(&x.HasDefaultOverworldSurface)
+		if r.Protocol() >= Protocol1v21v110 {
+			r.Bool(&x.HasDefaultOverworldSurface)
+		}
 		r.Bool(&x.HasSwampSurface)
 		r.Bool(&x.HasFrozenOceanSurface)
 		r.Bool(&x.HasEndSurface)
