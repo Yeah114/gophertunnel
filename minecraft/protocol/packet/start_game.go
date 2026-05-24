@@ -464,8 +464,10 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 	io.Varuint64(&pk.EntityRuntimeID)
 	io.Varint32(&pk.PlayerGameMode)
 	io.Vec3(&pk.PlayerPosition)
-	io.Float32(&pk.Pitch)
+//	io.Float32(&pk.Pitch)
+//	io.Float32(&pk.Yaw)
 	io.Float32(&pk.Yaw)
+	io.Float32(&pk.Pitch)
 	if io.Protocol() >= protocol.Protocol1v18v30 {
 		io.Int64(&pk.WorldSeed)
 	} else {
@@ -598,7 +600,7 @@ func (pk *StartGame) Marshal(io protocol.IO) {
 		io.Uint8(&pk.ChatRestrictionLevel)
 		io.Bool(&pk.DisablePlayerInteractions)
 	}
-	if io.Protocol() >= protocol.Protocol1v21v130 && io.Protocol() < protocol.Protocol1v26v0 {
+	if io.Protocol() >= protocol.Protocol1v21v124 && io.Protocol() < protocol.Protocol1v26v0 {
 		io.String(&pk.ServerID)
 		io.String(&pk.WorldID)
 		io.String(&pk.ScenarioID)

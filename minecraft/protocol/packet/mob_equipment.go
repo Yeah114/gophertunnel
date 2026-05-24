@@ -18,7 +18,7 @@ type MobEquipment struct {
 	// NewItem is the new item held after sending the MobEquipment packet. The entity will be shown holding
 	// that item to the player it was sent to.
 	//
-	// Added: v1.12
+	// Added: v1.12, Changed: v1.26.20, encoded as ItemInstanceNew.
 	NewItem protocol.ItemInstance
 	// InventorySlot is the slot in the inventory that was held. This is the same as HotBarSlot, and only
 	// remains for backwards compatibility.
@@ -44,7 +44,11 @@ func (*MobEquipment) ID() uint32 {
 
 func (pk *MobEquipment) Marshal(io protocol.IO) {
 	io.Varuint64(&pk.EntityRuntimeID)
-	io.ItemInstanceNew(&pk.NewItem)
+	if io.Protocol() >= protocol.Protocol1v26v20 {
+		io.ItemInstanceNew(&pk.NewItem)
+	} else {
+		io.ItemInstance(&pk.NewItem)
+	}
 	io.Uint8(&pk.InventorySlot)
 	io.Uint8(&pk.HotBarSlot)
 	io.Uint8(&pk.WindowID)

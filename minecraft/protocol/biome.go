@@ -297,8 +297,12 @@ type BiomeChunkGeneration struct {
 	// Added: v1.26.0
 	VillageType Optional[uint8]
 	// SurfaceBuilder is optional information for the biome's surface builder.
+	//
+	// Added: v1.26.20
 	SurfaceBuilder Optional[BiomeSurfaceBuilder]
 	// SubsurfaceBuilder is optional information for the biome's subsurface builder.
+	//
+	// Added: v1.26.20
 	SubsurfaceBuilder Optional[BiomeSurfaceBuilder]
 }
 
@@ -311,26 +315,33 @@ func (x *BiomeChunkGeneration) Marshal(r IO) {
 	OptionalFunc(r, &x.SurfaceMaterialAdjustments, func(s *[]BiomeElementData) {
 		Slice(r, s)
 	})
-	OptionalMarshaler(r, &x.SurfaceMaterials)
-	if r.Protocol() >= Protocol1v21v110 {
+	if r.Protocol() <= Protocol1v26v10 {
+		OptionalMarshaler(r, &x.SurfaceMaterials)
 		r.Bool(&x.HasDefaultOverworldSurface)
+		r.Bool(&x.HasSwampSurface)
+		r.Bool(&x.HasFrozenOceanSurface)
+		r.Bool(&x.HasEndSurface)
+		OptionalMarshaler(r, &x.MesaSurface)
+		OptionalMarshaler(r, &x.CappedSurface)
 	}
-	r.Bool(&x.HasSwampSurface)
-	r.Bool(&x.HasFrozenOceanSurface)
-	r.Bool(&x.HasEndSurface)
-	OptionalMarshaler(r, &x.MesaSurface)
-	OptionalMarshaler(r, &x.CappedSurface)
+
 	OptionalMarshaler(r, &x.OverworldRules)
 	OptionalMarshaler(r, &x.MultiNoiseRules)
 	OptionalFunc(r, &x.LegacyRules, func(s *[]BiomeConditionalTransformation) {
 		Slice(r, s)
 	})
-	OptionalFunc(r, &x.ReplacementsData, func(s *[]BiomeReplacementData) {
-		Slice(r, s)
-	})
-	OptionalFunc(r, &x.VillageType, r.Uint8)
-	OptionalMarshaler(r, &x.SurfaceBuilder)
-	OptionalMarshaler(r, &x.SubsurfaceBuilder)
+	if r.Protocol() >= Protocol1v21v120 {
+		OptionalFunc(r, &x.ReplacementsData, func(s *[]BiomeReplacementData) {
+			Slice(r, s)
+		})
+	}
+	if r.Protocol() >= Protocol1v26v0 {
+		OptionalFunc(r, &x.VillageType, r.Uint8)
+	}
+	if r.Protocol() >= Protocol1v26v20 {
+		OptionalMarshaler(r, &x.SurfaceBuilder)
+		OptionalMarshaler(r, &x.SubsurfaceBuilder)
+	}
 }
 
 // BiomeClimate represents the climate of a biome, mainly for ambience but also defines certain behaviours.

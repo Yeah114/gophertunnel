@@ -57,7 +57,7 @@ func (p *packetData) decode(conn *Conn) (pks []packet.Packet, err error) {
 
 	defer func() {
 		if recoveredErr := recover(); recoveredErr != nil {
-			err = fmt.Errorf("decode packet %T: %w", pk, recoveredErr.(error))
+			err = fmt.Errorf("decode packet %T: %w, full: 0x%x", pk, recoveredErr.(error), p.full)
 		}
 		if err != nil && !errors.Is(err, unknownPacketError{}) && conn.disconnectOnInvalidPacket {
 			_ = conn.Close()
