@@ -102,37 +102,31 @@ type TextShape struct {
 	// UseRotation is if the text should use the provided rotation, meaning it will be static and does not follow the
 	// camera.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.20
 	UseRotation bool
 	// BackgroundColour is the optional RGBA colour to use for the text background.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.20
 	BackgroundColour Optional[color.RGBA]
 	// DepthTest determines whether the text is depth-tested against world geometry.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.20
 	DepthTest bool
 	// ShowBackface is if the background should render on the back side of the shape. This only has a visible effect when
 	// UseRotation is true since you cannot see the back side of the text otherwise.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.20
 	ShowBackface bool
-	// ShowBackfaceText is if the text should render on the back side of the shape. This only has a visible effect when
-	// UseRotation is true since you cannot see the back side of the text otherwise.
-	//
-	// Added: v1.26.20.26
-	ShowBackfaceText bool
 }
 
 // Marshal ...
 func (shape *TextShape) Marshal(io IO) {
 	io.String(&shape.Text)
-	if io.Protocol() >= Protocol1v26v20v26 {
+	if io.Protocol() >= Protocol1v26v20 {
 		io.Bool(&shape.UseRotation)
-		OptionalFunc(io, &shape.BackgroundColour, io.BEARGB)
+		OptionalFunc(io, &shape.BackgroundColour, io.ARGB)
 		io.Bool(&shape.DepthTest)
 		io.Bool(&shape.ShowBackface)
-		io.Bool(&shape.ShowBackfaceText)
 	}
 }
 
@@ -245,7 +239,7 @@ type PrimitiveShape struct {
 	TotalTimeLeft Optional[float32]
 	// MaxRenderDistance is the maximum distance from the camera at which the shape should render.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.20
 	MaxRenderDistance Optional[float32]
 	// Colour is the ARGB colour of the shape.
 	//
@@ -265,10 +259,10 @@ func (x *PrimitiveShape) Marshal(io IO) {
 	OptionalFunc(io, &x.Scale, io.Float32)
 	OptionalFunc(io, &x.Rotation, io.Vec3)
 	OptionalFunc(io, &x.TotalTimeLeft, io.Float32)
-	if io.Protocol() >= Protocol1v26v20v26 {
+	if io.Protocol() >= Protocol1v26v20 {
 		OptionalFunc(io, &x.MaxRenderDistance, io.Float32)
 	}
-	OptionalFunc(io, &x.Colour, io.BEARGB)
+	OptionalFunc(io, &x.Colour, io.ARGB)
 	OptionalFunc(io, &x.DimensionID, io.Varint32)
 	OptionalFunc(io, &x.AttachedToEntityID, io.Varint64)
 	io.ShapeData(&x.ExtraShapeData)

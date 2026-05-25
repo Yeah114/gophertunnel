@@ -93,7 +93,7 @@ func (pk *Text) Marshal(io protocol.IO) {
 		pk.Marshal1v21v50(io)
 		return
 	}
-	// panic("Marshal: Unsupport Text packet")
+	pk.MarshalLegacy(io)
 }
 
 func (pk *Text) Marshal1v26v0(io protocol.IO) {
@@ -199,4 +199,26 @@ func (pk *Text) Marshal1v21v50(io protocol.IO) {
 	filteredMessage, _ := pk.FilteredMessage.Value()
 	io.String(&filteredMessage)
 	pk.FilteredMessage = protocol.Option(filteredMessage)
+}
+
+func (pk *Text) MarshalLegacy(io protocol.IO) {
+	io.Uint8(&pk.TextType)
+	io.Bool(&pk.NeedsTranslation)
+	switch pk.TextType {
+	case TextTypeChat, TextTypeWhisper, TextTypeAnnouncement:
+		io.String(&pk.SourceName)
+		io.String(&pk.Message)
+	case TextTypeRaw, TextTypeTip, TextTypeSystem, TextTypeObject, TextTypeObjectWhisper, TextTypeObjectAnnouncement:
+		io.String(&pk.Message)
+	case TextTypeTranslation, TextTypePopup, TextTypeJukeboxPopup:
+		io.String(&pk.Message)
+		protocol.FuncSlice(io, &pk.Parameters, io.String)
+	}
+	io.String(&pk.XUID)
+	io.String(&pk.PlatformChatID)
+	if io.Protocol() >= protocol.Protocol1v21v0 {
+		filteredMessage, _ := pk.FilteredMessage.Value()
+		io.String(&filteredMessage)
+		pk.FilteredMessage = protocol.Option(filteredMessage)
+	}
 }

@@ -52,20 +52,20 @@ type ClientMovementPredictionSync struct {
 	Hunger float32
 	// FrictionModifier is the friction modifier movement attribute.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.20
 	FrictionModifier float32
 	// Bounciness is the bounciness movement attribute.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.20
 	Bounciness float32
 	// AirDragModifier is the air drag modifier movement attribute.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.20
 	AirDragModifier float32
-	// EntityUniqueID is the unique ID of the entity that the prediction data applies to.
+	// EntityRuntimeID is the runtime ID of the entity that the prediction data applies to.
 	//
-	// Added: v1.21.70
-	EntityUniqueID int64
+	// Added: v1.21.60
+	EntityRuntimeID uint64
 	// Flying specifies if the client is currently flying.
 	//
 	// Added: v1.21.80
@@ -88,9 +88,13 @@ func (pk *ClientMovementPredictionSync) Marshal(io protocol.IO) {
 	io.Float32(&pk.JumpStrength)
 	io.Float32(&pk.Health)
 	io.Float32(&pk.Hunger)
-	io.Float32(&pk.FrictionModifier)
-	io.Float32(&pk.Bounciness)
-	io.Float32(&pk.AirDragModifier)
-	io.Varint64(&pk.EntityUniqueID)
-	io.Bool(&pk.Flying)
+	if io.Protocol() >= protocol.Protocol1v26v20 {
+		io.Float32(&pk.FrictionModifier)
+		io.Float32(&pk.Bounciness)
+		io.Float32(&pk.AirDragModifier)
+	}
+	io.Varuint64(&pk.EntityRuntimeID)
+	if io.Protocol() >= protocol.Protocol1v21v80 {
+		io.Bool(&pk.Flying)
+	}
 }

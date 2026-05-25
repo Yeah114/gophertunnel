@@ -5,25 +5,25 @@ import (
 )
 
 const (
-	DataDrivenScreenCloseReasonProgrammaticClose = iota
-	DataDrivenScreenCloseReasonProgrammaticCloseAll
-	DataDrivenScreenCloseReasonClientCanceled
-	DataDrivenScreenCloseReasonUserBusy
-	DataDrivenScreenCloseReasonInvalidForm
+	DataDrivenScreenCloseReasonProgrammaticClose    = "programmatic_close"
+	DataDrivenScreenCloseReasonProgrammaticCloseAll = "programmatic_close_all"
+	DataDrivenScreenCloseReasonClientCanceled       = "client_canceled"
+	DataDrivenScreenCloseReasonUserBusy             = "user_busy"
+	DataDrivenScreenCloseReasonInvalidForm          = "invalid_form"
 )
 
 // ServerBoundDataDrivenScreenClosed is sent by the client when a data-driven UI screen is closed.
 //
 // Added: v1.26.10
 type ServerBoundDataDrivenScreenClosed struct {
-	// FormID is the optional unique instance ID of the form that was closed.
+	// FormID is the unique instance ID of the form that was closed.
 	//
 	// Added: v1.26.10
-	FormID protocol.Optional[uint32]
+	FormID int32
 	// CloseReason is the reason the screen was closed. It is one of the DataDrivenScreenCloseReason constants.
 	//
 	// Added: v1.26.10
-	CloseReason uint8
+	CloseReason string
 }
 
 // ID ...
@@ -32,6 +32,6 @@ func (*ServerBoundDataDrivenScreenClosed) ID() uint32 {
 }
 
 func (pk *ServerBoundDataDrivenScreenClosed) Marshal(io protocol.IO) {
-	protocol.OptionalFunc(io, &pk.FormID, io.Uint32)
-	io.Uint8(&pk.CloseReason)
+	io.Int32(&pk.FormID)
+	io.String(&pk.CloseReason)
 }

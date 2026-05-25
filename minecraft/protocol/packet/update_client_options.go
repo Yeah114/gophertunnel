@@ -33,5 +33,7 @@ func (*UpdateClientOptions) ID() uint32 {
 
 func (pk *UpdateClientOptions) Marshal(io protocol.IO) {
 	protocol.OptionalFunc(io, &pk.GraphicsMode, io.Uint8)
-	protocol.OptionalFunc(io, &pk.FilterProfanity, io.Bool)
+	if io.Protocol() >= protocol.Protocol1v26v20 {
+		protocol.OptionalFunc(io, &pk.FilterProfanity, io.Bool)
+	}
 }

@@ -13,7 +13,8 @@ type SetLastHurtBy struct {
 	// EntityType is the numerical type of the entity that the player was last hurt by.
 	//
 	// Added: v1.12
-	EntityType int32
+	// Changed: v1.26.20, encoded as an unsigned varlong.
+	EntityType uint64
 }
 
 // ID ...
@@ -22,5 +23,11 @@ func (*SetLastHurtBy) ID() uint32 {
 }
 
 func (pk *SetLastHurtBy) Marshal(io protocol.IO) {
-	io.Varint32(&pk.EntityType)
+	if io.Protocol() >= protocol.Protocol1v26v20 {
+		io.Varuint64(&pk.EntityType)
+	} else {
+		entityType := int32(pk.EntityType)
+		io.Varint32(&entityType)
+		pk.EntityType = uint64(entityType)
+	}
 }

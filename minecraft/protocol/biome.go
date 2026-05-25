@@ -333,9 +333,12 @@ func (x *BiomeChunkGeneration) Marshal(r IO) {
 		Slice(r, s)
 	})
 	if r.Protocol() >= Protocol1v21v120 {
-		OptionalFunc(r, &x.ReplacementsData, func(s *[]BiomeReplacementData) {
-			Slice(r, s)
-		})
+		replacementsDataPresent := false
+		r.Bool(&replacementsDataPresent)
+		if replacementsDataPresent {
+			Slice(r, &x.ReplacementsData.val)
+			x.ReplacementsData.set = true
+		}
 	}
 	if r.Protocol() >= Protocol1v26v0 {
 		OptionalFunc(r, &x.VillageType, r.Uint8)

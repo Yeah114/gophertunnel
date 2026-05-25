@@ -58,11 +58,11 @@ type ServerBoundDiagnostics struct {
 	MemoryCategoryValues []protocol.MemoryCategoryCounter
 	// EntityDiagnostics is a list of entity timing entries sent by the client.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.20
 	EntityDiagnostics []protocol.EntityDiagnosticTimingInfo
 	// SystemDiagnostics is a list of system timing entries sent by the client.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.20
 	SystemDiagnostics []protocol.SystemDiagnosticTimingInfo
 }
 
@@ -81,12 +81,10 @@ func (pk *ServerBoundDiagnostics) Marshal(io protocol.IO) {
 	io.Float32(&pk.AverageEndFrameTime)
 	io.Float32(&pk.AverageRemainderTimePercent)
 	io.Float32(&pk.AverageUnaccountedTimePercent)
-	if io.Protocol() >= protocol.Protocol1v26v10 {
+	if io.Protocol() >= protocol.Protocol1v26v0 {
 		protocol.Slice(io, &pk.MemoryCategoryValues)
-	} else {
-		protocol.SliceUint32Length(io, &pk.MemoryCategoryValues)
 	}
-	if io.Protocol() >= protocol.Protocol1v26v20v26 {
+	if io.Protocol() >= protocol.Protocol1v26v20 {
 		protocol.Slice(io, &pk.EntityDiagnostics)
 		protocol.Slice(io, &pk.SystemDiagnostics)
 	}

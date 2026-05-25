@@ -21,5 +21,5 @@ func (*SyncActorProperty) ID() uint32 {
 }
 
 func (pk *SyncActorProperty) Marshal(io protocol.IO) {
-	io.NBT(&pk.PropertyData, nbt.NetworkLittleEndian)
+	io.NBT(&pk.PropertyData, nbt.NetworkBigEndian)
 }

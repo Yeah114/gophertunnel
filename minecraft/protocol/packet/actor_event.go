@@ -98,7 +98,7 @@ type ActorEvent struct {
 	// FireAtPosition is the position in the same world at which the event should fire. If this is not
 	// present, the position entity will be used instead.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.20
 	FireAtPosition protocol.Optional[mgl32.Vec3]
 }
 
@@ -111,7 +111,7 @@ func (pk *ActorEvent) Marshal(io protocol.IO) {
 	io.Varuint64(&pk.EntityRuntimeID)
 	io.Uint8(&pk.EventType)
 	io.Varint32(&pk.EventData)
-	if io.Protocol() >= protocol.Protocol1v26v20v26 {
+	if io.Protocol() >= protocol.Protocol1v26v20 {
 		protocol.OptionalFunc(io, &pk.FireAtPosition, io.Vec3)
 	}
 }

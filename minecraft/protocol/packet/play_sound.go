@@ -33,7 +33,7 @@ type PlaySound struct {
 	// Handle is an optional sound handle ID. It is currently unknown what this is for, and is not required
 	// to be set by servers.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.20
 	Handle protocol.Optional[uint64]
 }
 
@@ -47,7 +47,7 @@ func (pk *PlaySound) Marshal(io protocol.IO) {
 	io.SoundPos(&pk.Position)
 	io.Float32(&pk.Volume)
 	io.Float32(&pk.Pitch)
-	if io.Protocol() >= protocol.Protocol1v26v20v26 {
+	if io.Protocol() >= protocol.Protocol1v26v20 {
 		protocol.OptionalFunc(io, &pk.Handle, io.Uint64)
 	}
 }

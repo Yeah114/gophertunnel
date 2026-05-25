@@ -336,32 +336,50 @@ type ShapedChemistryRecipe struct {
 // FurnaceRecipe is a recipe that is specifically used for all kinds of furnaces. These recipes don't just
 // apply to furnaces, but also blast furnaces and smokers.
 //
-// Removed: v1.26.20.26
+// Removed: v1.26.20
 type FurnaceRecipe struct {
+	// RecipeID is a unique ID of the recipe.
+	//
+	// Added: v1.26.20
+	RecipeID string
 	// InputType is the item type of the input item. The metadata value of the item is not used in the
 	// FurnaceRecipe. Use FurnaceDataRecipe to allow an item with only one metadata value.
-	//
-	// Removed: v1.26.20.26
 	InputType ItemType
-	// Output is the item that is created as a result of smelting/cooking an item in the furnace.
+	// Input is a list of items that serve as the input of the furnace recipe.
 	//
-	// Removed: v1.26.20.26
+	// Added: v1.26.20
+	Input []ItemDescriptorCount
+	// Output is the item that is created as a result of smelting/cooking an item in the furnace.
 	Output ItemStack
+	// UUID is a UUID identifying the recipe.
+	//
+	// Added: v1.26.20
+	UUID uuid.UUID
 	// Block is the block name that is required to create the output of the recipe. The block is not prefixed
 	// with 'minecraft:', so it will look like 'furnace' as an example.
-	//
-	// Removed: v1.26.20.26
 	Block string
+	// Priority is the recipe priority used by the client when multiple recipes match the same input.
+	//
+	// Added: v1.26.20
+	Priority int32
+	// UnlockRequirement is a requirement that must be met in order to unlock the recipe.
+	//
+	// Added: v1.26.20
+	UnlockRequirement RecipeUnlockRequirement
+	// RecipeNetworkID is a unique ID used to identify the recipe over network.
+	//
+	// Added: v1.26.20
+	RecipeNetworkID uint32
 }
 
 // FurnaceDataRecipe is a recipe specifically used for furnace-type crafting stations. It is equal to
 // FurnaceRecipe, except it has an input item with a specific metadata value, instead of any metadata value.
 //
-// Removed: v1.26.20.26
+// Removed: v1.26.20
 type FurnaceDataRecipe struct {
 	// FurnaceRecipe holds the underlying furnace recipe data.
 	//
-	// Removed: v1.26.20.26
+	// Removed: v1.26.20
 	FurnaceRecipe
 }
 
@@ -506,6 +524,10 @@ func (recipe *ShapedChemistryRecipe) Unmarshal(r *Reader) {
 
 // Marshal ...
 func (recipe *FurnaceRecipe) Marshal(w *Writer) {
+	if w.Protocol() >= Protocol1v26v20 {
+		marshalFurnaceShapeless(w, recipe)
+		return
+	}
 	w.Varint32(&recipe.InputType.NetworkID)
 	w.Item(&recipe.Output)
 	w.String(&recipe.Block)
@@ -513,6 +535,10 @@ func (recipe *FurnaceRecipe) Marshal(w *Writer) {
 
 // Unmarshal ...
 func (recipe *FurnaceRecipe) Unmarshal(r *Reader) {
+	if r.Protocol() >= Protocol1v26v20 {
+		marshalFurnaceShapeless(r, recipe)
+		return
+	}
 	r.Varint32(&recipe.InputType.NetworkID)
 	r.Item(&recipe.Output)
 	r.String(&recipe.Block)
@@ -520,6 +546,10 @@ func (recipe *FurnaceRecipe) Unmarshal(r *Reader) {
 
 // Marshal ...
 func (recipe *FurnaceDataRecipe) Marshal(w *Writer) {
+	if w.Protocol() >= Protocol1v26v20 {
+		marshalFurnaceShapeless(w, &recipe.FurnaceRecipe)
+		return
+	}
 	w.Varint32(&recipe.InputType.NetworkID)
 	aux := int32(recipe.InputType.MetadataValue)
 	w.Varint32(&aux)
@@ -529,6 +559,10 @@ func (recipe *FurnaceDataRecipe) Marshal(w *Writer) {
 
 // Unmarshal ...
 func (recipe *FurnaceDataRecipe) Unmarshal(r *Reader) {
+	if r.Protocol() >= Protocol1v26v20 {
+		marshalFurnaceShapeless(r, &recipe.FurnaceRecipe)
+		return
+	}
 	var dataValue int32
 	r.Varint32(&recipe.InputType.NetworkID)
 	r.Varint32(&dataValue)
@@ -611,6 +645,35 @@ func marshalShapeless(r IO, recipe *ShapelessRecipe) {
 	r.String(&recipe.RecipeID)
 	FuncSlice(r, &recipe.Input, r.ItemDescriptorCount)
 	FuncSlice(r, &recipe.Output, r.Item)
+	r.UUID(&recipe.UUID)
+	r.String(&recipe.Block)
+	r.Varint32(&recipe.Priority)
+	Single(r, &recipe.UnlockRequirement)
+	r.Varuint32(&recipe.RecipeNetworkID)
+}
+
+func marshalFurnaceShapeless(r IO, recipe *FurnaceRecipe) {
+	r.String(&recipe.RecipeID)
+	if _, ok := r.(*Writer); ok && len(recipe.Input) == 0 && recipe.InputType.NetworkID != 0 {
+		recipe.Input = []ItemDescriptorCount{{
+			Descriptor: &DefaultItemDescriptor{
+				NetworkID:     int16(recipe.InputType.NetworkID),
+				MetadataValue: int16(recipe.InputType.MetadataValue),
+			},
+			Count: 1,
+		}}
+	}
+	FuncSlice(r, &recipe.Input, r.ItemDescriptorCount)
+	if len(recipe.Input) > 0 {
+		if input, ok := recipe.Input[0].Descriptor.(*DefaultItemDescriptor); ok {
+			recipe.InputType = ItemType{NetworkID: int32(input.NetworkID), MetadataValue: uint32(input.MetadataValue)}
+		}
+	}
+	output := []ItemStack{recipe.Output}
+	FuncSlice(r, &output, r.Item)
+	if len(output) > 0 {
+		recipe.Output = output[0]
+	}
 	r.UUID(&recipe.UUID)
 	r.String(&recipe.Block)
 	r.Varint32(&recipe.Priority)

@@ -36,7 +36,16 @@ func (*Event) ID() uint32 {
 func (pk *Event) Marshal(io protocol.IO) {
 	io.Varint64(&pk.EntityRuntimeID)
 	io.EventType(&pk.Event)
-	io.Bool(&pk.UsePlayerID)
-	io.EventOrdinal(&pk.Event)
+	if io.Protocol() >= protocol.Protocol1v21v130v28 {
+		io.Bool(&pk.UsePlayerID)
+		io.EventOrdinal(&pk.Event)
+	} else {
+		usePlayerID := uint8(0)
+		if pk.UsePlayerID {
+			usePlayerID = 1
+		}
+		io.Uint8(&usePlayerID)
+		pk.UsePlayerID = usePlayerID != 0
+	}
 	pk.Event.Marshal(io)
 }

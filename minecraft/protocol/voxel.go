@@ -56,8 +56,12 @@ func (x *VoxelShapeNameEntry) Marshal(r IO) {
 type VoxelShape struct {
 	// Cells is the grid of cells representing solid and empty regions.
 	//
-	// Added: v1.26.0
+	// Added: v1.26.20
 	Cells VoxelCells
+	// CellsList is a list of grids representing solid and empty regions.
+	//
+	// Added: v1.26.0, Removed: v1.26.20
+	CellsList []VoxelCells
 	// XCoordinates is a list of X axis coordinates for the shape.
 	//
 	// Added: v1.26.0
@@ -74,7 +78,17 @@ type VoxelShape struct {
 
 // Marshal encodes/decodes a VoxelShape.
 func (x *VoxelShape) Marshal(r IO) {
-	Single(r, &x.Cells)
+	if r.Protocol() >= Protocol1v26v20 {
+		Single(r, &x.Cells)
+	} else {
+		if _, ok := r.(*Writer); ok && len(x.CellsList) == 0 {
+			x.CellsList = []VoxelCells{x.Cells}
+		}
+		Slice(r, &x.CellsList)
+		if len(x.CellsList) > 0 {
+			x.Cells = x.CellsList[0]
+		}
+	}
 	FuncSlice(r, &x.XCoordinates, r.Float32)
 	FuncSlice(r, &x.YCoordinates, r.Float32)
 	FuncSlice(r, &x.ZCoordinates, r.Float32)

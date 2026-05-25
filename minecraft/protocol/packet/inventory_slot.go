@@ -25,7 +25,6 @@ type InventorySlot struct {
 	// Added: v1.21.20
 	// Changed: v1.21.30, expanded from a dynamic container ID to a full container name.
 	// Changed: v1.26.20, encoded as an optional full container name instead of a plain full container name.
-	// Changed: v1.26.20.26, encoded as an optional full container name in the reworked container attachment layout.
 	Container protocol.Optional[protocol.FullContainerName]
 	// NetworkID is the legacy stack network ID written before the item instance.
 	//
@@ -38,7 +37,6 @@ type InventorySlot struct {
 	//
 	// Added: v1.21.40
 	// Changed: v1.26.20, encoded as an optional storage item instead of a plain item instance.
-	// Changed: v1.26.20.26, encoded as an optional storage item in the reworked container attachment layout.
 	StorageItem protocol.Optional[protocol.ItemInstance]
 	// NewItem is the item to be put in the slot at Slot. It will overwrite any item that may currently
 	// be present in that slot.
@@ -55,7 +53,7 @@ func (*InventorySlot) ID() uint32 {
 func (pk *InventorySlot) Marshal(io protocol.IO) {
 	io.Varuint32(&pk.WindowID)
 	io.Varuint32(&pk.Slot)
-	if io.Protocol() >= protocol.Protocol1v26v20v26 {
+	if io.Protocol() >= protocol.Protocol1v26v20 {
 		protocol.OptionalMarshaler(io, &pk.Container)
 		protocol.OptionalFunc(io, &pk.StorageItem, io.ItemInstanceNew)
 		io.ItemInstanceNew(&pk.NewItem)

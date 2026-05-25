@@ -236,17 +236,11 @@ type AttributeLayerSettings struct {
 	Priority int32
 	// WeightType determines whether the weight is a float or string. It is one of the
 	// AttributeLayerWeightType constants.
-	//
-	// Removed: v1.26.20.26
 	WeightType uint32
 	// FloatWeight is the numeric weight value for the layer.
-	// When WeightType is present, this field is used when WeightType is AttributeLayerWeightTypeFloat.
-	//
-	// Changed: v1.26.20.26, encoded directly as a float and no longer selected through WeightType.
+	// It is used when WeightType is AttributeLayerWeightTypeFloat.
 	FloatWeight float32
 	// StringWeight is the weight if WeightType is AttributeLayerWeightTypeString.
-	//
-	// Removed: v1.26.20.26
 	StringWeight string
 	// Enabled indicates if the layer is enabled.
 	//
@@ -261,18 +255,14 @@ type AttributeLayerSettings struct {
 // Marshal encodes/decodes an AttributeLayerSettings.
 func (x *AttributeLayerSettings) Marshal(r IO) {
 	r.Int32(&x.Priority)
-	if r.Protocol() >= Protocol1v26v20v26 {
+	r.Varuint32(&x.WeightType)
+	switch x.WeightType {
+	case AttributeLayerWeightTypeFloat:
 		r.Float32(&x.FloatWeight)
-	} else {
-		r.Varuint32(&x.WeightType)
-		switch x.WeightType {
-		case AttributeLayerWeightTypeFloat:
-			r.Float32(&x.FloatWeight)
-		case AttributeLayerWeightTypeString:
-			r.String(&x.StringWeight)
-		default:
-			r.UnknownEnumOption(x.WeightType, "attribute layer weight type")
-		}
+	case AttributeLayerWeightTypeString:
+		r.String(&x.StringWeight)
+	default:
+		r.UnknownEnumOption(x.WeightType, "attribute layer weight type")
 	}
 	r.Bool(&x.Enabled)
 	r.Bool(&x.TransitionsPaused)

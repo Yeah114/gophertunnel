@@ -33,13 +33,13 @@ type PartyInfo struct {
 	PartyID string
 	// PartyLeader is if the client is the new party leader or not.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.20
 	PartyLeader bool
 }
 
 func (x *PartyInfo) Marshal(io protocol.IO) {
 	io.String(&x.PartyID)
-	if io.Protocol() >= protocol.Protocol1v26v20v26 {
+	if io.Protocol() >= protocol.Protocol1v26v20 {
 		io.Bool(&x.PartyLeader)
 	}
 }

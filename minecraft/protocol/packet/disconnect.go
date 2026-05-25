@@ -161,7 +161,6 @@ type Disconnect struct {
 	// disconnected, meaning it will be sent directly to the main menu.
 	//
 	// Added: v1.11.1
-	// Changed: v1.26.20.26, encoded as a varuint32 flag instead of a bool.
 	HideDisconnectionScreen bool
 	// Message is an optional message to show when disconnected. This message is only written if the
 	// HideDisconnectionScreen field is set to true.
@@ -184,16 +183,7 @@ func (pk *Disconnect) Marshal(io protocol.IO) {
 	if io.Protocol() >= protocol.Protocol1v20v40 {
 		io.Varint32(&pk.Reason)
 	}
-	if io.Protocol() >= protocol.Protocol1v26v20v26 {
-		hideDisconnectionScreen := uint32(0)
-		if pk.HideDisconnectionScreen {
-			hideDisconnectionScreen = 1
-		}
-		io.Varuint32(&hideDisconnectionScreen)
-		pk.HideDisconnectionScreen = hideDisconnectionScreen != 0
-	} else {
-		io.Bool(&pk.HideDisconnectionScreen)
-	}
+	io.Bool(&pk.HideDisconnectionScreen)
 	if !pk.HideDisconnectionScreen {
 		io.String(&pk.Message)
 		if io.Protocol() >= protocol.Protocol1v21v20 {

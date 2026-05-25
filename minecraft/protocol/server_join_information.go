@@ -38,25 +38,17 @@ type GatheringJoinInfo struct {
 	//
 	// Removed: v1.26.10
 	StoreID string
-	// TargetID is the session identifier for the target experience instance.
-	//
-	// Added: v1.26.20.26
-	TargetID uuid.UUID
-	// ScenarioID is the scenario identifier associated with the experience.
-	//
-	// Added: v1.26.20.26
-	ScenarioID string
 	// UnknownUUID1 is an unknown UUID field present in the v1.26.10 through v1.26.20 payload layout.
 	//
-	// Added: v1.26.10, Removed: v1.26.20.26
+	// Added: v1.26.10
 	UnknownUUID1 uuid.UUID
 	// UnknownUUID2 is an unknown UUID field present in the v1.26.10 through v1.26.20 payload layout.
 	//
-	// Added: v1.26.10, Removed: v1.26.20.26
+	// Added: v1.26.10
 	UnknownUUID2 uuid.UUID
 	// ServerID is the server identifier associated with the target experience.
 	//
-	// Added: v1.26.20.26
+	// Added: v1.26.10
 	ServerID string
 }
 
@@ -78,14 +70,11 @@ func (x *GatheringJoinInfo) Marshal(r IO) {
 	if r.Protocol() < Protocol1v26v10 {
 		r.String(&x.StoreID)
 	}
-	if r.Protocol() >= Protocol1v26v20v26 {
-		r.UUID(&x.TargetID)
-		r.String(&x.ScenarioID)
-	} else if r.Protocol() >= Protocol1v26v10 {
+	if r.Protocol() >= Protocol1v26v10 {
 		r.UUID(&x.UnknownUUID1)
 		r.UUID(&x.UnknownUUID2)
 	}
-	if r.Protocol() >= Protocol1v26v20v26 {
+	if r.Protocol() >= Protocol1v26v10 {
 		r.String(&x.ServerID)
 	}
 }

@@ -20,10 +20,10 @@ const (
 	IDTakeItemActor
 	IDMoveActorAbsolute
 	IDMovePlayer
-	_
+	IDRiderJump
 	IDUpdateBlock
 	IDAddPainting
-	_
+	IDTickSync
 	_
 	IDLevelEvent
 	IDBlockEvent
@@ -37,7 +37,7 @@ const (
 	IDBlockPickRequest
 	IDActorPickRequest
 	IDPlayerAction
-	_
+	IDActorFall
 	IDHurtArmour
 	IDSetActorData
 	IDSetActorMotion
@@ -53,11 +53,11 @@ const (
 	IDInventorySlot
 	IDContainerSetData
 	IDCraftingData
-	_
+	IDCraftingEvent
 	IDGUIDataPickItem
 	IDAdventureSettings
 	IDBlockActorData
-	_
+	IDPlayerInput
 	IDLevelChunk
 	IDSetCommandsEnabled
 	IDSetDifficulty
@@ -71,7 +71,7 @@ const (
 	IDMapInfoRequest
 	IDRequestChunkRadius
 	IDChunkRadiusUpdated
-	_
+	IDItemFrameDropItem
 	IDGameRulesChanged
 	IDCamera
 	IDBossEvent
@@ -179,10 +179,10 @@ const (
 	IDClientStartItemCooldown
 	IDScriptMessage
 	IDCodeBuilderSource
-	IDTickingAreasLoadStatus
-	IDDimensionData
 	IDAgentAction
 	IDChangeMobProperty
+	IDDimensionData
+	IDTickingAreasLoadStatus
 	IDLessonProgress
 	IDRequestAbility
 	IDRequestPermissions
@@ -201,7 +201,7 @@ const (
 	IDCameraPresets
 	IDUnlockedRecipes
 	IDCameraInstruction = iota + 101
-	_
+	IDCompressedBiomeDefinitionList
 	IDTrimData
 	IDOpenSign
 	IDAgentAnimation

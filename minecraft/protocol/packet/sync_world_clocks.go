@@ -31,7 +31,7 @@ type SyncWorldClocks struct {
 	// RemoveClockID is the clock ID for removing time markers, set if PayloadType is ClockPayloadTypeRemoveTimeMarker.
 	//
 	// Added: v1.26.10
-	RemoveClockID uint64
+	RemoveClockID int64
 	// RemoveTimeMarkerIDs is the list of time marker IDs to remove.
 	//
 	// Added: v1.26.10
@@ -54,7 +54,7 @@ func (pk *SyncWorldClocks) Marshal(io protocol.IO) {
 		io.Varuint64(&pk.AddClockID)
 		protocol.Slice(io, &pk.AddTimeMarkers)
 	case protocol.ClockPayloadTypeRemoveTimeMarker:
-		io.Varuint64(&pk.RemoveClockID)
+		io.Varint64(&pk.RemoveClockID)
 		protocol.FuncSlice(io, &pk.RemoveTimeMarkerIDs, io.Varuint64)
 	default:
 		io.UnknownEnumOption(pk.PayloadType, "clock payload type")
