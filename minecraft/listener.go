@@ -66,6 +66,8 @@ type ListenConfig struct {
 	// Protocol is always added to this slice. Clients with a protocol version that is not present in this slice will
 	// be disconnected.
 	AcceptedProtocols []Protocol
+	// PongProtocol is the protocol shown in the listener pong data. If nil, the current default protocol is used.
+	PongProtocol Protocol
 	// Compression is the packet.Compression to use for packets sent over this Conn. If set to nil, the compression
 	// will default to packet.flateCompression.
 	Compression packet.Compression // TODO: Change this to snappy once Windows crashes are resolved.
@@ -337,30 +339,14 @@ func (listener *Listener) PlayerCount() int {
 // server name of the listener, provided the listener isn't currently hijacking the pong of another server.
 func (listener *Listener) updatePongData() {
 	s := listener.status()
-	pongProtocol, pongVersion := listener.pongProtocol()
+	pongProtocol := listener.cfg.PongProtocol
+	if pongProtocol == nil {
+		pongProtocol = DefaultProtocol
+	}
 	listener.listener.PongData([]byte(fmt.Sprintf("MCPE;%v;%v;%v;%v;%v;%v;%v;%v;%v;%v;%v;%v;",
-		s.ServerName, pongProtocol.ID(), pongVersion, s.PlayerCount, s.MaxPlayers,
+		s.ServerName, pongProtocol.ID(), pongProtocol.Ver(), s.PlayerCount, s.MaxPlayers,
 		listener.listener.ID(), s.ServerSubName, "Creative", 1, listener.Addr().(*net.UDPAddr).Port, listener.Addr().(*net.UDPAddr).Port, 0,
 	)))
-}
-
-func (listener *Listener) pongProtocol() (Protocol, string) {
-	pongProtocol := Protocol(DefaultProtocol)
-	pongVersion := protocol.CurrentVersion
-	pongVersionID := protocol.CurrentInfo.Version()
-	for _, p := range append(listener.cfg.AcceptedProtocols, DefaultProtocol) {
-		if p == nil {
-			continue
-		}
-		info := protocol.NewInfo(p.ID(), p.Ver())
-		versionID := info.Version()
-		if versionID > pongVersionID {
-			pongProtocol = p
-			pongVersion = p.Ver()
-			pongVersionID = versionID
-		}
-	}
-	return pongProtocol, pongVersion
 }
 
 // listen starts listening for incoming connections and packets. When a player is fully connected, it submits
