@@ -16,6 +16,9 @@ import (
 	"github.com/google/uuid"
 )
 
+// Writer 实现 Minecraft 数据包中各类数据的写入方法。每个 Packet 实现都会在写入时收到一个 Writer。
+// Writer 的方法通过指针传递值，使 Reader 和 Writer 具有一致接口，并共同实现 IO 接口。
+//
 // Writer implements writing methods for data types from Minecraft packets. Each Packet implementation has one
 // passed to it when writing.
 // Writer implements methods where values are passed using a pointer, so that Reader and Writer have a
@@ -27,36 +30,55 @@ type Writer struct {
 		io.Writer
 		io.ByteWriter
 	}
-	shieldID, protocol int32
+	shieldID int32
+	profile  Profile
 }
 
+// NewWriter 使用底层 io.ByteWriter 创建并初始化新的 Writer。
+//
 // NewWriter creates a new initialised Writer with an underlying io.ByteWriter to write to.
 func NewWriter(w interface {
 	io.Writer
 	io.ByteWriter
 }, shieldID int32) *Writer {
-	return &Writer{w: w, shieldID: shieldID, protocol: CurrentProtocol}
+	return &Writer{w: w, shieldID: shieldID, profile: CurrentProfile}
 }
 
+// NewWriterWithProtocol 使用指定协议版本创建并初始化新的 Writer。
+//
 // NewWriterWithProtocol creates a new initialised Writer using a specific protocol version.
 func NewWriterWithProtocol(w interface {
 	io.Writer
 	io.ByteWriter
 }, shieldID, protocol int32) *Writer {
-	return &Writer{w: w, shieldID: shieldID, protocol: protocol}
+	return NewWriterWithProfile(w, shieldID, Profile{Protocol: protocol})
 }
 
+// NewWriterWithProfile 使用指定 Profile 创建并初始化新的 Writer。
+//
+// NewWriterWithProfile creates a new initialised Writer using a specific profile.
+func NewWriterWithProfile(w interface {
+	io.Writer
+	io.ByteWriter
+}, shieldID int32, profile Profile) *Writer {
+	return &Writer{w: w, shieldID: shieldID, profile: profile}
+}
+
+// New 创建新的 Writer，并继承父 Writer 的协议上下文。
+//
 // New creates a new Writer inheriting the protocol context of the parent Writer.
 func (w *Writer) New(writer interface {
 	io.Writer
 	io.ByteWriter
 }) *Writer {
-	return &Writer{w: writer, shieldID: w.shieldID, protocol: w.protocol}
+	return &Writer{w: writer, shieldID: w.shieldID, profile: w.profile}
 }
 
+// Protocol 返回与 Writer 关联的协议版本。
+//
 // Protocol returns the protocol version associated with the Writer.
 func (w *Writer) Protocol() int32 {
-	return w.protocol
+	return w.profile.Protocol
 }
 
 // Uint8 writes a uint8 to the underlying buffer.

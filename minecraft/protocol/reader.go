@@ -16,6 +16,9 @@ import (
 	"github.com/google/uuid"
 )
 
+// Reader 实现 Minecraft 数据包中各类数据的读取操作。每个 Packet 实现都会收到一个 Reader。
+// Reader 的使用方应始终通过 defer recovery 包裹读取过程；Reader 会在遇到无效数据时 panic。
+//
 // Reader implements reading operations for reading types from Minecraft packets. Each Packet implementation
 // has one passed to it.
 // Reader's uses should always be encapsulated with a deferred recovery. Reader panics on invalid data.
@@ -28,36 +31,54 @@ type Reader struct {
 	}
 	shieldID      int32
 	limitsEnabled bool
-	protocol      int32
+	profile       Profile
 }
 
+// NewReader 使用传入的 io.ByteReader 作为底层字节来源创建新的 Reader。
+//
 // NewReader creates a new Reader using the io.ByteReader passed as underlying source to read bytes from.
 func NewReader(r interface {
 	io.Reader
 	io.ByteReader
 }, shieldID int32, enableLimits bool) *Reader {
-	return &Reader{r: r, shieldID: shieldID, limitsEnabled: enableLimits, protocol: CurrentProtocol}
+	return &Reader{r: r, shieldID: shieldID, limitsEnabled: enableLimits, profile: CurrentProfile}
 }
 
+// NewReaderWithProtocol 使用指定协议版本创建新的 Reader。
+//
 // NewReaderWithProtocol creates a new Reader using a specific protocol version.
 func NewReaderWithProtocol(r interface {
 	io.Reader
 	io.ByteReader
 }, shieldID int32, enableLimits bool, protocol int32) *Reader {
-	return &Reader{r: r, shieldID: shieldID, limitsEnabled: enableLimits, protocol: protocol}
+	return NewReaderWithProfile(r, shieldID, enableLimits, Profile{Protocol: protocol})
 }
 
+// NewReaderWithProfile 使用指定 Profile 创建新的 Reader。
+//
+// NewReaderWithProfile creates a new Reader using a specific profile.
+func NewReaderWithProfile(r interface {
+	io.Reader
+	io.ByteReader
+}, shieldID int32, enableLimits bool, profile Profile) *Reader {
+	return &Reader{r: r, shieldID: shieldID, limitsEnabled: enableLimits, profile: profile}
+}
+
+// New 创建新的 Reader，并继承父 Reader 的协议上下文。
+//
 // New creates a new Reader inheriting the protocol context of the parent Reader.
 func (r *Reader) New(reader interface {
 	io.Reader
 	io.ByteReader
 }) *Reader {
-	return &Reader{r: reader, shieldID: r.shieldID, limitsEnabled: r.limitsEnabled, protocol: r.protocol}
+	return &Reader{r: reader, shieldID: r.shieldID, limitsEnabled: r.limitsEnabled, profile: r.profile}
 }
 
+// Protocol 返回与 Reader 关联的协议版本。
+//
 // Protocol returns the protocol version associated with the Reader.
 func (r *Reader) Protocol() int32 {
-	return r.protocol
+	return r.profile.Protocol
 }
 
 // Uint8 reads a uint8 from the underlying buffer.
