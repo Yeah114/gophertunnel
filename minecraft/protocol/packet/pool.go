@@ -193,12 +193,14 @@ func init() {
 		IDLevelSoundEvent:             func() Packet { return &LevelSoundEvent{} },
 		IDLevelEventGeneric:           func() Packet { return &LevelEventGeneric{} },
 		IDLecternUpdate:               func() Packet { return &LecternUpdate{} },
+		IDVideoStreamConnect:          func() Packet { return &VideoStreamConnect{} },
 		// ---
 		IDClientCacheStatus:             func() Packet { return &ClientCacheStatus{} },
 		IDOnScreenTextureAnimation:      func() Packet { return &OnScreenTextureAnimation{} },
 		IDMapCreateLockedCopy:           func() Packet { return &MapCreateLockedCopy{} },
 		IDStructureTemplateDataRequest:  func() Packet { return &StructureTemplateDataRequest{} },
 		IDStructureTemplateDataResponse: func() Packet { return &StructureTemplateDataResponse{} },
+		IDUpdateBlockProperties:         func() Packet { return &UpdateBlockProperties{} },
 		// ---
 		IDClientCacheBlobStatus:             func() Packet { return &ClientCacheBlobStatus{} },
 		IDClientCacheMissResponse:           func() Packet { return &ClientCacheMissResponse{} },
@@ -284,6 +286,7 @@ func init() {
 		IDCameraAimAssist:                func() Packet { return &CameraAimAssist{} },
 		IDContainerRegistryCleanup:       func() Packet { return &ContainerRegistryCleanup{} },
 		IDMovementEffect:                 func() Packet { return &MovementEffect{} },
+		IDSetMovementAuthority:           func() Packet { return &SetMovementAuthority{} },
 		// ---
 		IDCameraAimAssistPresets:             func() Packet { return &CameraAimAssistPresets{} },
 		IDClientCameraAimAssist:              func() Packet { return &ClientCameraAimAssist{} },

@@ -126,7 +126,7 @@ const (
 	IDLevelSoundEvent
 	IDLevelEventGeneric
 	IDLecternUpdate
-	_
+	IDVideoStreamConnect
 	_
 	_
 	IDClientCacheStatus
@@ -134,7 +134,7 @@ const (
 	IDMapCreateLockedCopy
 	IDStructureTemplateDataRequest
 	IDStructureTemplateDataResponse
-	_
+	IDUpdateBlockProperties
 	IDClientCacheBlobStatus
 	IDClientCacheMissResponse
 	IDEducationSettings
@@ -219,7 +219,7 @@ const (
 	IDCameraAimAssist
 	IDContainerRegistryCleanup
 	IDMovementEffect
-	_
+	IDSetMovementAuthority
 	IDCameraAimAssistPresets
 	IDClientCameraAimAssist
 	IDClientMovementPredictionSync
