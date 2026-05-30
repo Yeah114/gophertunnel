@@ -337,10 +337,30 @@ func (listener *Listener) PlayerCount() int {
 // server name of the listener, provided the listener isn't currently hijacking the pong of another server.
 func (listener *Listener) updatePongData() {
 	s := listener.status()
+	pongProtocol, pongVersion := listener.pongProtocol()
 	listener.listener.PongData([]byte(fmt.Sprintf("MCPE;%v;%v;%v;%v;%v;%v;%v;%v;%v;%v;%v;%v;",
-		s.ServerName, protocol.CurrentProtocol, protocol.CurrentVersion, s.PlayerCount, s.MaxPlayers,
+		s.ServerName, pongProtocol.ID(), pongVersion, s.PlayerCount, s.MaxPlayers,
 		listener.listener.ID(), s.ServerSubName, "Creative", 1, listener.Addr().(*net.UDPAddr).Port, listener.Addr().(*net.UDPAddr).Port, 0,
 	)))
+}
+
+func (listener *Listener) pongProtocol() (Protocol, string) {
+	pongProtocol := Protocol(DefaultProtocol)
+	pongVersion := protocol.CurrentVersion
+	pongVersionID := protocol.CurrentInfo.Version()
+	for _, p := range append(listener.cfg.AcceptedProtocols, DefaultProtocol) {
+		if p == nil {
+			continue
+		}
+		info := protocol.NewInfo(p.ID(), p.Ver())
+		versionID := info.Version()
+		if versionID > pongVersionID {
+			pongProtocol = p
+			pongVersion = p.Ver()
+			pongVersionID = versionID
+		}
+	}
+	return pongProtocol, pongVersion
 }
 
 // listen starts listening for incoming connections and packets. When a player is fully connected, it submits
